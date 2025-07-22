@@ -316,7 +316,7 @@ if __name__ == "__main__":
         "host": "localhost",
         "database": "perm_data",
         "user": "root",
-        "password": "r9uoftasjzgh5ig",
+        "password": "***************",
     }
 
     visualizer = PERMVisualizer(db_config)

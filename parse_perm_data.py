@@ -11,7 +11,7 @@ def main(excel_file):
         "host": "localhost",
         "database": "perm_data",
         "user": "root",
-        "password": "r9uoftasjzgh5ig",
+        "password": "***************",
     }
 
     try:
