@@ -104,7 +104,7 @@ trio-websocket==0.12.1
 typing-inspection==0.4.1
 typing_extensions==4.12.2
 tzdata==2024.2
-urllib3==2.2.3
+urllib3==2.5.0
 userpath==1.9.2
 uv==0.8.0
 uvicorn==0.35.0
