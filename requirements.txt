@@ -60,7 +60,7 @@ pillow==11.0.0
 pipx==1.7.1
 platformdirs==4.3.6
 pluggy==1.5.0
-protobuf==3.20.3
+protobuf==4.25.8
 pure-sasl==0.6.2
 py4j==0.10.9.7
 pyaml==24.9.0
