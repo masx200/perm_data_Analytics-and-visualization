@@ -20,9 +20,11 @@ Process）是美国劳工部对劳工证的电子评估管理体系。这份 Exc
 
 #### 使用说明
 
-1. xxxx
-2. xxxx
-3. xxxx
+1.mysql 创建数据库和视图创建脚本
+
+2.执行 python 导入数据库脚本
+
+3.执行 python 可视化脚本
 
 perm_data_Analytics-and-visualization 项目主要围绕美国劳工部 PERM（Program
 Electronic Review Management
@@ -74,8 +76,3 @@ visualize_perm_data.py：
 数据库连接库：mysql-connector-python
 
 项目结构
-
-许可证
-
-项目使用木兰宽松许可证第 2 版（Mulan PSL
-v2），允许用户复制、使用、修改及分发软件，但需遵循许可证的相关条款。
