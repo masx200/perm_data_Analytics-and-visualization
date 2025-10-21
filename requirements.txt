@@ -106,7 +106,7 @@ typing_extensions==4.12.2
 tzdata==2024.2
 urllib3==2.2.3
 userpath==1.9.2
-uv==0.8.0
+uv==0.9.5
 uvicorn==0.35.0
 webencodings==0.5.1
 websocket-client==1.8.0
