@@ -93,7 +93,7 @@ sortedcontainers==2.4.0
 soupsieve==2.6
 spinners==0.0.24
 sse-starlette==2.4.1
-starlette==0.47.2
+starlette==0.49.1
 tabulate==0.9.0
 termcolor==2.5.0
 thrift==0.16.0
