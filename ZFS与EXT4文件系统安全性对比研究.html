@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="zh-CN">
   <head>
     <meta
@@ -25,11 +25,7 @@
 
       body {
         font-family:
-          "Inter",
-          -apple-system,
-          BlinkMacSystemFont,
-          "Segoe UI",
-          sans-serif;
+          "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
         line-height: 1.7;
       }
 
@@ -168,38 +164,31 @@
           <a
             href="#summary"
             class="text-gray-700 hover:text-blue-600 whitespace-nowrap transition-colors"
-            >摘要</a
-          >
+          >摘要</a>
           <a
             href="#introduction"
             class="text-gray-700 hover:text-blue-600 whitespace-nowrap transition-colors"
-            >引言</a
-          >
+          >引言</a>
           <a
             href="#experiment"
             class="text-gray-700 hover:text-blue-600 whitespace-nowrap transition-colors"
-            >实验设计</a
-          >
+          >实验设计</a>
           <a
             href="#results"
             class="text-gray-700 hover:text-blue-600 whitespace-nowrap transition-colors"
-            >实验结果</a
-          >
+          >实验结果</a>
           <a
             href="#analysis"
             class="text-gray-700 hover:text-blue-600 whitespace-nowrap transition-colors"
-            >技术分析</a
-          >
+          >技术分析</a>
           <a
             href="#applications"
             class="text-gray-700 hover:text-blue-600 whitespace-nowrap transition-colors"
-            >应用价值</a
-          >
+          >应用价值</a>
           <a
             href="#conclusion"
             class="text-gray-700 hover:text-blue-600 whitespace-nowrap transition-colors"
-            >结论</a
-          >
+          >结论</a>
         </div>
       </div>
     </nav>
@@ -257,8 +246,8 @@
               </p>
               <div class="bg-yellow-50 border-l-4 border-yellow-500 p-4">
                 <p class="text-sm text-yellow-800">
-                  <strong>关键问题：</strong
-                  >传统文件系统往往缺乏有效的检测机制，导致错误数据被持续使用而不被发现。
+                  <strong
+                  >关键问题：</strong>传统文件系统往往缺乏有效的检测机制，导致错误数据被持续使用而不被发现。
                 </p>
               </div>
             </div>
@@ -283,7 +272,9 @@
               </p>
               <p class="text-gray-600">虚拟磁盘创建采用稀疏文件技术：</p>
             </div>
-            <pre class="language-bash">
+            <pre
+              class="language-bash"
+            >
 <code># 创建200MB虚拟磁盘
 truncate -s 200M virtual_disk.img
 
@@ -295,7 +286,9 @@ du -sh virtual_disk.img</code></pre>
             <h3 class="text-xl font-semibold mb-4 text-gray-700">
               1.2 ZFS环境配置
             </h3>
-            <pre class="language-bash">
+            <pre
+              class="language-bash"
+            >
 <code># 安装ZFS
 apt install zfsutils-linux
 
@@ -316,7 +309,9 @@ zfs create tank/test</code></pre>
             <h3 class="text-xl font-semibold mb-4 text-gray-700">
               1.3 EXT4环境配置
             </h3>
-            <pre class="language-bash">
+            <pre
+              class="language-bash"
+            >
 <code># 创建文件系统
 mkfs.ext4 virtual_disk.img
 
@@ -372,8 +367,8 @@ mount /dev/loop0 /mnt/ext4_test</code></pre>
             </h3>
             <div class="bg-red-50 border-l-4 border-red-500 p-4 mb-4">
               <p class="text-red-800">
-                <strong>关键发现：</strong
-                >EXT4在默认配置下无法检测到数据块级别的篡改。文件读取时返回被篡改的数据，用户无法察觉错误。
+                <strong
+                >关键发现：</strong>EXT4在默认配置下无法检测到数据块级别的篡改。文件读取时返回被篡改的数据，用户无法察觉错误。
               </p>
             </div>
             <p class="text-gray-600 mb-4">
@@ -387,8 +382,8 @@ mount /dev/loop0 /mnt/ext4_test</code></pre>
             </h3>
             <div class="bg-green-50 border-l-4 border-green-500 p-4 mb-4">
               <p class="text-green-800">
-                <strong>关键发现：</strong
-                >ZFS在数据被篡改后立即检测到错误，并精确报告受影响的文件和错误类型。
+                <strong
+                >关键发现：</strong>ZFS在数据被篡改后立即检测到错误，并精确报告受影响的文件和错误类型。
               </p>
             </div>
             <p class="text-gray-600">
@@ -915,8 +910,7 @@ mount /dev/loop0 /mnt/ext4_test</code></pre>
                 <div class="flex items-start">
                   <span
                     class="flex-shrink-0 w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm mr-3"
-                    >1</span
-                  >
+                  >1</span>
                   <div>
                     <p class="font-semibold text-gray-700">写入性能优化</p>
                     <p class="text-sm text-gray-600">
@@ -927,8 +921,7 @@ mount /dev/loop0 /mnt/ext4_test</code></pre>
                 <div class="flex items-start">
                   <span
                     class="flex-shrink-0 w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm mr-3"
-                    >2</span
-                  >
+                  >2</span>
                   <div>
                     <p class="font-semibold text-gray-700">延迟错误检测</p>
                     <p class="text-sm text-gray-600">
@@ -939,8 +932,7 @@ mount /dev/loop0 /mnt/ext4_test</code></pre>
                 <div class="flex items-start">
                   <span
                     class="flex-shrink-0 w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm mr-3"
-                    >3</span
-                  >
+                  >3</span>
                   <div>
                     <p class="font-semibold text-gray-700">透明性</p>
                     <p class="text-sm text-gray-600">

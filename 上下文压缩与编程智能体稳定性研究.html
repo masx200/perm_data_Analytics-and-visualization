@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="zh-CN">
   <head>
     <link rel="icon" href="vite.svg" />
@@ -23,11 +23,7 @@
         scroll-behavior: smooth;
       }
       body {
-        font-family:
-          "Inter",
-          system-ui,
-          -apple-system,
-          sans-serif;
+        font-family: "Inter", system-ui, -apple-system, sans-serif;
       }
       /* 代码块样式 */
       pre {
@@ -402,38 +398,28 @@
                   <ul class="space-y-2">
                     <li class="flex items-start">
                       <i class="fa fa-caret-right text-primary mt-1 mr-2"></i>
-                      <span
-                        ><strong>计算复杂度问题</strong
-                        >：自注意力机制的O(n²)复杂度导致长上下文处理成本急剧增加</span
-                      >
+                      <span><strong
+                        >计算复杂度问题</strong>：自注意力机制的O(n²)复杂度导致长上下文处理成本急剧增加</span>
                     </li>
                     <li class="flex items-start">
                       <i class="fa fa-caret-right text-primary mt-1 mr-2"></i>
-                      <span
-                        ><strong>内存占用问题</strong
-                        >：KV缓存随上下文长度线性增长，成为内存瓶颈</span
-                      >
+                      <span><strong
+                        >内存占用问题</strong>：KV缓存随上下文长度线性增长，成为内存瓶颈</span>
                     </li>
                     <li class="flex items-start">
                       <i class="fa fa-caret-right text-primary mt-1 mr-2"></i>
-                      <span
-                        ><strong>中间信息丢失</strong
-                        >：LLM更关注提示词的开头和结尾部分，常常忽略中间信息</span
-                      >
+                      <span><strong
+                        >中间信息丢失</strong>：LLM更关注提示词的开头和结尾部分，常常忽略中间信息</span>
                     </li>
                     <li class="flex items-start">
                       <i class="fa fa-caret-right text-primary mt-1 mr-2"></i>
-                      <span
-                        ><strong>代码结构理解</strong
-                        >：需要理解跨文件依赖关系、保持代码风格一致性</span
-                      >
+                      <span><strong
+                        >代码结构理解</strong>：需要理解跨文件依赖关系、保持代码风格一致性</span>
                     </li>
                     <li class="flex items-start">
                       <i class="fa fa-caret-right text-primary mt-1 mr-2"></i>
-                      <span
-                        ><strong>工具调用复杂度</strong
-                        >：工具数量超过阈值时，智能体选择正确工具的能力显著下降</span
-                      >
+                      <span><strong
+                        >工具调用复杂度</strong>：工具数量超过阈值时，智能体选择正确工具的能力显著下降</span>
                     </li>
                   </ul>
                 </div>
@@ -591,26 +577,23 @@
                         <li class="flex items-start">
                           <i class="fa fa-check text-green-500 mt-1 mr-2"></i>
                           <span
-                            >直接压缩细粒度输入单元，实现高质量压缩和高效计算</span
-                          >
+                          >直接压缩细粒度输入单元，实现高质量压缩和高效计算</span>
                         </li>
                         <li class="flex items-start">
                           <i class="fa fa-check text-green-500 mt-1 mr-2"></i>
                           <span
-                            >通过基于压缩的自回归训练，优化模型压缩性能</span
-                          >
+                          >通过基于压缩的自回归训练，优化模型压缩性能</span>
                         </li>
                         <li class="flex items-start">
                           <i class="fa fa-check text-green-500 mt-1 mr-2"></i>
                           <span
-                            >训练期间随机采样压缩比，支持广泛的压缩配置</span
-                          >
+                          >训练期间随机采样压缩比，支持广泛的压缩配置</span>
                         </li>
                       </ul>
                       <div class="mt-4 text-sm text-gray-600">
                         <p>
-                          <strong>实验结果</strong
-                          >：保持与未压缩基线相当的性能，推理时间2倍加速，KV缓存内存成本8倍减少
+                          <strong
+                          >实验结果</strong>：保持与未压缩基线相当的性能，推理时间2倍加速，KV缓存内存成本8倍减少
                         </p>
                       </div>
                     </div>
@@ -687,14 +670,13 @@
                             class="fa fa-plus-circle text-primary mt-1 mr-2"
                           ></i>
                           <span
-                            >压缩n-gram结构而非删除单词，实现更好的语义一致性</span
-                          >
+                          >压缩n-gram结构而非删除单词，实现更好的语义一致性</span>
                         </li>
                       </ul>
                       <div class="mt-4 text-sm text-gray-600">
                         <p>
-                          <strong>实验结果</strong
-                          >：在所有数据集和目标LLM上的压缩比和吞吐量分别是LongLLMLingua的2.75倍和2.47倍
+                          <strong
+                          >实验结果</strong>：在所有数据集和目标LLM上的压缩比和吞吐量分别是LongLLMLingua的2.75倍和2.47倍
                         </p>
                       </div>
                     </div>
@@ -900,15 +882,12 @@
                         <li class="flex items-start">
                           <i class="fa fa-sitemap text-blue-500 mt-1 mr-2"></i>
                           <span
-                            >核心架构包括Orchestrator、Architect、Code、Debug等专业模式</span
-                          >
+                          >核心架构包括Orchestrator、Architect、Code、Debug等专业模式</span>
                         </li>
                         <li class="flex items-start">
                           <i class="fa fa-plug text-blue-500 mt-1 mr-2"></i>
-                          <span
-                            >作为VS
-                            Code和JetBrains等IDE的扩展，深度集成到IDE功能中</span
-                          >
+                          <span>作为VS
+                            Code和JetBrains等IDE的扩展，深度集成到IDE功能中</span>
                         </li>
                         <li class="flex items-start">
                           <i
@@ -918,9 +897,8 @@
                         </li>
                         <li class="flex items-start">
                           <i class="fa fa-github text-gray-700 mt-1 mr-2"></i>
-                          <span
-                            >存在"视图过时"等已知问题（GitHub issue #712）</span
-                          >
+                          <span>存在"视图过时"等已知问题（GitHub issue
+                            #712）</span>
                         </li>
                       </ul>
                     </div>
@@ -1011,24 +989,21 @@
                             class="fa fa-angle-right text-primary mt-1 mr-2"
                           ></i>
                           <span
-                            >"上下文保护"机制，当文件读取或MCP工具输出可能消耗超过上下文窗口80%时自动阻止</span
-                          >
+                          >"上下文保护"机制，当文件读取或MCP工具输出可能消耗超过上下文窗口80%时自动阻止</span>
                         </li>
                         <li class="flex items-start">
                           <i
                             class="fa fa-angle-right text-primary mt-1 mr-2"
                           ></i>
                           <span
-                            >可能导致关键信息被过滤，影响AI模型决策质量</span
-                          >
+                          >可能导致关键信息被过滤，影响AI模型决策质量</span>
                         </li>
                         <li class="flex items-start">
                           <i
                             class="fa fa-angle-right text-primary mt-1 mr-2"
                           ></i>
                           <span
-                            >用户反馈存在"工具使用信息从上下文中丢失"问题</span
-                          >
+                          >用户反馈存在"工具使用信息从上下文中丢失"问题</span>
                         </li>
                         <li class="flex items-start">
                           <i
@@ -1055,17 +1030,14 @@
                             class="fa fa-angle-right text-purple-600 mt-1 mr-2"
                           ></i>
                           <span
-                            >自动将上下文拉入提示中，确保AI模型拥有足够信息</span
-                          >
+                          >自动将上下文拉入提示中，确保AI模型拥有足够信息</span>
                         </li>
                         <li class="flex items-start">
                           <i
                             class="fa fa-angle-right text-purple-600 mt-1 mr-2"
                           ></i>
-                          <span
-                            >依赖底层Claude模型（如Claude 3.5
-                            Sonnet）强大的长上下文处理能力（20万+ token）</span
-                          >
+                          <span>依赖底层Claude模型（如Claude 3.5
+                            Sonnet）强大的长上下文处理能力（20万+ token）</span>
                         </li>
                         <li class="flex items-start">
                           <i
@@ -1078,16 +1050,14 @@
                             class="fa fa-angle-right text-purple-600 mt-1 mr-2"
                           ></i>
                           <span
-                            >优势：提供更完整的信息基础，减少信息不足导致的错误</span
-                          >
+                          >优势：提供更完整的信息基础，减少信息不足导致的错误</span>
                         </li>
                         <li class="flex items-start">
                           <i
                             class="fa fa-angle-right text-purple-600 mt-1 mr-2"
                           ></i>
                           <span
-                            >劣势：可能面临上下文窗口限制和计算资源消耗问题</span
-                          >
+                          >劣势：可能面临上下文窗口限制和计算资源消耗问题</span>
                         </li>
                       </ul>
                     </div>
@@ -1127,7 +1097,8 @@
                     </div>
                     <div class="p-5">
                       <p class="mb-3">
-                        KiloCode提供了<code>apply_diff</code>和<code>write_to_file</code>等工具用于文件修改：
+                        KiloCode提供了<code>apply_diff</code>和<code
+                        >write_to_file</code>等工具用于文件修改：
                       </p>
 
                       <div class="bg-gray-50 p-4 rounded-md my-4">
@@ -1163,7 +1134,8 @@
                       </div>
 
                       <p class="text-sm text-gray-600 italic">
-                        在长上下文场景下，当KiloCode对文件状态的认知可能出现偏差时，<code>apply_diff</code>的失败风险自然会增高。
+                        在长上下文场景下，当KiloCode对文件状态的认知可能出现偏差时，<code
+                        >apply_diff</code>的失败风险自然会增高。
                       </p>
                     </div>
                   </div>
@@ -1193,8 +1165,8 @@
                           </li>
                           <li>2. 模型生成修改后的完整内容</li>
                           <li>
-                            3.
-                            通过类似<code>write_to_file</code>的操作将整个内容写回
+                            3. 通过类似<code
+                            >write_to_file</code>的操作将整个内容写回
                           </li>
                         </ol>
                         <p class="text-sm text-green-600 font-medium mt-3">
@@ -1326,8 +1298,7 @@
                             class="fa fa-check-circle text-green-500 mt-1 mr-2"
                           ></i>
                           <span
-                            >自定义验证逻辑，检查写入文件内容是否符合预期</span
-                          >
+                          >自定义验证逻辑，检查写入文件内容是否符合预期</span>
                         </li>
                         <li class="flex items-start">
                           <i class="fa fa-wrench text-green-500 mt-1 mr-2"></i>
@@ -1336,14 +1307,12 @@
                         <li class="flex items-start">
                           <i class="fa fa-shield text-green-500 mt-1 mr-2"></i>
                           <span
-                            >优雅降级机制，确保异常情况下系统仍能保持基本功能</span
-                          >
+                          >优雅降级机制，确保异常情况下系统仍能保持基本功能</span>
                         </li>
                         <li class="flex items-start">
                           <i class="fa fa-refresh text-green-500 mt-1 mr-2"></i>
                           <span
-                            >自适应重压缩、混合模式保留和保守截断等策略</span
-                          >
+                          >自适应重压缩、混合模式保留和保守截断等策略</span>
                         </li>
                       </ul>
 
@@ -1387,39 +1356,32 @@
                     <ul class="space-y-3">
                       <li class="flex items-start">
                         <i class="fa fa-plug text-blue-500 mt-1 mr-2"></i>
-                        <span
-                          >支持400多种托管模型，允许本地运行或BYOK（Bring Your
-                          Own Key）</span
-                        >
+                        <span>支持400多种托管模型，允许本地运行或BYOK（Bring
+                          Your Own Key）</span>
                       </li>
                       <li class="flex items-start">
                         <i class="fa fa-code-fork text-blue-500 mt-1 mr-2"></i>
                         <span
-                          >需要适配多种不同厂商、不同架构、不同API的AI模型</span
-                        >
+                        >需要适配多种不同厂商、不同架构、不同API的AI模型</span>
                       </li>
                       <li class="flex items-start">
                         <i
                           class="fa fa-exclamation-triangle text-amber-500 mt-1 mr-2"
                         ></i>
                         <span
-                          >不同模型在长上下文处理、指令遵循、输出格式等方面可能存在差异</span
-                        >
+                        >不同模型在长上下文处理、指令遵循、输出格式等方面可能存在差异</span>
                       </li>
                       <li class="flex items-start">
                         <i class="fa fa-github text-gray-700 mt-1 mr-2"></i>
-                        <span
-                          >#712 issue中提到：使用Sonnet 4模型比Sonnet
-                          3.7更容易复现文件写入失败问题</span
-                        >
+                        <span>#712 issue中提到：使用Sonnet 4模型比Sonnet
+                          3.7更容易复现文件写入失败问题</span>
                       </li>
                       <li class="flex items-start">
                         <i
                           class="fa fa-balance-scale text-blue-500 mt-1 mr-2"
                         ></i>
                         <span
-                          >优势在于灵活性和普适性，但难以针对每一种模型进行深度优化</span
-                        >
+                        >优势在于灵活性和普适性，但难以针对每一种模型进行深度优化</span>
                       </li>
                     </ul>
                   </div>
@@ -1433,39 +1395,30 @@
                     <ul class="space-y-3">
                       <li class="flex items-start">
                         <i class="fa fa-link text-purple-600 mt-1 mr-2"></i>
-                        <span
-                          >受益于Anthropic的垂直整合策略，Claude模型与Claude
-                          Code来自同一开发者</span
-                        >
+                        <span>受益于Anthropic的垂直整合策略，Claude模型与Claude
+                          Code来自同一开发者</span>
                       </li>
                       <li class="flex items-start">
                         <i class="fa fa-sliders text-purple-600 mt-1 mr-2"></i>
-                        <span
-                          >可以根据Claude
-                          Code的特定使用场景调整Claude模型的行为</span
-                        >
+                        <span>可以根据Claude
+                          Code的特定使用场景调整Claude模型的行为</span>
                       </li>
                       <li class="flex items-start">
                         <i class="fa fa-cogs text-purple-600 mt-1 mr-2"></i>
-                        <span
-                          >为Claude
-                          Code设计专用的、与Claude模型配合更默契的API</span
-                        >
+                        <span>为Claude
+                          Code设计专用的、与Claude模型配合更默契的API</span>
                       </li>
                       <li class="flex items-start">
                         <i
                           class="fa fa-check-circle text-green-500 mt-1 mr-2"
                         ></i>
                         <span
-                          >深入理解Claude模型的上下文窗口特性、提示词最佳实践等</span
-                        >
+                        >深入理解Claude模型的上下文窗口特性、提示词最佳实践等</span>
                       </li>
                       <li class="flex items-start">
                         <i class="fa fa-rocket text-purple-600 mt-1 mr-2"></i>
-                        <span
-                          >Claude模型对长上下文的高效处理能力（支持200K
-                          tokens）与Claude Code架构深度融合</span
-                        >
+                        <span>Claude模型对长上下文的高效处理能力（支持200K
+                          tokens）与Claude Code架构深度融合</span>
                       </li>
                     </ul>
                   </div>
@@ -1508,39 +1461,29 @@
                   <ul class="space-y-3">
                     <li class="flex items-start">
                       <i class="fa fa-angle-right text-primary mt-1 mr-2"></i>
-                      <span
-                        ><strong>高效的长上下文处理模型</strong
-                        >：降低计算复杂度和内存消耗，如Activation
-                        Beacon技术</span
-                      >
+                      <span><strong
+                        >高效的长上下文处理模型</strong>：降低计算复杂度和内存消耗，如Activation
+                        Beacon技术</span>
                     </li>
                     <li class="flex items-start">
                       <i class="fa fa-angle-right text-primary mt-1 mr-2"></i>
-                      <span
-                        ><strong>上下文感知的工具调用优化</strong
-                        >：更智能地选择和调用工具，避免上下文混淆</span
-                      >
+                      <span><strong
+                        >上下文感知的工具调用优化</strong>：更智能地选择和调用工具，避免上下文混淆</span>
                     </li>
                     <li class="flex items-start">
                       <i class="fa fa-angle-right text-primary mt-1 mr-2"></i>
-                      <span
-                        ><strong>可靠的文件操作机制</strong
-                        >：如"读取-修改-整体写入"模式，减少状态不一致错误</span
-                      >
+                      <span><strong
+                        >可靠的文件操作机制</strong>：如"读取-修改-整体写入"模式，减少状态不一致错误</span>
                     </li>
                     <li class="flex items-start">
                       <i class="fa fa-angle-right text-primary mt-1 mr-2"></i>
-                      <span
-                        ><strong>系统性的错误处理与恢复</strong
-                        >：预检查、后验证、自动重试和回滚机制</span
-                      >
+                      <span><strong
+                        >系统性的错误处理与恢复</strong>：预检查、后验证、自动重试和回滚机制</span>
                     </li>
                     <li class="flex items-start">
                       <i class="fa fa-angle-right text-primary mt-1 mr-2"></i>
-                      <span
-                        ><strong>增强的模型-工具协同</strong
-                        >：更统一的接口和更智能的工具选择</span
-                      >
+                      <span><strong
+                        >增强的模型-工具协同</strong>：更统一的接口和更智能的工具选择</span>
                     </li>
                   </ul>
                 </div>
@@ -1559,38 +1502,28 @@
                   <ul class="space-y-3">
                     <li class="flex items-start">
                       <i class="fa fa-angle-right text-primary mt-1 mr-2"></i>
-                      <span
-                        ><strong>上下文边界与连贯性</strong
-                        >：确定合理边界，保持上下文连贯性</span
-                      >
+                      <span><strong
+                        >上下文边界与连贯性</strong>：确定合理边界，保持上下文连贯性</span>
                     </li>
                     <li class="flex items-start">
                       <i class="fa fa-angle-right text-primary mt-1 mr-2"></i>
-                      <span
-                        ><strong>长距离依赖建模</strong
-                        >：有效建模长距离依赖，保持计算效率</span
-                      >
+                      <span><strong
+                        >长距离依赖建模</strong>：有效建模长距离依赖，保持计算效率</span>
                     </li>
                     <li class="flex items-start">
                       <i class="fa fa-angle-right text-primary mt-1 mr-2"></i>
-                      <span
-                        ><strong>工具调用安全可靠</strong
-                        >：在保证灵活性的同时确保安全性</span
-                      >
+                      <span><strong
+                        >工具调用安全可靠</strong>：在保证灵活性的同时确保安全性</span>
                     </li>
                     <li class="flex items-start">
                       <i class="fa fa-angle-right text-primary mt-1 mr-2"></i>
-                      <span
-                        ><strong>错误定位与自动修复</strong
-                        >：自动定位错误并进行修复</span
-                      >
+                      <span><strong
+                        >错误定位与自动修复</strong>：自动定位错误并进行修复</span>
                     </li>
                     <li class="flex items-start">
                       <i class="fa fa-angle-right text-primary mt-1 mr-2"></i>
-                      <span
-                        ><strong>人机协作信任与控制</strong
-                        >：建立信任，保持人类有效控制</span
-                      >
+                      <span><strong
+                        >人机协作信任与控制</strong>：建立信任，保持人类有效控制</span>
                     </li>
                   </ul>
                 </div>
@@ -1654,8 +1587,7 @@
                   <li class="flex items-start">
                     <span
                       class="flex-shrink-0 h-6 w-6 rounded-full bg-primary flex items-center justify-center text-white text-sm font-medium mt-0.5 mr-3"
-                      >1</span
-                    >
+                    >1</span>
                     <div>
                       <p class="font-medium text-gray-800">
                         上下文过载是关键因素
@@ -1668,8 +1600,7 @@
                   <li class="flex items-start">
                     <span
                       class="flex-shrink-0 h-6 w-6 rounded-full bg-primary flex items-center justify-center text-white text-sm font-medium mt-0.5 mr-3"
-                      >2</span
-                    >
+                    >2</span>
                     <div>
                       <p class="font-medium text-gray-800">
                         上下文压缩是有效途径
@@ -1682,8 +1613,7 @@
                   <li class="flex items-start">
                     <span
                       class="flex-shrink-0 h-6 w-6 rounded-full bg-primary flex items-center justify-center text-white text-sm font-medium mt-0.5 mr-3"
-                      >3</span
-                    >
+                    >3</span>
                     <div>
                       <p class="font-medium text-gray-800">
                         稳定性存在显著差异
@@ -1697,8 +1627,7 @@
                   <li class="flex items-start">
                     <span
                       class="flex-shrink-0 h-6 w-6 rounded-full bg-primary flex items-center justify-center text-white text-sm font-medium mt-0.5 mr-3"
-                      >4</span
-                    >
+                    >4</span>
                     <div>
                       <p class="font-medium text-gray-800">
                         稳定性提升是系统工程
@@ -1711,8 +1640,7 @@
                   <li class="flex items-start">
                     <span
                       class="flex-shrink-0 h-6 w-6 rounded-full bg-primary flex items-center justify-center text-white text-sm font-medium mt-0.5 mr-3"
-                      >5</span
-                    >
+                    >5</span>
                     <div>
                       <p class="font-medium text-gray-800">未来趋势明确</p>
                       <p class="text-gray-600 mt-1">

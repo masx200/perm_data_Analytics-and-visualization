@@ -184,9 +184,11 @@ class BlogApp {
 
     // 如果没有找到合适的文本，使用默认摘要
     if (!excerpt) {
-      excerpt = `这是一篇关于 ${this.generateTitleFromFilename(
-        filename,
-      )} 的技术文章，包含详细的分析和研究内容。`;
+      excerpt = `这是一篇关于 ${
+        this.generateTitleFromFilename(
+          filename,
+        )
+      } 的技术文章，包含详细的分析和研究内容。`;
     }
 
     // 确保摘要长度适当
@@ -331,15 +333,17 @@ class BlogApp {
                     <span class="text-sm text-gray-500">${article.date}</span>
                 </div>
                 <div class="mt-3 flex flex-wrap gap-2">
-                    ${article.tags
-                      .map(
-                        (tag) => `
+                    ${
+      article.tags
+        .map(
+          (tag) => `
                         <span class="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
                             ${tag}
                         </span>
                     `,
-                      )
-                      .join("")}
+        )
+        .join("")
+    }
                 </div>
                 <div class="mt-4">
                     <a href="${article.navigatelink}" class="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium text-sm" onclick="event.stopPropagation()">
@@ -367,17 +371,17 @@ class BlogApp {
       .map(
         (category) => `
             <button class="category-tag px-4 py-2 rounded-full transition ${
-              category === "all"
-                ? "bg-blue-600 text-white"
-                : "bg-white text-gray-700 hover:bg-gray-100"
-            }" data-category="${category}">
+          category === "all"
+            ? "bg-blue-600 text-white"
+            : "bg-white text-gray-700 hover:bg-gray-100"
+        }" data-category="${category}">
                 ${category === "all" ? "全部" : category}
                 <span class="ml-2 text-sm">(${
-                  category === "all"
-                    ? this.articles.length
-                    : this.articles.filter((a) => a.category === category)
-                        .length
-                })</span>
+          category === "all"
+            ? this.articles.length
+            : this.articles.filter((a) => a.category === category)
+              .length
+        })</span>
             </button>
         `,
       )
@@ -475,14 +479,15 @@ class BlogApp {
   // 显示通知
   showNotification(message, type = "info") {
     const notification = document.createElement("div");
-    notification.className = `fixed top-4 right-4 p-4 rounded-lg shadow-lg z-50 ${
-      type === "success" ? "bg-green-500" : "bg-blue-500"
-    } text-white`;
+    notification.className =
+      `fixed top-4 right-4 p-4 rounded-lg shadow-lg z-50 ${
+        type === "success" ? "bg-green-500" : "bg-blue-500"
+      } text-white`;
     notification.innerHTML = `
             <div class="flex items-center">
                 <i class="fas fa-${
-                  type === "success" ? "check-circle" : "info-circle"
-                } mr-2"></i>
+      type === "success" ? "check-circle" : "info-circle"
+    } mr-2"></i>
                 <span>${message}</span>
             </div>
         `;

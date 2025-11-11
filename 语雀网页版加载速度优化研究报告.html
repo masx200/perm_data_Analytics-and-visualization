@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <title>语雀网页版加载速度优化研究报告</title>
@@ -828,28 +828,33 @@
         --tw-shadow:
           0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
         --tw-shadow-colored:
-          0 10px 15px -3px var(--tw-shadow-color),
-          0 4px 6px -4px var(--tw-shadow-color);
+          0 10px 15px -3px var(--tw-shadow-color), 0 4px 6px -4px var(
+          --tw-shadow-color
+        );
         box-shadow:
           var(--tw-ring-offset-shadow, 0 0 #0000),
-          var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+          var(--tw-ring-shadow, 0 0 #0000),
+          var(--tw-shadow);
       }
       .shadow-md {
         --tw-shadow:
           0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
         --tw-shadow-colored:
-          0 4px 6px -1px var(--tw-shadow-color),
-          0 2px 4px -2px var(--tw-shadow-color);
+          0 4px 6px -1px var(--tw-shadow-color), 0 2px 4px -2px var(
+          --tw-shadow-color
+        );
         box-shadow:
           var(--tw-ring-offset-shadow, 0 0 #0000),
-          var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+          var(--tw-ring-shadow, 0 0 #0000),
+          var(--tw-shadow);
       }
       .shadow-sm {
         --tw-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
         --tw-shadow-colored: 0 1px 2px 0 var(--tw-shadow-color);
         box-shadow:
           var(--tw-ring-offset-shadow, 0 0 #0000),
-          var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+          var(--tw-ring-shadow, 0 0 #0000),
+          var(--tw-shadow);
       }
       .backdrop-blur-sm {
         --tw-backdrop-blur: blur(4px);
@@ -878,7 +883,11 @@
           stroke,
           -webkit-text-decoration-color;
         transition-property:
-          color, background-color, border-color, text-decoration-color, fill,
+          color,
+          background-color,
+          border-color,
+          text-decoration-color,
+          fill,
           stroke;
         transition-property:
           color,
@@ -900,9 +909,7 @@
       .section-fade {
         opacity: 0;
         transform: translateY(20px);
-        transition:
-          opacity 0.6s ease-out,
-          transform 0.6s ease-out;
+        transition: opacity 0.6s ease-out, transform 0.6s ease-out;
       }
       .section-fade.visible {
         opacity: 1;
@@ -1025,43 +1032,35 @@
             <a
               href="#background"
               class="text-secondary hover:text-primary transition-colors font-medium"
-              >研究背景</a
-            >
+            >研究背景</a>
             <a
               href="#architecture"
               class="text-secondary hover:text-primary transition-colors font-medium"
-              >技术架构</a
-            >
+            >技术架构</a>
             <a
               href="#frontend"
               class="text-secondary hover:text-primary transition-colors font-medium"
-              >前端分析</a
-            >
+            >前端分析</a>
             <a
               href="#backend"
               class="text-secondary hover:text-primary transition-colors font-medium"
-              >后端分析</a
-            >
+            >后端分析</a>
             <a
               href="#network"
               class="text-secondary hover:text-primary transition-colors font-medium"
-              >网络优化</a
-            >
+            >网络优化</a>
             <a
               href="#scenarios"
               class="text-secondary hover:text-primary transition-colors font-medium"
-              >场景分析</a
-            >
+            >场景分析</a>
             <a
               href="#comparison"
               class="text-secondary hover:text-primary transition-colors font-medium"
-              >竞品对比</a
-            >
+            >竞品对比</a>
             <a
               href="#optimization"
               class="text-secondary hover:text-primary transition-colors font-medium"
-              >优化建议</a
-            >
+            >优化建议</a>
           </nav>
 
           <!-- 移动端菜单按钮 -->
@@ -1083,43 +1082,35 @@
           <a
             href="#background"
             class="block py-2 text-secondary hover:text-primary transition-colors font-medium"
-            >研究背景</a
-          >
+          >研究背景</a>
           <a
             href="#architecture"
             class="block py-2 text-secondary hover:text-primary transition-colors font-medium"
-            >技术架构</a
-          >
+          >技术架构</a>
           <a
             href="#frontend"
             class="block py-2 text-secondary hover:text-primary transition-colors font-medium"
-            >前端分析</a
-          >
+          >前端分析</a>
           <a
             href="#backend"
             class="block py-2 text-secondary hover:text-primary transition-colors font-medium"
-            >后端分析</a
-          >
+          >后端分析</a>
           <a
             href="#network"
             class="block py-2 text-secondary hover:text-primary transition-colors font-medium"
-            >网络优化</a
-          >
+          >网络优化</a>
           <a
             href="#scenarios"
             class="block py-2 text-secondary hover:text-primary transition-colors font-medium"
-            >场景分析</a
-          >
+          >场景分析</a>
           <a
             href="#comparison"
             class="block py-2 text-secondary hover:text-primary transition-colors font-medium"
-            >竞品对比</a
-          >
+          >竞品对比</a>
           <a
             href="#optimization"
             class="block py-2 text-secondary hover:text-primary transition-colors font-medium"
-            >优化建议</a
-          >
+          >优化建议</a>
         </div>
       </div>
     </header>
@@ -1171,8 +1162,7 @@
             <p class="mb-4">
               语雀作为蚂蚁集团旗下的在线文档编辑与协同工具，在国内知识管理领域占据重要地位。然而，随着用户规模的扩大和使用场景的复杂化，<strong
                 class="text-danger"
-                >语雀网页版的加载速度问题日益凸显</strong
-              >，甚至被部分用户评价为"互联网大厂中加载速度最慢的应用之一"。
+              >语雀网页版的加载速度问题日益凸显</strong>，甚至被部分用户评价为"互联网大厂中加载速度最慢的应用之一"。
             </p>
 
             <div
@@ -1215,7 +1205,8 @@
             1.1 技术栈选型与架构特点
           </h3>
           <p class="mb-4">
-            语雀采用<strong>JavaScript全栈技术架构</strong>，这一选择与团队技术背景密切相关。"语雀选择JavaScript全栈的原因是孵化语雀的团队，大部分都是JavaScript背景的程序员，同时Node.js在蚂蚁也算是一等公民，配套的设施相对完善"。
+            语雀采用<strong
+            >JavaScript全栈技术架构</strong>，这一选择与团队技术背景密切相关。"语雀选择JavaScript全栈的原因是孵化语雀的团队，大部分都是JavaScript背景的程序员，同时Node.js在蚂蚁也算是一等公民，配套的设施相对完善"。
           </p>
 
           <div class="grid md:grid-cols-2 gap-6 my-6">
@@ -1267,8 +1258,8 @@
           <div class="bg-danger/10 border-l-4 border-danger p-4 my-6 rounded-r">
             <h4 class="font-semibold text-danger mb-2">架构性能挑战</h4>
             <p class="text-secondary">
-              <strong>Node.js的单线程特性</strong
-              >在处理CPU密集型任务时存在固有缺陷，"一旦有任何阻塞进程的方法被执行，整个进程就被阻塞"。语雀作为复杂的Web应用，"很难保证不会出现一些场景可能会消耗大量CPU甚至是死循环阻塞进程的，以Markdown转换举例，由于用户的输入无法穷举，总有各种可能让转换代码进入到一个低效甚至是死循环的场景之中"。
+              <strong
+              >Node.js的单线程特性</strong>在处理CPU密集型任务时存在固有缺陷，"一旦有任何阻塞进程的方法被执行，整个进程就被阻塞"。语雀作为复杂的Web应用，"很难保证不会出现一些场景可能会消耗大量CPU甚至是死循环阻塞进程的，以Markdown转换举例，由于用户的输入无法穷举，总有各种可能让转换代码进入到一个低效甚至是死循环的场景之中"。
             </p>
           </div>
 
@@ -1323,12 +1314,7 @@
             <div class="h-64 md:h-80">
               <canvas
                 id="domComparisonChart"
-                style="
-                  display: block;
-                  box-sizing: border-box;
-                  height: 320px;
-                  width: 1408px;
-                "
+                style="display: block; box-sizing: border-box; height: 320px; width: 1408px"
                 width="1584"
                 height="360"
               ></canvas>
@@ -1353,7 +1339,8 @@
             2.1 页面渲染机制与DOM复杂度
           </h3>
           <p class="mb-4">
-            语雀前端性能问题的核心在于<strong>过度复杂的DOM结构</strong>。根据实测数据，一个1.4万字的语雀文档会产生约1.4万个DOM节点，而同样字数的掘金文章仅产生约2000个DOM节点。这种7倍的差异直接导致了渲染性能的巨大差距。
+            语雀前端性能问题的核心在于<strong
+            >过度复杂的DOM结构</strong>。根据实测数据，一个1.4万字的语雀文档会产生约1.4万个DOM节点，而同样字数的掘金文章仅产生约2000个DOM节点。这种7倍的差异直接导致了渲染性能的巨大差距。
           </p>
 
           <div class="grid md:grid-cols-2 gap-6 my-6">
@@ -1492,12 +1479,7 @@
             <div class="h-64 md:h-80">
               <canvas
                 id="memoryComparisonChart"
-                style="
-                  display: block;
-                  box-sizing: border-box;
-                  height: 320px;
-                  width: 1408px;
-                "
+                style="display: block; box-sizing: border-box; height: 320px; width: 1408px"
                 width="1584"
                 height="360"
               ></canvas>
@@ -1522,7 +1504,8 @@
             3.1 服务端架构与性能瓶颈
           </h3>
           <p class="mb-4">
-            语雀的后端采用<strong>基于Egg.js框架的Node.js单体应用架构</strong>。这种架构在初期能够快速开发和迭代，但随着功能复杂度的提升，逐渐暴露出性能瓶颈。
+            语雀的后端采用<strong
+            >基于Egg.js框架的Node.js单体应用架构</strong>。这种架构在初期能够快速开发和迭代，但随着功能复杂度的提升，逐渐暴露出性能瓶颈。
           </p>
 
           <div class="bg-light rounded-xl p-5 border border-gray-100 my-6">
@@ -1531,22 +1514,22 @@
               <li class="flex">
                 <i class="fa fa-minus-circle text-danger mt-1 mr-2"></i>
                 <div>
-                  <strong>单体应用的扩展性限制</strong
-                  >：虽然语雀"开始将一些相对比较独立的服务从主服务中拆出去"，但核心业务逻辑仍然集中在单体应用中。这种架构在面对高并发请求时，容易出现资源竞争和性能瓶颈。
+                  <strong
+                  >单体应用的扩展性限制</strong>：虽然语雀"开始将一些相对比较独立的服务从主服务中拆出去"，但核心业务逻辑仍然集中在单体应用中。这种架构在面对高并发请求时，容易出现资源竞争和性能瓶颈。
                 </div>
               </li>
               <li class="flex">
                 <i class="fa fa-minus-circle text-danger mt-1 mr-2"></i>
                 <div>
-                  <strong>Node.js单线程的固有缺陷</strong
-                  >：语雀服务端"使用Node.js技术栈"，而Node.js的单线程特性在处理CPU密集型任务时存在严重问题。特别是在处理Markdown转换、公式渲染、文件预览等操作时，容易出现阻塞，影响整体响应性能。
+                  <strong
+                  >Node.js单线程的固有缺陷</strong>：语雀服务端"使用Node.js技术栈"，而Node.js的单线程特性在处理CPU密集型任务时存在严重问题。特别是在处理Markdown转换、公式渲染、文件预览等操作时，容易出现阻塞，影响整体响应性能。
                 </div>
               </li>
               <li class="flex">
                 <i class="fa fa-minus-circle text-danger mt-1 mr-2"></i>
                 <div>
-                  <strong>缺乏有效的负载均衡策略</strong
-                  >：虽然提到"采用集群、负载均衡、冗余备份等技术手段"，但具体的负载均衡实现和效果并不明确。在实际使用中，特别是在高峰期，仍然会出现响应缓慢的问题。
+                  <strong
+                  >缺乏有效的负载均衡策略</strong>：虽然提到"采用集群、负载均衡、冗余备份等技术手段"，但具体的负载均衡实现和效果并不明确。在实际使用中，特别是在高峰期，仍然会出现响应缓慢的问题。
                 </div>
               </li>
             </ul>
@@ -1567,8 +1550,7 @@
                 <h4 class="font-semibold">服务端响应延迟</h4>
                 <span
                   class="px-2 py-1 bg-danger/10 text-danger text-xs rounded-full"
-                  >严重</span
-                >
+                >严重</span>
               </div>
               <p class="text-secondary text-sm mb-3">
                 技术分析指出语雀存在"服务端响应延迟高（TTFB &gt;
@@ -1583,11 +1565,11 @@
                     <div
                       class="bg-danger h-2 rounded-full"
                       style="width: 75%"
-                    ></div>
+                    >
+                    </div>
                   </div>
                   <span class="ml-2 text-sm font-medium text-danger"
-                    >&gt;500ms</span
-                  >
+                  >&gt;500ms</span>
                 </div>
                 <div class="text-xs text-secondary mt-1">理想值：&lt;200ms</div>
               </div>
@@ -1600,8 +1582,7 @@
                 <h4 class="font-semibold">数据库查询性能</h4>
                 <span
                   class="px-2 py-1 bg-warning/10 text-warning text-xs rounded-full"
-                  >中等</span
-                >
+                >中等</span>
               </div>
               <p class="text-secondary text-sm mb-3">
                 语雀使用MySQL作为主要数据库，通过ORM技术进行数据操作。然而，容易导致N+1查询问题。
@@ -1613,11 +1594,11 @@
                     <div
                       class="bg-warning h-2 rounded-full"
                       style="width: 60%"
-                    ></div>
+                    >
+                    </div>
                   </div>
                   <span class="ml-2 text-sm font-medium text-warning"
-                    >需优化</span
-                  >
+                  >需优化</span>
                 </div>
                 <div class="text-xs text-secondary mt-1">
                   主要问题：N+1查询、关联查询效率低
@@ -1632,8 +1613,7 @@
                 <h4 class="font-semibold">缓存策略</h4>
                 <span
                   class="px-2 py-1 bg-warning/10 text-warning text-xs rounded-full"
-                  >中等</span
-                >
+                >中等</span>
               </div>
               <p class="text-secondary text-sm mb-3">
                 虽然语雀使用了Redis等缓存技术，但"CDN缓存命中率低，缓存策略配置不当"的问题依然存在。
@@ -1645,7 +1625,8 @@
                     <div
                       class="bg-warning h-2 rounded-full"
                       style="width: 50%"
-                    ></div>
+                    >
+                    </div>
                   </div>
                   <span class="ml-2 text-sm font-medium text-warning">低</span>
                 </div>
@@ -1660,7 +1641,8 @@
             3.3 高可用架构的设计缺陷
           </h3>
           <p class="mb-4">
-            语雀在2023年10月23日发生的<strong>长达7-8小时的P0级故障</strong>，暴露出其高可用架构存在严重问题。
+            语雀在2023年10月23日发生的<strong
+            >长达7-8小时的P0级故障</strong>，暴露出其高可用架构存在严重问题。
           </p>
 
           <div class="bg-danger/5 border border-danger/20 rounded-xl p-5 my-6">
@@ -1677,16 +1659,16 @@
                 <h5 class="font-medium mb-2">具体表现：</h5>
                 <ul class="list-disc pl-5 space-y-1 text-secondary">
                   <li>
-                    <strong>缺乏完善的灰度发布机制</strong
-                    >：故障发生时影响了所有用户，说明没有有效的灰度发布策略来控制变更风险
+                    <strong
+                    >缺乏完善的灰度发布机制</strong>：故障发生时影响了所有用户，说明没有有效的灰度发布策略来控制变更风险
                   </li>
                   <li>
-                    <strong>监控和告警机制不足</strong
-                    >：故障持续7-8小时才恢复，说明监控系统未能及时发现问题或告警机制存在缺陷
+                    <strong
+                    >监控和告警机制不足</strong>：故障持续7-8小时才恢复，说明监控系统未能及时发现问题或告警机制存在缺陷
                   </li>
                   <li>
-                    <strong>应急响应能力薄弱</strong
-                    >：长时间的故障恢复时间，反映出应急响应预案和执行能力的不足
+                    <strong
+                    >应急响应能力薄弱</strong>：长时间的故障恢复时间，反映出应急响应预案和执行能力的不足
                   </li>
                 </ul>
 
@@ -1703,12 +1685,7 @@
             <div class="h-64 md:h-80">
               <canvas
                 id="apiResponseChart"
-                style="
-                  display: block;
-                  box-sizing: border-box;
-                  height: 320px;
-                  width: 1408px;
-                "
+                style="display: block; box-sizing: border-box; height: 320px; width: 1408px"
                 width="1584"
                 height="360"
               ></canvas>
@@ -1733,7 +1710,8 @@
             4.1 CDN部署与节点分布
           </h3>
           <p class="mb-4">
-            语雀部署了<strong>CDN服务来加速内容分发</strong>，"通过在全球范围内部署多个节点，缓存并分发你的内容"。理论上，CDN可以通过"智能路由算法和动态缓存策略，实现内容就近分发与传输路径优化"。
+            语雀部署了<strong
+            >CDN服务来加速内容分发</strong>，"通过在全球范围内部署多个节点，缓存并分发你的内容"。理论上，CDN可以通过"智能路由算法和动态缓存策略，实现内容就近分发与传输路径优化"。
           </p>
 
           <div class="grid md:grid-cols-2 gap-6 my-6">
@@ -1744,29 +1722,25 @@
                   <li class="flex">
                     <span
                       class="bg-primary text-white w-6 h-6 rounded-full flex items-center justify-center text-sm mr-3 flex-shrink-0"
-                      >1</span
-                    >
+                    >1</span>
                     <span>用户发起请求，DNS解析到最近的CDN边缘节点</span>
                   </li>
                   <li class="flex">
                     <span
                       class="bg-primary text-white w-6 h-6 rounded-full flex items-center justify-center text-sm mr-3 flex-shrink-0"
-                      >2</span
-                    >
+                    >2</span>
                     <span>CDN边缘节点检查缓存中是否有请求的资源</span>
                   </li>
                   <li class="flex">
                     <span
                       class="bg-primary text-white w-6 h-6 rounded-full flex items-center justify-center text-sm mr-3 flex-shrink-0"
-                      >3</span
-                    >
+                    >3</span>
                     <span>如果有缓存且未过期，直接从边缘节点返回资源</span>
                   </li>
                   <li class="flex">
                     <span
                       class="bg-primary text-white w-6 h-6 rounded-full flex items-center justify-center text-sm mr-3 flex-shrink-0"
-                      >4</span
-                    >
+                    >4</span>
                     <span>如果无缓存或已过期，从源站获取资源并缓存后返回</span>
                   </li>
                 </ol>
@@ -1780,22 +1754,22 @@
                   <li class="flex items-start">
                     <i class="fa fa-times-circle text-danger mt-1 mr-2"></i>
                     <div>
-                      <strong>CDN缓存命中率低</strong
-                      >：技术分析明确指出语雀存在"CDN缓存命中率低，缓存策略配置不当"的问题
+                      <strong
+                      >CDN缓存命中率低</strong>：技术分析明确指出语雀存在"CDN缓存命中率低，缓存策略配置不当"的问题
                     </div>
                   </li>
                   <li class="flex items-start">
                     <i class="fa fa-times-circle text-danger mt-1 mr-2"></i>
                     <div>
-                      <strong>节点分布与调度问题</strong
-                      >：跨地域访问时边缘节点调度不智能，导致用户无法访问最近的节点
+                      <strong
+                      >节点分布与调度问题</strong>：跨地域访问时边缘节点调度不智能，导致用户无法访问最近的节点
                     </div>
                   </li>
                   <li class="flex items-start">
                     <i class="fa fa-times-circle text-danger mt-1 mr-2"></i>
                     <div>
-                      <strong>回源频率过高</strong
-                      >：高回源频率不仅增加了源站压力，也延长了资源加载时间
+                      <strong
+                      >回源频率过高</strong>：高回源频率不仅增加了源站压力，也延长了资源加载时间
                     </div>
                   </li>
                 </ul>
@@ -1880,8 +1854,7 @@
                 <h4 class="font-semibold">HTTP协议版本</h4>
                 <span
                   class="px-2 py-1 bg-danger/10 text-danger text-xs rounded-full"
-                  >落后</span
-                >
+                >落后</span>
               </div>
               <p class="text-secondary text-sm mb-3">
                 分析指出语雀"未使用HTTP/2或多路复用技术"。HTTP/2相比HTTP/1.1有多项优势。
@@ -1894,8 +1867,7 @@
                 <div class="flex items-center">
                   <div class="w-2 h-2 rounded-full bg-success mr-2"></div>
                   <span class="text-sm text-secondary"
-                    >建议：HTTP/2 + HTTP/3</span
-                  >
+                  >建议：HTTP/2 + HTTP/3</span>
                 </div>
               </div>
             </div>
@@ -1907,8 +1879,7 @@
                 <h4 class="font-semibold">TCP优化</h4>
                 <span
                   class="px-2 py-1 bg-warning/10 text-warning text-xs rounded-full"
-                  >待优化</span
-                >
+                >待优化</span>
               </div>
               <p class="text-secondary text-sm mb-3">
                 现代Web应用通常会采用TCP Fast
@@ -1918,14 +1889,12 @@
                 <div class="flex items-center">
                   <div class="w-2 h-2 rounded-full bg-warning mr-2"></div>
                   <span class="text-sm text-secondary"
-                    >TCP Fast Open：未启用</span
-                  >
+                  >TCP Fast Open：未启用</span>
                 </div>
                 <div class="flex items-center">
                   <div class="w-2 h-2 rounded-full bg-warning mr-2"></div>
                   <span class="text-sm text-secondary"
-                    >Keep-Alive：配置不当</span
-                  >
+                  >Keep-Alive：配置不当</span>
                 </div>
               </div>
             </div>
@@ -1937,8 +1906,7 @@
                 <h4 class="font-semibold">QUIC协议</h4>
                 <span
                   class="px-2 py-1 bg-danger/10 text-danger text-xs rounded-full"
-                  >未支持</span
-                >
+                >未支持</span>
               </div>
               <p class="text-secondary text-sm mb-3">
                 HTTP/3基于QUIC协议，可以解决TCP的队头阻塞问题，在弱网环境下表现更好。
@@ -1951,8 +1919,7 @@
                 <div class="flex items-center">
                   <div class="w-2 h-2 rounded-full bg-success mr-2"></div>
                   <span class="text-sm text-secondary"
-                    >建议：逐步支持HTTP/3</span
-                  >
+                  >建议：逐步支持HTTP/3</span>
                 </div>
               </div>
             </div>
@@ -1964,12 +1931,7 @@
             <div class="h-64 md:h-80">
               <canvas
                 id="protocolComparisonChart"
-                style="
-                  display: block;
-                  box-sizing: border-box;
-                  height: 320px;
-                  width: 1408px;
-                "
+                style="display: block; box-sizing: border-box; height: 320px; width: 1408px"
                 width="1584"
                 height="360"
               ></canvas>
@@ -2015,7 +1977,8 @@
                     <div
                       class="bg-warning h-2 rounded-full"
                       style="width: 60%"
-                    ></div>
+                    >
+                    </div>
                   </div>
                 </div>
 
@@ -2070,7 +2033,8 @@
                     <div
                       class="bg-danger h-2 rounded-full"
                       style="width: 40%"
-                    ></div>
+                    >
+                    </div>
                   </div>
                 </div>
 
@@ -2125,7 +2089,8 @@
                     <div
                       class="bg-danger h-2 rounded-full"
                       style="width: 25%"
-                    ></div>
+                    >
+                    </div>
                   </div>
                 </div>
 
@@ -2161,12 +2126,7 @@
             <div class="h-64 md:h-80">
               <canvas
                 id="scenarioPerformanceChart"
-                style="
-                  display: block;
-                  box-sizing: border-box;
-                  height: 320px;
-                  width: 1408px;
-                "
+                style="display: block; box-sizing: border-box; height: 320px; width: 1408px"
                 width="1584"
                 height="360"
               ></canvas>
@@ -2182,29 +2142,29 @@
                 <li class="flex items-start">
                   <i class="fa fa-angle-right text-primary mt-1 mr-2"></i>
                   <div>
-                    <strong>使用门槛效应明显</strong
-                    >：在轻量级使用场景下性能问题不明显，但随着文档复杂度和使用强度增加，性能问题呈指数级恶化
+                    <strong
+                    >使用门槛效应明显</strong>：在轻量级使用场景下性能问题不明显，但随着文档复杂度和使用强度增加，性能问题呈指数级恶化
                   </div>
                 </li>
                 <li class="flex items-start">
                   <i class="fa fa-angle-right text-primary mt-1 mr-2"></i>
                   <div>
-                    <strong>资源消耗失控</strong
-                    >：DOM节点数量、内存占用等关键指标随文档规模增长过快，缺乏有效的资源控制机制
+                    <strong
+                    >资源消耗失控</strong>：DOM节点数量、内存占用等关键指标随文档规模增长过快，缺乏有效的资源控制机制
                   </div>
                 </li>
                 <li class="flex items-start">
                   <i class="fa fa-angle-right text-primary mt-1 mr-2"></i>
                   <div>
-                    <strong>场景适配不足</strong
-                    >：未能针对不同使用场景（单人/团队、小型/大型文档）提供差异化的性能优化策略
+                    <strong
+                    >场景适配不足</strong>：未能针对不同使用场景（单人/团队、小型/大型文档）提供差异化的性能优化策略
                   </div>
                 </li>
                 <li class="flex items-start">
                   <i class="fa fa-angle-right text-primary mt-1 mr-2"></i>
                   <div>
-                    <strong>移动端体验差</strong
-                    >：在移动端（尤其是4G网络）性能表现远低于桌面端，未能针对移动设备特性进行优化
+                    <strong
+                    >移动端体验差</strong>：在移动端（尤其是4G网络）性能表现远低于桌面端，未能针对移动设备特性进行优化
                   </div>
                 </li>
               </ul>
@@ -2335,35 +2295,35 @@
 
               <div class="bg-light rounded-xl p-5 border border-gray-100">
                 <p class="text-secondary mb-4">
-                  <strong>语雀的性能排名靠后</strong
-                  >。在Notion、腾讯文档、飞书文档等主流产品中，语雀的加载速度明显较慢。特别是在日常使用和团队协作场景下，性能劣势更加明显。
+                  <strong
+                  >语雀的性能排名靠后</strong>。在Notion、腾讯文档、飞书文档等主流产品中，语雀的加载速度明显较慢。特别是在日常使用和团队协作场景下，性能劣势更加明显。
                 </p>
 
                 <h4 class="font-semibold mb-3">各产品的性能特点：</h4>
                 <ul class="space-y-2 text-secondary mb-4">
                   <li>
                     •
-                    <strong>飞书文档</strong
-                    >：性能最优，特别是在预加载技术的支持下，连续操作体验流畅
+                    <strong
+                    >飞书文档</strong>：性能最优，特别是在预加载技术的支持下，连续操作体验流畅
                   </li>
                   <li>
                     •
-                    <strong>腾讯文档</strong
-                    >：基础性能良好，但大文档处理能力有限
+                    <strong
+                    >腾讯文档</strong>：基础性能良好，但大文档处理能力有限
                   </li>
                   <li>
                     • <strong>Notion</strong>：功能最强大，但受网络环境影响较大
                   </li>
                   <li>
                     •
-                    <strong>语雀</strong
-                    >：在某些特定场景（如超大型文档）可能有优势，但整体性能表现不佳
+                    <strong
+                    >语雀</strong>：在某些特定场景（如超大型文档）可能有优势，但整体性能表现不佳
                   </li>
                 </ul>
 
                 <p class="text-secondary">
-                  <strong>性能差异的原因</strong
-                  >：不同产品在技术架构、优化策略、资源投入等方面存在差异。飞书和腾讯作为专业的办公软件团队，在性能优化方面投入更多，而语雀可能在功能开发和性能优化之间没有找到最佳平衡点。
+                  <strong
+                  >性能差异的原因</strong>：不同产品在技术架构、优化策略、资源投入等方面存在差异。飞书和腾讯作为专业的办公软件团队，在性能优化方面投入更多，而语雀可能在功能开发和性能优化之间没有找到最佳平衡点。
                 </p>
               </div>
             </div>
@@ -2375,12 +2335,7 @@
             <div class="h-64 md:h-80">
               <canvas
                 id="competitorComparisonChart"
-                style="
-                  display: block;
-                  box-sizing: border-box;
-                  height: 320px;
-                  width: 1408px;
-                "
+                style="display: block; box-sizing: border-box; height: 320px; width: 1408px"
                 width="1584"
                 height="360"
               ></canvas>
@@ -2413,7 +2368,8 @@
               <div class="bg-light rounded-xl p-5 border border-gray-100 mb-4">
                 <h4 class="font-semibold mb-3">DOM结构优化</h4>
                 <p class="text-secondary mb-3">
-                  最紧迫的任务是<strong>大幅简化DOM结构</strong>。建议采用虚拟滚动技术，"只渲染当前可见区域范围的行，这样可以减少不必要的渲染从来提升性能"。同时，优化Markdown渲染逻辑，减少不必要的标签嵌套，将DOM节点数量控制在合理范围内。
+                  最紧迫的任务是<strong
+                  >大幅简化DOM结构</strong>。建议采用虚拟滚动技术，"只渲染当前可见区域范围的行，这样可以减少不必要的渲染从来提升性能"。同时，优化Markdown渲染逻辑，减少不必要的标签嵌套，将DOM节点数量控制在合理范围内。
                 </p>
               </div>
 
@@ -2422,16 +2378,16 @@
                 <p class="text-secondary mb-3">实施全面的资源优化策略：</p>
                 <ul class="space-y-2 text-secondary">
                   <li>
-                    •
-                    启用<strong>懒加载机制</strong>，"图片不在页面初始加载时全部加载，而是等用户真的要看（滚动到可视区域）时再加载"
+                    • 启用<strong
+                    >懒加载机制</strong>，"图片不在页面初始加载时全部加载，而是等用户真的要看（滚动到可视区域）时再加载"
                   </li>
                   <li>
-                    •
-                    采用<strong>现代图片格式</strong>，将图片转换为WebP或AVIF格式，可减少50%以上的文件大小
+                    • 采用<strong
+                    >现代图片格式</strong>，将图片转换为WebP或AVIF格式，可减少50%以上的文件大小
                   </li>
                   <li>
-                    •
-                    实施<strong>智能预加载</strong>，"当用户在停留一个界面时候，将对应当前界面通向下一界面的所有信息都加载出来"
+                    • 实施<strong
+                    >智能预加载</strong>，"当用户在停留一个界面时候，将对应当前界面通向下一界面的所有信息都加载出来"
                   </li>
                   <li>
                     • 优化<strong>缓存策略</strong>，"配置Cache-Control: public,
@@ -2447,19 +2403,19 @@
                 </p>
                 <ul class="space-y-2 text-secondary">
                   <li>
-                    • 引入<strong>Web Worker</strong
-                    >进行耗时操作，避免阻塞主线程
+                    • 引入<strong>Web
+                      Worker</strong>进行耗时操作，避免阻塞主线程
                   </li>
                   <li>
-                    •
-                    优化编辑器逻辑，采用<strong>增量渲染</strong>和<strong>局部更新</strong>策略
+                    • 优化编辑器逻辑，采用<strong>增量渲染</strong>和<strong
+                    >局部更新</strong>策略
                   </li>
                   <li>
                     • 实施严格的内存管理，及时清理不再使用的对象和事件监听
                   </li>
                   <li>
-                    •
-                    使用<strong>WebAssembly</strong>加速关键计算，如Markdown解析和格式转换
+                    • 使用<strong
+                    >WebAssembly</strong>加速关键计算，如Markdown解析和格式转换
                   </li>
                 </ul>
               </div>
@@ -2487,8 +2443,8 @@
                 </p>
                 <ul class="space-y-2 text-secondary">
                   <li>
-                    •
-                    将CPU密集型任务迁移到<strong>函数计算</strong>，"把函数计算引入之后，我们可以将那些CPU密集型、存在不稳定因素的操作统统放到函数计算服务中去执行"
+                    • 将CPU密集型任务迁移到<strong
+                    >函数计算</strong>，"把函数计算引入之后，我们可以将那些CPU密集型、存在不稳定因素的操作统统放到函数计算服务中去执行"
                   </li>
                   <li>• 优化事件循环管理，避免长时间阻塞</li>
                   <li>
@@ -2525,12 +2481,12 @@
                 <p class="text-secondary mb-3">全面升级网络协议栈：</p>
                 <ul class="space-y-2 text-secondary">
                   <li>
-                    •
-                    部署<strong>HTTP/2</strong>，利用其多路复用、头部压缩等特性提升传输效率
+                    • 部署<strong
+                    >HTTP/2</strong>，利用其多路复用、头部压缩等特性提升传输效率
                   </li>
                   <li>
-                    •
-                    逐步引入<strong>HTTP/3</strong>，解决TCP队头阻塞问题，提升弱网环境性能
+                    • 逐步引入<strong
+                    >HTTP/3</strong>，解决TCP队头阻塞问题，提升弱网环境性能
                   </li>
                   <li>• 优化TCP参数，启用TCP Fast Open减少连接建立时间</li>
                 </ul>
@@ -2561,8 +2517,8 @@
                 <h4 class="font-semibold mb-3">日常使用场景优化</h4>
                 <ul class="space-y-2 text-secondary">
                   <li>
-                    •
-                    实施<strong>渐进式加载</strong>，"先展示文本骨架，再填充媒体内容"
+                    • 实施<strong
+                    >渐进式加载</strong>，"先展示文本骨架，再填充媒体内容"
                   </li>
                   <li>• 优化常用操作的响应速度，如文档打开、保存、编辑等</li>
                   <li>• 提供轻量化视图模式，减少资源消耗</li>
@@ -2582,8 +2538,8 @@
                 <h4 class="font-semibold mb-3">大型知识库场景优化</h4>
                 <ul class="space-y-2 text-secondary">
                   <li>
-                    •
-                    实施<strong>文档分片加载</strong>，将大文档拆分为多个部分按需加载
+                    • 实施<strong
+                    >文档分片加载</strong>，将大文档拆分为多个部分按需加载
                   </li>
                   <li>• 优化搜索和导航功能，使用高效的数据结构和算法</li>
                   <li>• 提供智能缓存策略，缓存常用文档和查询结果</li>
@@ -2659,44 +2615,38 @@
 
           <div class="mb-6">
             <p class="text-lg mb-4">
-              通过深入分析，我们可以明确得出结论：<strong>语雀网页版确实存在严重的加载速度问题，在主流互联网大厂的在线文档产品中性能表现较差</strong>。
+              通过深入分析，我们可以明确得出结论：<strong
+              >语雀网页版确实存在严重的加载速度问题，在主流互联网大厂的在线文档产品中性能表现较差</strong>。
             </p>
 
             <p class="mb-4">主要问题集中在：</p>
             <ul class="space-y-2 mb-6">
               <li class="flex items-start">
                 <i class="fa fa-arrow-right mt-1 mr-2"></i>
-                <span
-                  ><strong>前端层面</strong
-                  >：DOM结构过度复杂（1.4万字文档产生1.4万个DOM节点），缺乏现代加载优化机制，内存管理不当</span
-                >
+                <span><strong
+                  >前端层面</strong>：DOM结构过度复杂（1.4万字文档产生1.4万个DOM节点），缺乏现代加载优化机制，内存管理不当</span>
               </li>
               <li class="flex items-start">
                 <i class="fa fa-arrow-right mt-1 mr-2"></i>
-                <span
-                  ><strong>后端层面</strong
-                  >：Node.js单线程架构的固有缺陷，API响应延迟高（TTFB &gt;
-                  500ms），高可用架构设计不完善</span
-                >
+                <span><strong
+                  >后端层面</strong>：Node.js单线程架构的固有缺陷，API响应延迟高（TTFB
+                  &gt; 500ms），高可用架构设计不完善</span>
               </li>
               <li class="flex items-start">
                 <i class="fa fa-arrow-right mt-1 mr-2"></i>
-                <span
-                  ><strong>网络层面</strong
-                  >：CDN缓存命中率低，未使用HTTP/2等现代协议，资源压缩不足</span
-                >
+                <span><strong
+                  >网络层面</strong>：CDN缓存命中率低，未使用HTTP/2等现代协议，资源压缩不足</span>
               </li>
               <li class="flex items-start">
                 <i class="fa fa-arrow-right mt-1 mr-2"></i>
-                <span
-                  ><strong>场景适配</strong
-                  >：大型文档处理能力差（PC端17.32秒，移动端1分钟），多场景性能表现不均衡</span
-                >
+                <span><strong
+                  >场景适配</strong>：大型文档处理能力差（PC端17.32秒，移动端1分钟），多场景性能表现不均衡</span>
               </li>
             </ul>
 
             <p class="mb-6">
-              基于分析结果，建议语雀团队采取以下<strong>优先级行动计划</strong>：
+              基于分析结果，建议语雀团队采取以下<strong
+              >优先级行动计划</strong>：
             </p>
           </div>
 
@@ -2705,8 +2655,7 @@
               <h3 class="text-xl font-semibold mb-3 flex items-center">
                 <span
                   class="bg-white/20 w-8 h-8 rounded-full flex items-center justify-center mr-2"
-                  >1</span
-                >
+                >1</span>
                 短期（1-3个月）
               </h3>
               <ul class="space-y-2 text-sm">
@@ -2721,8 +2670,7 @@
               <h3 class="text-xl font-semibold mb-3 flex items-center">
                 <span
                   class="bg-white/20 w-8 h-8 rounded-full flex items-center justify-center mr-2"
-                  >2</span
-                >
+                >2</span>
                 中期（3-6个月）
               </h3>
               <ul class="space-y-2 text-sm">
@@ -2737,8 +2685,7 @@
               <h3 class="text-xl font-semibold mb-3 flex items-center">
                 <span
                   class="bg-white/20 w-8 h-8 rounded-full flex items-center justify-center mr-2"
-                  >3</span
-                >
+                >3</span>
                 长期（6个月以上）
               </h3>
               <ul class="space-y-2 text-sm">

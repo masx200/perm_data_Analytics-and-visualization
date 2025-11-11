@@ -389,7 +389,7 @@ backToTopButton.addEventListener("click", (e) => {
   e.preventDefault();
   window.scrollTo({
     top: 0,
-    behavior: "smooth"
+    behavior: "smooth",
   });
 });
 
@@ -410,9 +410,8 @@ window.addEventListener("scroll", () => {
 
   navLinks.forEach((link) => {
     link.style.fontWeight = "500";
-    link.style.color =
-      link.getAttribute("href").substring(1) === current
-        ? "#3498db"
-        : "#2c3e50";
+    link.style.color = link.getAttribute("href").substring(1) === current
+      ? "#3498db"
+      : "#2c3e50";
   });
 });

@@ -509,10 +509,12 @@ function downloadUUIDs() {
 
     const a = document.createElement("a");
     a.href = url;
-    a.download = `uuids_${new Date()
-      .toISOString()
-      .slice(0, 19)
-      .replace(/:/g, "-")}.txt`;
+    a.download = `uuids_${
+      new Date()
+        .toISOString()
+        .slice(0, 19)
+        .replace(/:/g, "-")
+    }.txt`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);

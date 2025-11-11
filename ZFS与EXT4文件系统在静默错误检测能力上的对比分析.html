@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="zh-CN">
   <head>
     <link rel="icon" href="vite.svg" />
@@ -115,28 +115,23 @@
             <a
               href="#introduction"
               class="text-gray-600 hover:text-purple-600 transition"
-              >引言</a
-            >
+            >引言</a>
             <a
               href="#silent-corruption"
               class="text-gray-600 hover:text-purple-600 transition"
-              >静默数据损坏</a
-            >
+            >静默数据损坏</a>
             <a
               href="#design-philosophy"
               class="text-gray-600 hover:text-purple-600 transition"
-              >设计哲学</a
-            >
+            >设计哲学</a>
             <a
               href="#experiment"
               class="text-gray-600 hover:text-purple-600 transition"
-              >模拟实验</a
-            >
+            >模拟实验</a>
             <a
               href="#ext4-response"
               class="text-gray-600 hover:text-purple-600 transition"
-              >EXT4的回应</a
-            >
+            >EXT4的回应</a>
           </div>
         </div>
       </div>
@@ -177,8 +172,9 @@
                 href="#introduction"
                 class="text-gray-700 hover:text-purple-600"
               >
-                <i class="fas fa-angle-right mr-2"></i
-                >引言：数据完整性的基石与潜藏的危机
+                <i
+                  class="fas fa-angle-right mr-2"
+                ></i>引言：数据完整性的基石与潜藏的危机
               </a>
             </li>
             <li class="toc-item">
@@ -186,8 +182,9 @@
                 href="#silent-corruption"
                 class="text-gray-700 hover:text-purple-600"
               >
-                <i class="fas fa-angle-right mr-2"></i
-                >静默数据损坏：存储系统中的隐形杀手
+                <i
+                  class="fas fa-angle-right mr-2"
+                ></i>静默数据损坏：存储系统中的隐形杀手
               </a>
             </li>
             <li class="toc-item">
@@ -195,14 +192,16 @@
                 href="#design-philosophy"
                 class="text-gray-700 hover:text-purple-600"
               >
-                <i class="fas fa-angle-right mr-2"></i
-                >EXT4与ZFS：两种设计哲学的碰撞
+                <i
+                  class="fas fa-angle-right mr-2"
+                ></i>EXT4与ZFS：两种设计哲学的碰撞
               </a>
             </li>
             <li class="toc-item">
               <a href="#experiment" class="text-gray-700 hover:text-purple-600">
-                <i class="fas fa-angle-right mr-2"></i
-                >模拟实验设计：揭示文件系统行为的本质
+                <i
+                  class="fas fa-angle-right mr-2"
+                ></i>模拟实验设计：揭示文件系统行为的本质
               </a>
             </li>
             <li class="toc-item">
@@ -210,8 +209,9 @@
                 href="#ext4-response"
                 class="text-gray-700 hover:text-purple-600"
               >
-                <i class="fas fa-angle-right mr-2"></i
-                >EXT4的回应：沉默的隐患与有限的防护
+                <i
+                  class="fas fa-angle-right mr-2"
+                ></i>EXT4的回应：沉默的隐患与有限的防护
               </a>
             </li>
           </ul>
@@ -222,8 +222,9 @@
       <section id="introduction" class="mb-12 fade-in">
         <div class="bg-white rounded-xl p-8 card-shadow">
           <h2 class="text-3xl font-bold mb-6 text-gray-800">
-            <i class="fas fa-book-open mr-3 text-purple-600"></i
-            >引言：数据完整性的基石与潜藏的危机
+            <i
+              class="fas fa-book-open mr-3 text-purple-600"
+            ></i>引言：数据完整性的基石与潜藏的危机
           </h2>
           <div class="prose prose-lg max-w-none text-gray-700">
             <p class="mb-4 leading-relaxed">
@@ -232,9 +233,8 @@
             <p class="mb-4 leading-relaxed">
               然而，在这片看似繁荣的数据图景之下，一个潜藏的危机正悄然威胁着信息世界的根基——<span
                 class="highlight"
-                >数据损坏</span
-              >，特别是那些难以察觉的<span class="highlight">"静默错误"</span
-              >（Silent Data Corruption）。
+              >数据损坏</span>，特别是那些难以察觉的<span class="highlight"
+              >"静默错误"</span>（Silent Data Corruption）。
             </p>
             <p class="mb-4 leading-relaxed">
               静默错误，顾名思义，是指数据在存储或传输过程中发生的、未被系统及时检测和报告的损坏。这种错误的可怕之处在于其"静默"的特性：它不会触发明显的系统警报，应用程序可能在毫无察觉的情况下继续读取和使用这些已被污染的数据，最终导致计算结果错误、应用程序异常、决策失误，甚至在医疗、航空航天、金融交易等关键领域引发灾难性的后果。
@@ -242,19 +242,18 @@
             <div class="bg-purple-50 border-l-4 border-purple-600 p-4 my-6">
               <p class="text-purple-800">
                 <i class="fas fa-exclamation-triangle mr-2"></i>
-                <strong>警示：</strong
-                >想象一下，一份关键的医疗影像文件因静默错误出现微小瑕疵，可能导致误诊；一次重要的金融交易数据因位翻转而发生改变，可能造成巨大的经济损失；航空航天控制系统中一个关键参数的静默损坏，更可能危及生命安全。
+                <strong
+                >警示：</strong>想象一下，一份关键的医疗影像文件因静默错误出现微小瑕疵，可能导致误诊；一次重要的金融交易数据因位翻转而发生改变，可能造成巨大的经济损失；航空航天控制系统中一个关键参数的静默损坏，更可能危及生命安全。
               </p>
             </div>
             <p class="mb-4 leading-relaxed">
               因此，保障数据的完整性，确保存储系统具备强大的错误检测与纠正能力，是构建可信数字世界的基石。文件系统作为数据在持久化存储介质上的组织与管理方式，其设计理念和安全机制直接决定了数据完整性保障的水平。
             </p>
             <p class="mb-4 leading-relaxed">
-              在众多的文件系统选择中，<span class="highlight">EXT4</span
-              >凭借其在Linux生态系统中的成熟度和广泛部署，长期占据主导地位；而<span
+              在众多的文件系统选择中，<span class="highlight"
+              >EXT4</span>凭借其在Linux生态系统中的成熟度和广泛部署，长期占据主导地位；而<span
                 class="highlight"
-                >ZFS</span
-              >则以其革命性的设计理念，特别是在数据完整性和自我修复能力方面的突出特性，在企业级存储和高可靠性需求场景中备受瞩目。
+              >ZFS</span>则以其革命性的设计理念，特别是在数据完整性和自我修复能力方面的突出特性，在企业级存储和高可靠性需求场景中备受瞩目。
             </p>
             <p class="leading-relaxed">
               本报告旨在通过深度剖析一项精心设计的模拟实验，系统性地比较ZFS与EXT4文件系统在面对人为引入的静默错误时的行为差异，揭示其内在机制，并探讨其在实际应用场景中的深远影响。
@@ -269,15 +268,16 @@
       <section id="silent-corruption" class="mb-12 fade-in">
         <div class="bg-white rounded-xl p-8 card-shadow">
           <h2 class="text-3xl font-bold mb-6 text-gray-800">
-            <i class="fas fa-bug mr-3 text-red-600"></i
-            >静默数据损坏：存储系统中的隐形杀手
+            <i
+              class="fas fa-bug mr-3 text-red-600"
+            ></i>静默数据损坏：存储系统中的隐形杀手
           </h2>
           <div class="prose prose-lg max-w-none text-gray-700">
             <p class="mb-4 leading-relaxed">
               静默数据损坏（Silent Data Corruption），常被业界形象地称为<span
                 class="highlight"
-                >"位腐烂"</span
-              >（bit rot）或<span class="highlight">"数据衰减"</span>（data
+              >"位腐烂"</span>（bit rot）或<span class="highlight"
+              >"数据衰减"</span>（data
               decay），是存储系统中一种极其隐蔽且具有潜在破坏性的数据完整性问题。
             </p>
 
@@ -346,8 +346,9 @@
       <section id="design-philosophy" class="mb-12 fade-in">
         <div class="bg-white rounded-xl p-8 card-shadow">
           <h2 class="text-3xl font-bold mb-6 text-gray-800">
-            <i class="fas fa-brain mr-3 text-indigo-600"></i
-            >EXT4与ZFS：两种设计哲学的碰撞
+            <i
+              class="fas fa-brain mr-3 text-indigo-600"
+            ></i>EXT4与ZFS：两种设计哲学的碰撞
           </h2>
 
           <div class="grid md:grid-cols-2 gap-6 my-8">
@@ -410,8 +411,9 @@
 
           <div class="bg-gray-50 rounded-lg p-6 mt-6">
             <h3 class="text-lg font-semibold mb-3 text-gray-800">
-              <i class="fas fa-balance-scale mr-2 text-gray-600"></i
-              >核心差异对比
+              <i
+                class="fas fa-balance-scale mr-2 text-gray-600"
+              ></i>核心差异对比
             </h3>
             <table class="w-full text-sm">
               <thead>
@@ -466,8 +468,9 @@
       <section id="experiment" class="mb-12 fade-in">
         <div class="bg-white rounded-xl p-8 card-shadow">
           <h2 class="text-3xl font-bold mb-6 text-gray-800">
-            <i class="fas fa-flask mr-3 text-green-600"></i
-            >模拟实验设计：揭示文件系统行为的本质
+            <i
+              class="fas fa-flask mr-3 text-green-600"
+            ></i>模拟实验设计：揭示文件系统行为的本质
           </h2>
 
           <div class="prose prose-lg max-w-none text-gray-700">
@@ -649,8 +652,9 @@ sudo zpool status mypool</code></pre>
       <section id="ext4-response" class="mb-12 fade-in">
         <div class="bg-white rounded-xl p-8 card-shadow">
           <h2 class="text-3xl font-bold mb-6 text-gray-800">
-            <i class="fas fa-exclamation-triangle mr-3 text-orange-600"></i
-            >EXT4的回应：沉默的隐患与有限的防护
+            <i
+              class="fas fa-exclamation-triangle mr-3 text-orange-600"
+            ></i>EXT4的回应：沉默的隐患与有限的防护
           </h2>
 
           <div class="prose prose-lg max-w-none text-gray-700">
@@ -665,8 +669,7 @@ sudo zpool status mypool</code></pre>
               <p class="text-red-700 mb-3">
                 当实验人员通过修改底层虚拟磁盘文件中代表测试文件内容的第一个字符（从"A"改为"B"）来模拟比特翻转后，EXT4的行为是<span
                   class="font-bold"
-                  >"沉默"</span
-                >的。
+                >"沉默"</span>的。
               </p>
               <ul class="space-y-2 text-red-700">
                 <li class="flex items-start">

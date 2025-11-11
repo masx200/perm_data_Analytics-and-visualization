@@ -57,10 +57,10 @@ function renderNavigations() {
        
         <h3 class="nav-title">${nav.name}</h3>
         ${
-          nav.description
-            ? `<p class="text-xs text-gray-500 text-center mt-1">${nav.description}</p>`
-            : ""
-        }
+      nav.description
+        ? `<p class="text-xs text-gray-500 text-center mt-1">${nav.description}</p>`
+        : ""
+    }
       </a>
     `;
     navGrid.appendChild(card);
