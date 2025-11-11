@@ -1,0 +1,275 @@
+/* 你的 main.css 或 index.css */
+@import "tailwindcss";
+
+@theme {
+  /* Your existing colors */
+  --color-primary-50: #eff6ff;
+  --color-primary-100: #dbeafe;
+  --color-primary-200: #bfdbfe;
+  --color-primary-300: #93c5fd;
+  --color-primary-400: #60a5fa;
+  --color-primary-500: #3b82f6;
+  --color-primary-600: #2563eb;
+  --color-primary-700: #1d4ed8;
+  --color-primary-800: #1e40af;
+  --color-primary-900: #1e3a8a;
+  --color-primary-950: #172554;
+
+  /* 添加这个基础颜色 */
+  --color-primary: #3b82f6;
+  /* 使用 primary-500 的值 */
+
+  --color-text-primary: black;
+  --color-secondary: #475569;
+  --color-accent: #93c5fd;
+  --color-light: #f8fafc;
+  --color-dark: #1e293b;
+
+  /* Add these missing colors */
+  --color-notion-text: #37352f;
+  --color-notion-light-gray: #e9e9e7;
+  --color-notion-gray: #f7f6f3;
+
+  --font-family-sans: "Inter", system-ui, sans-serif;
+}
+
+@theme {
+  /* Your existing colors */
+  --color-primary-50: #eff6ff;
+  --color-primary-100: #dbeafe;
+  --color-primary-200: #bfdbfe;
+  --color-primary-300: #93c5fd;
+  --color-primary-400: #60a5fa;
+  --color-primary-500: #3b82f6;
+  --color-primary-600: #2563eb;
+  --color-primary-700: #1d4ed8;
+  --color-primary-800: #1e40af;
+  --color-primary-900: #1e3a8a;
+  --color-primary-950: #172554;
+  --color-text-primary: black;
+  --color-secondary: #475569;
+  --color-accent: #93c5fd;
+  --color-light: #f8fafc;
+  --color-dark: #1e293b;
+
+  /* Add these missing colors */
+  --color-notion-text: #37352f;
+  /* Example color for notion text */
+  --color-notion-light-gray: #e9e9e7;
+  /* Example color for notion light gray */
+  --color-notion-gray: #f7f6f3;
+  /* Example color for notion gray */
+
+  --font-family-sans: "Inter", system-ui, sans-serif;
+}
+/* 
+  不再需要这些指令：
+  @tailwind base;
+  @tailwind components;
+  @tailwind utilities;
+*/
+
+@theme {
+  --color-primary-50: #eff6ff;
+  --color-primary-100: #dbeafe;
+  --color-primary-200: #bfdbfe;
+  --color-primary-300: #93c5fd;
+  --color-primary-400: #60a5fa;
+  --color-primary-500: #3b82f6;
+  --color-primary-600: #2563eb;
+  --color-primary-700: #1d4ed8;
+  --color-primary-800: #1e40af;
+  --color-primary-900: #1e3a8a;
+  --color-primary-950: #172554;
+  --color-text-primary: black;
+  --color-secondary: #475569;
+  --color-accent: #93c5fd;
+  --color-light: #f8fafc;
+  --color-dark: #1e293b;
+
+  --font-family-sans: "Inter", system-ui, sans-serif;
+}
+@layer utilities {
+  .content-auto {
+    content-visibility: auto;
+  }
+  .text-balance {
+    text-wrap: balance;
+  }
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  .nav-active {
+    @apply bg-primary-50 border-l-4;
+    border-color: black;
+
+    color: black;
+  }
+}
+
+.nav-card {
+  @apply bg-white rounded-lg shadow-md hover:shadow-xl transition-shadow
+    duration-300 cursor-pointer;
+}
+
+.nav-icon {
+  @apply w-16 h-16 mx-auto mb-2 object-contain;
+}
+
+.nav-title {
+  @apply text-sm font-medium text-gray-800 text-center truncate;
+}
+
+.modal-overlay {
+  /* 修改这里：使用新的不透明度修饰符 */
+  @apply fixed inset-0 bg-black/50 flex items-center justify-center z-50;
+}
+
+.modal-overlay.hidden {
+  @apply hidden;
+}
+
+.modal-content {
+  @apply bg-white rounded-lg p-6 w-full max-w-md;
+}
+
+.form-input {
+  @apply w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none
+    focus:ring-2 focus:ring-blue-500;
+}
+
+.form-button {
+  @apply px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600
+    transition-colors;
+}
+
+.form-button-secondary {
+  @apply px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400
+    transition-colors ml-2;
+}
+@layer utilities {
+  .content-auto {
+    content-visibility: auto;
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .section-fade {
+    opacity: 0;
+    transform: translateY(20px);
+    transition:
+      opacity 0.6s ease-out,
+      transform 0.6s ease-out;
+  }
+
+  .section-fade.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .gradient-bg {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  }
+
+  .card-hover {
+    transition: all 0.3s ease;
+  }
+
+  .card-hover:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  }
+}
+@layer utilities {
+  .content-auto {
+    content-visibility: auto;
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .notion-block {
+    @apply py-1 my-2;
+  }
+
+  .notion-heading {
+    @apply font-bold text-notion-text mb-4 scroll-mt-20;
+  }
+
+  .notion-table {
+    @apply w-full border-collapse my-6;
+  }
+
+  .notion-table th,
+  .notion-table td {
+    @apply border border-notion-light-gray px-4 py-2 text-sm;
+  }
+
+  .notion-table th {
+    @apply bg-notion-gray font-medium;
+  }
+
+  .notion-quote {
+    @apply border-l-4 border-primary pl-4 py-1 my-4 italic text-secondary;
+  }
+
+  .notion-code {
+    @apply bg-gray-100 px-1.5 py-0.5 rounded text-sm font-mono;
+  }
+
+  .notion-code-block {
+    @apply bg-gray-50 p-4 rounded-md my-4 overflow-x-auto font-mono text-sm;
+  }
+
+  .toc-item {
+    @apply py-1 px-2 rounded hover:bg-notion-gray cursor-pointer
+      transition-colors duration-100;
+  }
+
+  .toc-item.active {
+    @apply bg-blue-50 text-primary font-medium;
+  }
+}
+
+.notion-heading {
+  @apply font-bold text-text-primary mb-4 scroll-mt-20;
+}
+
+.notion-table th,
+.notion-table td {
+  @apply border border-light px-4 py-2 text-sm;
+}
+
+.notion-table th {
+  @apply bg-light font-medium;
+}
+
+.toc-item {
+  @apply py-1 px-2 rounded hover:bg-light cursor-pointer transition-colors
+    duration-100;
+}

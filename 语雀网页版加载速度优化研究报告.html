@@ -1,0 +1,2800 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>语雀网页版加载速度优化研究报告</title>
+    <link rel="icon" href="vite.svg" />
+    <meta charset="UTF-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="深入分析语雀网页版加载速度慢的根本原因，从前端性能、后端响应、网络传输等技术维度，结合典型使用场景和竞品对比，提供系统性优化建议。研究发现1.4万字文档产生1.4万个DOM节点，内存占用达160MB，远超同类产品。"
+    />
+    <style>
+      body {
+        background-color: white; /* Ensure the iframe has a white background */
+      }
+    </style>
+    <style>
+      *,
+      ::before,
+      ::after {
+        --tw-border-spacing-x: 0;
+        --tw-border-spacing-y: 0;
+        --tw-translate-x: 0;
+        --tw-translate-y: 0;
+        --tw-rotate: 0;
+        --tw-skew-x: 0;
+        --tw-skew-y: 0;
+        --tw-scale-x: 1;
+        --tw-scale-y: 1;
+        --tw-pan-x: ;
+        --tw-pan-y: ;
+        --tw-pinch-zoom: ;
+        --tw-scroll-snap-strictness: proximity;
+        --tw-gradient-from-position: ;
+        --tw-gradient-via-position: ;
+        --tw-gradient-to-position: ;
+        --tw-ordinal: ;
+        --tw-slashed-zero: ;
+        --tw-numeric-figure: ;
+        --tw-numeric-spacing: ;
+        --tw-numeric-fraction: ;
+        --tw-ring-inset: ;
+        --tw-ring-offset-width: 0px;
+        --tw-ring-offset-color: #fff;
+        --tw-ring-color: rgb(59 130 246 / 0.5);
+        --tw-ring-offset-shadow: 0 0 #0000;
+        --tw-ring-shadow: 0 0 #0000;
+        --tw-shadow: 0 0 #0000;
+        --tw-shadow-colored: 0 0 #0000;
+        --tw-blur: ;
+        --tw-brightness: ;
+        --tw-contrast: ;
+        --tw-grayscale: ;
+        --tw-hue-rotate: ;
+        --tw-invert: ;
+        --tw-saturate: ;
+        --tw-sepia: ;
+        --tw-drop-shadow: ;
+        --tw-backdrop-blur: ;
+        --tw-backdrop-brightness: ;
+        --tw-backdrop-contrast: ;
+        --tw-backdrop-grayscale: ;
+        --tw-backdrop-hue-rotate: ;
+        --tw-backdrop-invert: ;
+        --tw-backdrop-opacity: ;
+        --tw-backdrop-saturate: ;
+        --tw-backdrop-sepia: ;
+        --tw-contain-size: ;
+        --tw-contain-layout: ;
+        --tw-contain-paint: ;
+        --tw-contain-style: ;
+      }
+      ::backdrop {
+        --tw-border-spacing-x: 0;
+        --tw-border-spacing-y: 0;
+        --tw-translate-x: 0;
+        --tw-translate-y: 0;
+        --tw-rotate: 0;
+        --tw-skew-x: 0;
+        --tw-skew-y: 0;
+        --tw-scale-x: 1;
+        --tw-scale-y: 1;
+        --tw-pan-x: ;
+        --tw-pan-y: ;
+        --tw-pinch-zoom: ;
+        --tw-scroll-snap-strictness: proximity;
+        --tw-gradient-from-position: ;
+        --tw-gradient-via-position: ;
+        --tw-gradient-to-position: ;
+        --tw-ordinal: ;
+        --tw-slashed-zero: ;
+        --tw-numeric-figure: ;
+        --tw-numeric-spacing: ;
+        --tw-numeric-fraction: ;
+        --tw-ring-inset: ;
+        --tw-ring-offset-width: 0px;
+        --tw-ring-offset-color: #fff;
+        --tw-ring-color: rgb(59 130 246 / 0.5);
+        --tw-ring-offset-shadow: 0 0 #0000;
+        --tw-ring-shadow: 0 0 #0000;
+        --tw-shadow: 0 0 #0000;
+        --tw-shadow-colored: 0 0 #0000;
+        --tw-blur: ;
+        --tw-brightness: ;
+        --tw-contrast: ;
+        --tw-grayscale: ;
+        --tw-hue-rotate: ;
+        --tw-invert: ;
+        --tw-saturate: ;
+        --tw-sepia: ;
+        --tw-drop-shadow: ;
+        --tw-backdrop-blur: ;
+        --tw-backdrop-brightness: ;
+        --tw-backdrop-contrast: ;
+        --tw-backdrop-grayscale: ;
+        --tw-backdrop-hue-rotate: ;
+        --tw-backdrop-invert: ;
+        --tw-backdrop-opacity: ;
+        --tw-backdrop-saturate: ;
+        --tw-backdrop-sepia: ;
+        --tw-contain-size: ;
+        --tw-contain-layout: ;
+        --tw-contain-paint: ;
+        --tw-contain-style: ;
+      } /* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */
+      *,
+      ::after,
+      ::before {
+        box-sizing: border-box;
+        border-width: 0;
+        border-style: solid;
+        border-color: #e5e7eb;
+      }
+      ::after,
+      ::before {
+        --tw-content: "";
+      }
+      :host,
+      html {
+        line-height: 1.5;
+        -webkit-text-size-adjust: 100%;
+        -moz-tab-size: 4;
+        tab-size: 4;
+        font-family:
+          ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
+          "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+        font-feature-settings: normal;
+        font-variation-settings: normal;
+        -webkit-tap-highlight-color: transparent;
+      }
+      body {
+        margin: 0;
+        line-height: inherit;
+      }
+      hr {
+        height: 0;
+        color: inherit;
+        border-top-width: 1px;
+      }
+      abbr:where([title]) {
+        -webkit-text-decoration: underline dotted;
+        text-decoration: underline dotted;
+      }
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6 {
+        font-size: inherit;
+        font-weight: inherit;
+      }
+      a {
+        color: inherit;
+        text-decoration: inherit;
+      }
+      b,
+      strong {
+        font-weight: bolder;
+      }
+      code,
+      kbd,
+      pre,
+      samp {
+        font-family:
+          ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+          "Liberation Mono", "Courier New", monospace;
+        font-feature-settings: normal;
+        font-variation-settings: normal;
+        font-size: 1em;
+      }
+      small {
+        font-size: 80%;
+      }
+      sub,
+      sup {
+        font-size: 75%;
+        line-height: 0;
+        position: relative;
+        vertical-align: baseline;
+      }
+      sub {
+        bottom: -0.25em;
+      }
+      sup {
+        top: -0.5em;
+      }
+      table {
+        text-indent: 0;
+        border-color: inherit;
+        border-collapse: collapse;
+      }
+      button,
+      input,
+      optgroup,
+      select,
+      textarea {
+        font-family: inherit;
+        font-feature-settings: inherit;
+        font-variation-settings: inherit;
+        font-size: 100%;
+        font-weight: inherit;
+        line-height: inherit;
+        letter-spacing: inherit;
+        color: inherit;
+        margin: 0;
+        padding: 0;
+      }
+      button,
+      select {
+        text-transform: none;
+      }
+      button,
+      input:where([type="button"]),
+      input:where([type="reset"]),
+      input:where([type="submit"]) {
+        -webkit-appearance: button;
+        background-color: transparent;
+        background-image: none;
+      }
+      :-moz-focusring {
+        outline: auto;
+      }
+      :-moz-ui-invalid {
+        box-shadow: none;
+      }
+      progress {
+        vertical-align: baseline;
+      }
+      ::-webkit-inner-spin-button,
+      ::-webkit-outer-spin-button {
+        height: auto;
+      }
+      [type="search"] {
+        -webkit-appearance: textfield;
+        outline-offset: -2px;
+      }
+      ::-webkit-search-decoration {
+        -webkit-appearance: none;
+      }
+      ::-webkit-file-upload-button {
+        -webkit-appearance: button;
+        font: inherit;
+      }
+      summary {
+        display: list-item;
+      }
+      blockquote,
+      dd,
+      dl,
+      figure,
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6,
+      hr,
+      p,
+      pre {
+        margin: 0;
+      }
+      fieldset {
+        margin: 0;
+        padding: 0;
+      }
+      legend {
+        padding: 0;
+      }
+      menu,
+      ol,
+      ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+      dialog {
+        padding: 0;
+      }
+      textarea {
+        resize: vertical;
+      }
+      input::placeholder,
+      textarea::placeholder {
+        opacity: 1;
+        color: #9ca3af;
+      }
+      [role="button"],
+      button {
+        cursor: pointer;
+      }
+      :disabled {
+        cursor: default;
+      }
+      audio,
+      canvas,
+      embed,
+      iframe,
+      img,
+      object,
+      svg,
+      video {
+        display: block;
+        vertical-align: middle;
+      }
+      img,
+      video {
+        max-width: 100%;
+        height: auto;
+      }
+      [hidden]:where(:not([hidden="until-found"])) {
+        display: none;
+      }
+      .container {
+        width: 100%;
+      }
+      @media (min-width: 640px) {
+        .container {
+          max-width: 640px;
+        }
+      }
+      @media (min-width: 768px) {
+        .container {
+          max-width: 768px;
+        }
+      }
+      @media (min-width: 1024px) {
+        .container {
+          max-width: 1024px;
+        }
+      }
+      @media (min-width: 1280px) {
+        .container {
+          max-width: 1280px;
+        }
+      }
+      @media (min-width: 1536px) {
+        .container {
+          max-width: 1536px;
+        }
+      }
+      .visible {
+        visibility: visible;
+      }
+      .fixed {
+        position: fixed;
+      }
+      .left-0 {
+        left: 0px;
+      }
+      .right-0 {
+        right: 0px;
+      }
+      .top-0 {
+        top: 0px;
+      }
+      .z-50 {
+        z-index: 50;
+      }
+      .mx-auto {
+        margin-left: auto;
+        margin-right: auto;
+      }
+      .my-6 {
+        margin-top: 1.5rem;
+        margin-bottom: 1.5rem;
+      }
+      .my-8 {
+        margin-top: 2rem;
+        margin-bottom: 2rem;
+      }
+      .mb-1 {
+        margin-bottom: 0.25rem;
+      }
+      .mb-16 {
+        margin-bottom: 4rem;
+      }
+      .mb-2 {
+        margin-bottom: 0.5rem;
+      }
+      .mb-3 {
+        margin-bottom: 0.75rem;
+      }
+      .mb-4 {
+        margin-bottom: 1rem;
+      }
+      .mb-6 {
+        margin-bottom: 1.5rem;
+      }
+      .mb-8 {
+        margin-bottom: 2rem;
+      }
+      .ml-2 {
+        margin-left: 0.5rem;
+      }
+      .mr-2 {
+        margin-right: 0.5rem;
+      }
+      .mr-3 {
+        margin-right: 0.75rem;
+      }
+      .mr-4 {
+        margin-right: 1rem;
+      }
+      .mt-0\.5 {
+        margin-top: 0.125rem;
+      }
+      .mt-1 {
+        margin-top: 0.25rem;
+      }
+      .mt-10 {
+        margin-top: 2.5rem;
+      }
+      .mt-3 {
+        margin-top: 0.75rem;
+      }
+      .mt-8 {
+        margin-top: 2rem;
+      }
+      .block {
+        display: block;
+      }
+      .inline-block {
+        display: inline-block;
+      }
+      .flex {
+        display: flex;
+      }
+      .grid {
+        display: grid;
+      }
+      .hidden {
+        display: none;
+      }
+      .h-10 {
+        height: 2.5rem;
+      }
+      .h-2 {
+        height: 0.5rem;
+      }
+      .h-6 {
+        height: 1.5rem;
+      }
+      .h-64 {
+        height: 16rem;
+      }
+      .h-8 {
+        height: 2rem;
+      }
+      .w-10 {
+        width: 2.5rem;
+      }
+      .w-2 {
+        width: 0.5rem;
+      }
+      .w-6 {
+        width: 1.5rem;
+      }
+      .w-8 {
+        width: 2rem;
+      }
+      .w-full {
+        width: 100%;
+      }
+      .min-w-full {
+        min-width: 100%;
+      }
+      .max-w-3xl {
+        max-width: 48rem;
+      }
+      .max-w-none {
+        max-width: none;
+      }
+      .flex-shrink-0 {
+        flex-shrink: 0;
+      }
+      .list-disc {
+        list-style-type: disc;
+      }
+      .grid-cols-1 {
+        grid-template-columns: repeat(1, minmax(0, 1fr));
+      }
+      .flex-col {
+        flex-direction: column;
+      }
+      .flex-wrap {
+        flex-wrap: wrap;
+      }
+      .items-start {
+        align-items: flex-start;
+      }
+      .items-center {
+        align-items: center;
+      }
+      .justify-center {
+        justify-content: center;
+      }
+      .justify-between {
+        justify-content: space-between;
+      }
+      .gap-4 {
+        gap: 1rem;
+      }
+      .gap-6 {
+        gap: 1.5rem;
+      }
+      .gap-8 {
+        gap: 2rem;
+      }
+      .space-x-2 > :not([hidden]) ~ :not([hidden]) {
+        --tw-space-x-reverse: 0;
+        margin-right: calc(0.5rem * var(--tw-space-x-reverse));
+        margin-left: calc(0.5rem * calc(1 - var(--tw-space-x-reverse)));
+      }
+      .space-x-6 > :not([hidden]) ~ :not([hidden]) {
+        --tw-space-x-reverse: 0;
+        margin-right: calc(1.5rem * var(--tw-space-x-reverse));
+        margin-left: calc(1.5rem * calc(1 - var(--tw-space-x-reverse)));
+      }
+      .space-x-8 > :not([hidden]) ~ :not([hidden]) {
+        --tw-space-x-reverse: 0;
+        margin-right: calc(2rem * var(--tw-space-x-reverse));
+        margin-left: calc(2rem * calc(1 - var(--tw-space-x-reverse)));
+      }
+      .space-y-1 > :not([hidden]) ~ :not([hidden]) {
+        --tw-space-y-reverse: 0;
+        margin-top: calc(0.25rem * calc(1 - var(--tw-space-y-reverse)));
+        margin-bottom: calc(0.25rem * var(--tw-space-y-reverse));
+      }
+      .space-y-2 > :not([hidden]) ~ :not([hidden]) {
+        --tw-space-y-reverse: 0;
+        margin-top: calc(0.5rem * calc(1 - var(--tw-space-y-reverse)));
+        margin-bottom: calc(0.5rem * var(--tw-space-y-reverse));
+      }
+      .space-y-3 > :not([hidden]) ~ :not([hidden]) {
+        --tw-space-y-reverse: 0;
+        margin-top: calc(0.75rem * calc(1 - var(--tw-space-y-reverse)));
+        margin-bottom: calc(0.75rem * var(--tw-space-y-reverse));
+      }
+      .overflow-hidden {
+        overflow: hidden;
+      }
+      .overflow-x-auto {
+        overflow-x: auto;
+      }
+      .text-balance {
+        text-wrap: balance;
+      }
+      .rounded-2xl {
+        border-radius: 1rem;
+      }
+      .rounded-full {
+        border-radius: 9999px;
+      }
+      .rounded-lg {
+        border-radius: 0.5rem;
+      }
+      .rounded-xl {
+        border-radius: 0.75rem;
+      }
+      .rounded-r {
+        border-top-right-radius: 0.25rem;
+        border-bottom-right-radius: 0.25rem;
+      }
+      .border {
+        border-width: 1px;
+      }
+      .border-b {
+        border-bottom-width: 1px;
+      }
+      .border-l-4 {
+        border-left-width: 4px;
+      }
+      .border-t {
+        border-top-width: 1px;
+      }
+      .border-danger {
+        --tw-border-opacity: 1;
+        border-color: rgb(245 63 63 / var(--tw-border-opacity, 1));
+      }
+      .border-danger\/20 {
+        border-color: rgb(245 63 63 / 0.2);
+      }
+      .border-gray-100 {
+        --tw-border-opacity: 1;
+        border-color: rgb(243 244 246 / var(--tw-border-opacity, 1));
+      }
+      .border-gray-200 {
+        --tw-border-opacity: 1;
+        border-color: rgb(229 231 235 / var(--tw-border-opacity, 1));
+      }
+      .border-primary {
+        --tw-border-opacity: 1;
+        border-color: rgb(22 93 255 / var(--tw-border-opacity, 1));
+      }
+      .border-warning {
+        --tw-border-opacity: 1;
+        border-color: rgb(255 125 0 / var(--tw-border-opacity, 1));
+      }
+      .bg-danger {
+        --tw-bg-opacity: 1;
+        background-color: rgb(245 63 63 / var(--tw-bg-opacity, 1));
+      }
+      .bg-danger\/10 {
+        background-color: rgb(245 63 63 / 0.1);
+      }
+      .bg-danger\/5 {
+        background-color: rgb(245 63 63 / 0.05);
+      }
+      .bg-dark {
+        --tw-bg-opacity: 1;
+        background-color: rgb(31 41 55 / var(--tw-bg-opacity, 1));
+      }
+      .bg-gray-100 {
+        --tw-bg-opacity: 1;
+        background-color: rgb(243 244 246 / var(--tw-bg-opacity, 1));
+      }
+      .bg-gray-200 {
+        --tw-bg-opacity: 1;
+        background-color: rgb(229 231 235 / var(--tw-bg-opacity, 1));
+      }
+      .bg-gray-50 {
+        --tw-bg-opacity: 1;
+        background-color: rgb(249 250 251 / var(--tw-bg-opacity, 1));
+      }
+      .bg-light {
+        --tw-bg-opacity: 1;
+        background-color: rgb(243 244 246 / var(--tw-bg-opacity, 1));
+      }
+      .bg-primary {
+        --tw-bg-opacity: 1;
+        background-color: rgb(22 93 255 / var(--tw-bg-opacity, 1));
+      }
+      .bg-primary\/10 {
+        background-color: rgb(22 93 255 / 0.1);
+      }
+      .bg-primary\/5 {
+        background-color: rgb(22 93 255 / 0.05);
+      }
+      .bg-success {
+        --tw-bg-opacity: 1;
+        background-color: rgb(0 180 42 / var(--tw-bg-opacity, 1));
+      }
+      .bg-warning {
+        --tw-bg-opacity: 1;
+        background-color: rgb(255 125 0 / var(--tw-bg-opacity, 1));
+      }
+      .bg-warning\/10 {
+        background-color: rgb(255 125 0 / 0.1);
+      }
+      .bg-white {
+        --tw-bg-opacity: 1;
+        background-color: rgb(255 255 255 / var(--tw-bg-opacity, 1));
+      }
+      .bg-white\/10 {
+        background-color: rgb(255 255 255 / 0.1);
+      }
+      .bg-white\/20 {
+        background-color: rgb(255 255 255 / 0.2);
+      }
+      .bg-gradient-to-r {
+        background-image: linear-gradient(to right, var(--tw-gradient-stops));
+      }
+      .from-primary {
+        --tw-gradient-from: #165dff var(--tw-gradient-from-position);
+        --tw-gradient-to: rgb(22 93 255 / 0) var(--tw-gradient-to-position);
+        --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+      }
+      .to-primary\/80 {
+        --tw-gradient-to: rgb(22 93 255 / 0.8) var(--tw-gradient-to-position);
+      }
+      .p-3 {
+        padding: 0.75rem;
+      }
+      .p-4 {
+        padding: 1rem;
+      }
+      .p-5 {
+        padding: 1.25rem;
+      }
+      .p-6 {
+        padding: 1.5rem;
+      }
+      .px-2 {
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+      }
+      .px-4 {
+        padding-left: 1rem;
+        padding-right: 1rem;
+      }
+      .px-6 {
+        padding-left: 1.5rem;
+        padding-right: 1.5rem;
+      }
+      .py-1 {
+        padding-top: 0.25rem;
+        padding-bottom: 0.25rem;
+      }
+      .py-2 {
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
+      }
+      .py-3 {
+        padding-top: 0.75rem;
+        padding-bottom: 0.75rem;
+      }
+      .py-4 {
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+      }
+      .py-8 {
+        padding-top: 2rem;
+        padding-bottom: 2rem;
+      }
+      .pb-16 {
+        padding-bottom: 4rem;
+      }
+      .pl-5 {
+        padding-left: 1.25rem;
+      }
+      .pt-24 {
+        padding-top: 6rem;
+      }
+      .text-left {
+        text-align: left;
+      }
+      .text-center {
+        text-align: center;
+      }
+      .font-inter {
+        font-family: Inter, system-ui, sans-serif;
+      }
+      .text-2xl {
+        font-size: 1.5rem;
+        line-height: 2rem;
+      }
+      .text-4xl {
+        font-size: 2.25rem;
+        line-height: 2.5rem;
+      }
+      .text-lg {
+        font-size: 1.125rem;
+        line-height: 1.75rem;
+      }
+      .text-sm {
+        font-size: 0.875rem;
+        line-height: 1.25rem;
+      }
+      .text-xl {
+        font-size: 1.25rem;
+        line-height: 1.75rem;
+      }
+      .text-xs {
+        font-size: 0.75rem;
+        line-height: 1rem;
+      }
+      .font-bold {
+        font-weight: 700;
+      }
+      .font-medium {
+        font-weight: 500;
+      }
+      .font-semibold {
+        font-weight: 600;
+      }
+      .italic {
+        font-style: italic;
+      }
+      .text-accent {
+        --tw-text-opacity: 1;
+        color: rgb(255 125 0 / var(--tw-text-opacity, 1));
+      }
+      .text-danger {
+        --tw-text-opacity: 1;
+        color: rgb(245 63 63 / var(--tw-text-opacity, 1));
+      }
+      .text-dark {
+        --tw-text-opacity: 1;
+        color: rgb(31 41 55 / var(--tw-text-opacity, 1));
+      }
+      .text-gray-400 {
+        --tw-text-opacity: 1;
+        color: rgb(156 163 175 / var(--tw-text-opacity, 1));
+      }
+      .text-primary {
+        --tw-text-opacity: 1;
+        color: rgb(22 93 255 / var(--tw-text-opacity, 1));
+      }
+      .text-secondary {
+        --tw-text-opacity: 1;
+        color: rgb(107 114 128 / var(--tw-text-opacity, 1));
+      }
+      .text-success {
+        --tw-text-opacity: 1;
+        color: rgb(0 180 42 / var(--tw-text-opacity, 1));
+      }
+      .text-warning {
+        --tw-text-opacity: 1;
+        color: rgb(255 125 0 / var(--tw-text-opacity, 1));
+      }
+      .text-white {
+        --tw-text-opacity: 1;
+        color: rgb(255 255 255 / var(--tw-text-opacity, 1));
+      }
+      .shadow-lg {
+        --tw-shadow:
+          0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        --tw-shadow-colored:
+          0 10px 15px -3px var(--tw-shadow-color),
+          0 4px 6px -4px var(--tw-shadow-color);
+        box-shadow:
+          var(--tw-ring-offset-shadow, 0 0 #0000),
+          var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+      }
+      .shadow-md {
+        --tw-shadow:
+          0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        --tw-shadow-colored:
+          0 4px 6px -1px var(--tw-shadow-color),
+          0 2px 4px -2px var(--tw-shadow-color);
+        box-shadow:
+          var(--tw-ring-offset-shadow, 0 0 #0000),
+          var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+      }
+      .shadow-sm {
+        --tw-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+        --tw-shadow-colored: 0 1px 2px 0 var(--tw-shadow-color);
+        box-shadow:
+          var(--tw-ring-offset-shadow, 0 0 #0000),
+          var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+      }
+      .backdrop-blur-sm {
+        --tw-backdrop-blur: blur(4px);
+        -webkit-backdrop-filter: var(--tw-backdrop-blur)
+          var(--tw-backdrop-brightness) var(--tw-backdrop-contrast)
+          var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate)
+          var(--tw-backdrop-invert) var(--tw-backdrop-opacity)
+          var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);
+        backdrop-filter: var(--tw-backdrop-blur) var(--tw-backdrop-brightness)
+          var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale)
+          var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert)
+          var(--tw-backdrop-opacity) var(--tw-backdrop-saturate)
+          var(--tw-backdrop-sepia);
+      }
+      .transition-all {
+        transition-property: all;
+        transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+        transition-duration: 150ms;
+      }
+      .transition-colors {
+        transition-property:
+          color,
+          background-color,
+          border-color,
+          fill,
+          stroke,
+          -webkit-text-decoration-color;
+        transition-property:
+          color, background-color, border-color, text-decoration-color, fill,
+          stroke;
+        transition-property:
+          color,
+          background-color,
+          border-color,
+          text-decoration-color,
+          fill,
+          stroke,
+          -webkit-text-decoration-color;
+        transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+        transition-duration: 150ms;
+      }
+      .duration-300 {
+        transition-duration: 300ms;
+      }
+      .text-balance {
+        text-wrap: balance;
+      }
+      .section-fade {
+        opacity: 0;
+        transform: translateY(20px);
+        transition:
+          opacity 0.6s ease-out,
+          transform 0.6s ease-out;
+      }
+      .section-fade.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      .card-hover {
+        transition: all 0.3s ease;
+      }
+      .card-hover:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      }
+      .hover\:bg-primary\/5:hover {
+        background-color: rgb(22 93 255 / 0.05);
+      }
+      .hover\:bg-primary\/90:hover {
+        background-color: rgb(22 93 255 / 0.9);
+      }
+      .hover\:text-primary:hover {
+        --tw-text-opacity: 1;
+        color: rgb(22 93 255 / var(--tw-text-opacity, 1));
+      }
+      .hover\:text-white:hover {
+        --tw-text-opacity: 1;
+        color: rgb(255 255 255 / var(--tw-text-opacity, 1));
+      }
+      @media (min-width: 640px) {
+        .sm\:block {
+          display: block;
+        }
+        .sm\:px-6 {
+          padding-left: 1.5rem;
+          padding-right: 1.5rem;
+        }
+      }
+      @media (min-width: 768px) {
+        .md\:mb-0 {
+          margin-bottom: 0px;
+        }
+        .md\:flex {
+          display: flex;
+        }
+        .md\:hidden {
+          display: none;
+        }
+        .md\:h-80 {
+          height: 20rem;
+        }
+        .md\:grid-cols-2 {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+        .md\:grid-cols-3 {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+        .md\:flex-row {
+          flex-direction: row;
+        }
+        .md\:p-8 {
+          padding: 2rem;
+        }
+        .md\:text-3xl {
+          font-size: 1.875rem;
+          line-height: 2.25rem;
+        }
+        .md\:text-5xl {
+          font-size: 3rem;
+          line-height: 1;
+        }
+      }
+      @media (min-width: 1024px) {
+        .lg\:px-8 {
+          padding-left: 2rem;
+          padding-right: 2rem;
+        }
+      }
+    </style>
+    <link rel="stylesheet" href="./src/style.css" />
+  </head>
+  <body class="font-inter bg-gray-50 text-dark">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>语雀网页版加载速度优化研究报告</title>
+
+    <link
+      href="https://artifacts-cdn.chatglm.site/https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css"
+      rel="stylesheet"
+    />
+
+    <!-- 预加载字体 -->
+    <link
+      rel="preconnect"
+      href="https://artifacts-cdn.chatglm.site/https://fonts.googleapis.com"
+    />
+    <link
+      rel="preconnect"
+      href="https://artifacts-cdn.chatglm.site/https://fonts.gstatic.com"
+      crossorigin=""
+    />
+    <link
+      href="https://artifacts-cdn.chatglm.site/https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- 导航栏 -->
+    <header
+      id="navbar"
+      class="fixed top-0 left-0 right-0 bg-white shadow-md z-50 transition-all duration-300"
+    >
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center py-4">
+          <div class="flex items-center space-x-2">
+            <i class="fa fa-line-chart text-primary text-2xl"></i>
+            <h1 class="text-xl font-bold text-primary hidden sm:block">
+              语雀性能研究
+            </h1>
+          </div>
+
+          <!-- 桌面端导航 -->
+          <nav class="hidden md:flex space-x-8">
+            <a
+              href="#background"
+              class="text-secondary hover:text-primary transition-colors font-medium"
+              >研究背景</a
+            >
+            <a
+              href="#architecture"
+              class="text-secondary hover:text-primary transition-colors font-medium"
+              >技术架构</a
+            >
+            <a
+              href="#frontend"
+              class="text-secondary hover:text-primary transition-colors font-medium"
+              >前端分析</a
+            >
+            <a
+              href="#backend"
+              class="text-secondary hover:text-primary transition-colors font-medium"
+              >后端分析</a
+            >
+            <a
+              href="#network"
+              class="text-secondary hover:text-primary transition-colors font-medium"
+              >网络优化</a
+            >
+            <a
+              href="#scenarios"
+              class="text-secondary hover:text-primary transition-colors font-medium"
+              >场景分析</a
+            >
+            <a
+              href="#comparison"
+              class="text-secondary hover:text-primary transition-colors font-medium"
+              >竞品对比</a
+            >
+            <a
+              href="#optimization"
+              class="text-secondary hover:text-primary transition-colors font-medium"
+              >优化建议</a
+            >
+          </nav>
+
+          <!-- 移动端菜单按钮 -->
+          <button
+            id="menu-toggle"
+            class="md:hidden text-secondary hover:text-primary"
+          >
+            <i class="fa fa-bars text-xl"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- 移动端导航菜单 -->
+      <div
+        id="mobile-menu"
+        class="hidden md:hidden bg-white border-t border-gray-100"
+      >
+        <div class="container mx-auto px-4 py-3 space-y-3">
+          <a
+            href="#background"
+            class="block py-2 text-secondary hover:text-primary transition-colors font-medium"
+            >研究背景</a
+          >
+          <a
+            href="#architecture"
+            class="block py-2 text-secondary hover:text-primary transition-colors font-medium"
+            >技术架构</a
+          >
+          <a
+            href="#frontend"
+            class="block py-2 text-secondary hover:text-primary transition-colors font-medium"
+            >前端分析</a
+          >
+          <a
+            href="#backend"
+            class="block py-2 text-secondary hover:text-primary transition-colors font-medium"
+            >后端分析</a
+          >
+          <a
+            href="#network"
+            class="block py-2 text-secondary hover:text-primary transition-colors font-medium"
+            >网络优化</a
+          >
+          <a
+            href="#scenarios"
+            class="block py-2 text-secondary hover:text-primary transition-colors font-medium"
+            >场景分析</a
+          >
+          <a
+            href="#comparison"
+            class="block py-2 text-secondary hover:text-primary transition-colors font-medium"
+            >竞品对比</a
+          >
+          <a
+            href="#optimization"
+            class="block py-2 text-secondary hover:text-primary transition-colors font-medium"
+            >优化建议</a
+          >
+        </div>
+      </div>
+    </header>
+
+    <!-- 主内容区 -->
+    <main class="container mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-16">
+      <!-- 报告封面 -->
+      <section class="mb-16 text-center">
+        <div
+          class="inline-block mb-4 px-4 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium"
+        >
+          技术研究报告
+        </div>
+        <h1 class="text-4xl md:text-5xl font-bold mb-6 text-balance">
+          语雀网页版加载速度优化研究
+        </h1>
+        <p class="text-xl text-secondary max-w-3xl mx-auto mb-8">
+          深入分析语雀性能瓶颈，提供系统性优化方案
+        </p>
+        <div class="flex flex-wrap justify-center gap-4">
+          <a
+            href="#optimization"
+            class="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors font-medium flex items-center"
+          >
+            <i class="fa fa-lightbulb-o mr-2"></i> 查看优化建议
+          </a>
+          <a
+            href="#comparison"
+            class="px-6 py-3 bg-white text-primary border border-primary rounded-lg hover:bg-primary/5 transition-colors font-medium flex items-center"
+          >
+            <i class="fa fa-bar-chart mr-2"></i> 竞品对比数据
+          </a>
+        </div>
+      </section>
+
+      <!-- 1. 研究背景与目标 -->
+      <section id="background" class="mb-16 section-fade visible">
+        <div class="bg-white rounded-2xl shadow-sm p-6 md:p-8">
+          <div class="flex items-center mb-6">
+            <div
+              class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center mr-4"
+            >
+              <i class="fa fa-info-circle text-primary"></i>
+            </div>
+            <h2 class="text-2xl md:text-3xl font-bold">背景与研究目标</h2>
+          </div>
+
+          <div class="prose max-w-none">
+            <p class="mb-4">
+              语雀作为蚂蚁集团旗下的在线文档编辑与协同工具，在国内知识管理领域占据重要地位。然而，随着用户规模的扩大和使用场景的复杂化，<strong
+                class="text-danger"
+                >语雀网页版的加载速度问题日益凸显</strong
+              >，甚至被部分用户评价为"互联网大厂中加载速度最慢的应用之一"。
+            </p>
+
+            <div
+              class="bg-warning/10 border-l-4 border-warning p-4 my-6 rounded-r"
+            >
+              <h4 class="font-semibold text-warning mb-2">用户反馈</h4>
+              <ul class="list-disc pl-5 space-y-2 text-secondary">
+                <li>
+                  "无论是网页端、pc端、mac端，肉眼可见的加载缓慢，很多时候加载需要3-5秒"
+                </li>
+                <li>"PC端完全打开我们使用的表格，居然需要17.32秒"</li>
+                <li>
+                  "移动端，我们都是使用的移动4G网络，打开文档大概耗时1分钟左右"
+                </li>
+              </ul>
+            </div>
+
+            <p>
+              本研究旨在深入分析语雀网页版加载速度慢的根本原因，从前端性能、后端响应、网络传输等技术维度，结合普通用户日常使用、团队协作高频使用、大型知识库浏览等典型场景，全面评估语雀的性能表现，并与主流竞品进行对比分析，最终提出系统性的优化建议。
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. 技术架构与性能现状 -->
+      <section id="architecture" class="mb-16 section-fade visible">
+        <div class="bg-white rounded-2xl shadow-sm p-6 md:p-8">
+          <div class="flex items-center mb-6">
+            <div
+              class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center mr-4"
+            >
+              <i class="fa fa-cogs text-primary"></i>
+            </div>
+            <h2 class="text-2xl md:text-3xl font-bold">
+              语雀技术架构与性能现状
+            </h2>
+          </div>
+
+          <h3 class="text-xl font-semibold mb-4 text-primary">
+            1.1 技术栈选型与架构特点
+          </h3>
+          <p class="mb-4">
+            语雀采用<strong>JavaScript全栈技术架构</strong>，这一选择与团队技术背景密切相关。"语雀选择JavaScript全栈的原因是孵化语雀的团队，大部分都是JavaScript背景的程序员，同时Node.js在蚂蚁也算是一等公民，配套的设施相对完善"。
+          </p>
+
+          <div class="grid md:grid-cols-2 gap-6 my-6">
+            <!-- 前端技术栈 -->
+            <div
+              class="bg-light rounded-xl p-5 border border-gray-100 card-hover"
+            >
+              <h4 class="font-semibold text-lg mb-3 flex items-center">
+                <i class="fa fa-desktop text-primary mr-2"></i>前端技术栈
+              </h4>
+              <ul class="space-y-2 text-secondary">
+                <li>• PC端主要采用React技术栈</li>
+                <li>• 结合Ant Design和dva进行研发</li>
+                <li>• 使用bigfish进行构建</li>
+                <li>
+                  • 编辑器经历三个版本：
+                  <ul class="list-disc pl-5 mt-1 space-y-1">
+                    <li>1.0: 基于CodeMirror的Markdown编辑器</li>
+                    <li>2.0: 基于Slate的富文本编辑器</li>
+                    <li>3.0: 基于Contenteditable的自研LakeEditor</li>
+                  </ul>
+                </li>
+              </ul>
+            </div>
+
+            <!-- 后端技术栈 -->
+            <div
+              class="bg-light rounded-xl p-5 border border-gray-100 card-hover"
+            >
+              <h4 class="font-semibold text-lg mb-3 flex items-center">
+                <i class="fa fa-server text-primary mr-2"></i>后端技术栈
+              </h4>
+              <ul class="space-y-2 text-secondary">
+                <li>• 服务端采用Node.js和Egg.js框架</li>
+                <li>• 蚂蚁内部封装为Chair框架</li>
+                <li>• 初始为单体Web应用架构</li>
+                <li>
+                  • 部分服务拆分为微服务：
+                  <ul class="list-disc pl-5 mt-1 space-y-1">
+                    <li>多人实时协同服务</li>
+                    <li>任务服务</li>
+                    <li>函数计算服务</li>
+                  </ul>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="bg-danger/10 border-l-4 border-danger p-4 my-6 rounded-r">
+            <h4 class="font-semibold text-danger mb-2">架构性能挑战</h4>
+            <p class="text-secondary">
+              <strong>Node.js的单线程特性</strong
+              >在处理CPU密集型任务时存在固有缺陷，"一旦有任何阻塞进程的方法被执行，整个进程就被阻塞"。语雀作为复杂的Web应用，"很难保证不会出现一些场景可能会消耗大量CPU甚至是死循环阻塞进程的，以Markdown转换举例，由于用户的输入无法穷举，总有各种可能让转换代码进入到一个低效甚至是死循环的场景之中"。
+            </p>
+          </div>
+
+          <h3 class="text-xl font-semibold mb-4 text-primary">
+            1.2 性能问题的普遍性认知
+          </h3>
+          <p class="mb-4">
+            语雀的性能问题在用户群体中形成了广泛共识。根据多个用户反馈和技术分析，可以总结出以下关键问题：
+          </p>
+
+          <div class="grid md:grid-cols-3 gap-4 my-6">
+            <div
+              class="bg-light rounded-xl p-5 border border-gray-100 card-hover"
+            >
+              <div class="text-accent text-2xl mb-2">
+                <i class="fa fa-clock-o"></i>
+              </div>
+              <h4 class="font-semibold mb-2">加载时间过长</h4>
+              <p class="text-secondary text-sm">
+                用户反映"语雀文档加载缓慢的常见技术问题之一是资源请求过多导致的性能瓶颈"。在实际测试中，"1.4万字的语雀文档会产生1.4万个DOM节点，而掘金同字数仅两千个节点"。
+              </p>
+            </div>
+
+            <div
+              class="bg-light rounded-xl p-5 border border-gray-100 card-hover"
+            >
+              <div class="text-accent text-2xl mb-2">
+                <i class="fa fa-microchip"></i>
+              </div>
+              <h4 class="font-semibold mb-2">内存占用过高</h4>
+              <p class="text-secondary text-sm">
+                "查看页面内存占用也是飙升到了160MB左右"，而相比之下，同字数的掘金文章内存占用明显更低。这种高内存占用不仅影响当前页面性能，还会影响整个浏览器的运行效率。
+              </p>
+            </div>
+
+            <div
+              class="bg-light rounded-xl p-5 border border-gray-100 card-hover"
+            >
+              <div class="text-accent text-2xl mb-2">
+                <i class="fa fa-desktop"></i>
+              </div>
+              <h4 class="font-semibold mb-2">多端性能一致</h4>
+              <p class="text-secondary text-sm">
+                用户反馈显示，"无论是网页端、pc端、mac端，肉眼可见的加载缓慢"，说明性能问题不是特定平台或环境下的偶发现象，而是系统性的架构问题。
+              </p>
+            </div>
+          </div>
+
+          <!-- DOM节点对比图表 -->
+          <div class="mt-8">
+            <h4 class="font-semibold mb-4">DOM节点数量对比 (1.4万字文档)</h4>
+            <div class="h-64 md:h-80">
+              <canvas
+                id="domComparisonChart"
+                style="
+                  display: block;
+                  box-sizing: border-box;
+                  height: 320px;
+                  width: 1408px;
+                "
+                width="1584"
+                height="360"
+              ></canvas>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. 前端性能深度剖析 -->
+      <section id="frontend" class="mb-16 section-fade visible">
+        <div class="bg-white rounded-2xl shadow-sm p-6 md:p-8">
+          <div class="flex items-center mb-6">
+            <div
+              class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center mr-4"
+            >
+              <i class="fa fa-code text-primary"></i>
+            </div>
+            <h2 class="text-2xl md:text-3xl font-bold">前端性能深度剖析</h2>
+          </div>
+
+          <h3 class="text-xl font-semibold mb-4 text-primary">
+            2.1 页面渲染机制与DOM复杂度
+          </h3>
+          <p class="mb-4">
+            语雀前端性能问题的核心在于<strong>过度复杂的DOM结构</strong>。根据实测数据，一个1.4万字的语雀文档会产生约1.4万个DOM节点，而同样字数的掘金文章仅产生约2000个DOM节点。这种7倍的差异直接导致了渲染性能的巨大差距。
+          </p>
+
+          <div class="grid md:grid-cols-2 gap-6 my-6">
+            <div
+              class="bg-light rounded-xl p-5 border border-gray-100 card-hover"
+            >
+              <h4 class="font-semibold mb-3">业务逻辑的复杂性要求</h4>
+              <p class="text-secondary">
+                "相对于掘金这种单一的，分享式的文档，掘金使用的MarkDown渲染器会渲染出尽量简单的HTML结构，而语雀要实现的功能和业务更加复杂些，诸如搜索字段、标注等等，都需要依托更为结构性的、更为复杂的HTML标签"。语雀作为功能全面的知识库平台，需要支持表格、思维导图、公式、代码块等多种内容类型，每种类型都需要复杂的DOM结构来实现。
+              </p>
+            </div>
+
+            <div
+              class="bg-light rounded-xl p-5 border border-gray-100 card-hover"
+            >
+              <h4 class="font-semibold mb-3">用户使用习惯的影响</h4>
+              <p class="text-secondary">
+                "相信大家和我一样，在工作中的文档都要写的事无巨细（主动或者被动），这让我们在使用语雀或者Typora等有一定协作性质的文档的时候我们都会写特别多的颜色，斜体等这种标注，都会使得MarkDown渲染器渲染出更为复杂的DOM结构"。企业用户在实际使用中往往会添加大量格式标注、链接、图片等元素，进一步增加了DOM复杂度。
+              </p>
+            </div>
+          </div>
+
+          <h3 class="text-xl font-semibold mb-4 text-primary">
+            2.2 资源加载策略与优化缺失
+          </h3>
+          <p class="mb-4">
+            语雀在资源加载策略方面存在明显的优化缺失，主要体现在以下几个方面：
+          </p>
+
+          <div class="overflow-x-auto my-6">
+            <table
+              class="min-w-full bg-white border border-gray-200 rounded-lg"
+            >
+              <thead>
+                <tr class="bg-light">
+                  <th class="py-3 px-4 text-left border-b">问题类别</th>
+                  <th class="py-3 px-4 text-left border-b">具体表现</th>
+                  <th class="py-3 px-4 text-left border-b">影响</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="py-3 px-4 border-b font-medium">
+                    资源请求数量过多
+                  </td>
+                  <td class="py-3 px-4 border-b text-secondary">
+                    "当文档包含大量图片、嵌入内容或复杂格式时，浏览器需发起数十个HTTP请求加载静态资源"
+                  </td>
+                  <td class="py-3 px-4 border-b text-secondary">
+                    资源请求数量经常超过50次，叠加DNS解析、TCP握手等开销，显著延长首屏渲染时间
+                  </td>
+                </tr>
+                <tr class="bg-gray-50">
+                  <td class="py-3 px-4 border-b font-medium">
+                    缺乏现代加载优化机制
+                  </td>
+                  <td class="py-3 px-4 border-b text-secondary">
+                    缺乏资源预加载与懒加载机制，图片未进行懒加载或未采用现代格式（WebP/AVIF）
+                  </td>
+                  <td class="py-3 px-4 border-b text-secondary">
+                    首屏加载时间长，浪费带宽资源，影响用户体验
+                  </td>
+                </tr>
+                <tr>
+                  <td class="py-3 px-4 border-b font-medium">
+                    缓存策略配置不当
+                  </td>
+                  <td class="py-3 px-4 border-b text-secondary">
+                    CDN缓存命中率低，缓存策略配置不当
+                  </td>
+                  <td class="py-3 px-4 border-b text-secondary">
+                    大量静态资源无法有效利用缓存，每次访问都需要重新下载
+                  </td>
+                </tr>
+                <tr class="bg-gray-50">
+                  <td class="py-3 px-4 font-medium">未充分利用现代网络协议</td>
+                  <td class="py-3 px-4 text-secondary">
+                    未使用HTTP/2或多路复用技术，仍然依赖传统的HTTP/1.1协议
+                  </td>
+                  <td class="py-3 px-4 text-secondary">
+                    无法利用多路复用特性减少连接建立的开销，影响并发加载效率
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3 class="text-xl font-semibold mb-4 text-primary">
+            2.3 JavaScript执行性能与内存管理
+          </h3>
+          <p class="mb-4">
+            语雀在JavaScript执行和内存管理方面存在严重问题，主要表现为：
+          </p>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 my-6">
+            <div
+              class="bg-light rounded-xl p-5 border border-gray-100 card-hover"
+            >
+              <div class="text-danger text-xl mb-2">
+                <i class="fa fa-exclamation-triangle"></i>
+              </div>
+              <h4 class="font-semibold mb-2">内存泄漏问题</h4>
+              <p class="text-secondary text-sm">
+                JavaScript应用中常见的内存泄漏原因包括"闭包使用不当"、"组件卸载后仍持有DOM引用、事件监听"等。语雀作为复杂的SPA应用，这些问题很可能存在。
+              </p>
+            </div>
+
+            <div
+              class="bg-light rounded-xl p-5 border border-gray-100 card-hover"
+            >
+              <div class="text-danger text-xl mb-2">
+                <i class="fa fa-exclamation-circle"></i>
+              </div>
+              <h4 class="font-semibold mb-2">CPU密集型操作阻塞</h4>
+              <p class="text-secondary text-sm">
+                语雀的编辑器需要实时处理用户输入，进行格式转换和渲染。由于采用Node.js单线程架构，"一旦有任何阻塞进程的方法被执行，整个进程就被阻塞"。
+              </p>
+            </div>
+
+            <div
+              class="bg-light rounded-xl p-5 border border-gray-100 card-hover"
+            >
+              <div class="text-danger text-xl mb-2">
+                <i class="fa fa-refresh"></i>
+              </div>
+              <h4 class="font-semibold mb-2">渲染性能问题</h4>
+              <p class="text-secondary text-sm">
+                用户反映"就是感觉切换界面的时候加载速度不够快"，这通常与JavaScript执行时间过长、渲染频繁重绘等因素有关。语雀复杂的DOM结构加剧了这一问题。
+              </p>
+            </div>
+          </div>
+
+          <!-- 内存占用对比图表 -->
+          <div class="mt-8">
+            <h4 class="font-semibold mb-4">内存占用对比 (1.4万字文档)</h4>
+            <div class="h-64 md:h-80">
+              <canvas
+                id="memoryComparisonChart"
+                style="
+                  display: block;
+                  box-sizing: border-box;
+                  height: 320px;
+                  width: 1408px;
+                "
+                width="1584"
+                height="360"
+              ></canvas>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4. 后端响应性能分析 -->
+      <section id="backend" class="mb-16 section-fade visible">
+        <div class="bg-white rounded-2xl shadow-sm p-6 md:p-8">
+          <div class="flex items-center mb-6">
+            <div
+              class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center mr-4"
+            >
+              <i class="fa fa-database text-primary"></i>
+            </div>
+            <h2 class="text-2xl md:text-3xl font-bold">后端响应性能分析</h2>
+          </div>
+
+          <h3 class="text-xl font-semibold mb-4 text-primary">
+            3.1 服务端架构与性能瓶颈
+          </h3>
+          <p class="mb-4">
+            语雀的后端采用<strong>基于Egg.js框架的Node.js单体应用架构</strong>。这种架构在初期能够快速开发和迭代，但随着功能复杂度的提升，逐渐暴露出性能瓶颈。
+          </p>
+
+          <div class="bg-light rounded-xl p-5 border border-gray-100 my-6">
+            <h4 class="font-semibold mb-3">主要的架构问题</h4>
+            <ul class="space-y-3 text-secondary">
+              <li class="flex">
+                <i class="fa fa-minus-circle text-danger mt-1 mr-2"></i>
+                <div>
+                  <strong>单体应用的扩展性限制</strong
+                  >：虽然语雀"开始将一些相对比较独立的服务从主服务中拆出去"，但核心业务逻辑仍然集中在单体应用中。这种架构在面对高并发请求时，容易出现资源竞争和性能瓶颈。
+                </div>
+              </li>
+              <li class="flex">
+                <i class="fa fa-minus-circle text-danger mt-1 mr-2"></i>
+                <div>
+                  <strong>Node.js单线程的固有缺陷</strong
+                  >：语雀服务端"使用Node.js技术栈"，而Node.js的单线程特性在处理CPU密集型任务时存在严重问题。特别是在处理Markdown转换、公式渲染、文件预览等操作时，容易出现阻塞，影响整体响应性能。
+                </div>
+              </li>
+              <li class="flex">
+                <i class="fa fa-minus-circle text-danger mt-1 mr-2"></i>
+                <div>
+                  <strong>缺乏有效的负载均衡策略</strong
+                  >：虽然提到"采用集群、负载均衡、冗余备份等技术手段"，但具体的负载均衡实现和效果并不明确。在实际使用中，特别是在高峰期，仍然会出现响应缓慢的问题。
+                </div>
+              </li>
+            </ul>
+          </div>
+
+          <h3 class="text-xl font-semibold mb-4 text-primary">
+            3.2 API响应时间与数据库性能
+          </h3>
+          <p class="mb-4">
+            语雀在API响应性能方面存在明显问题，主要体现在以下几个方面：
+          </p>
+
+          <div class="grid md:grid-cols-3 gap-6 my-6">
+            <div
+              class="bg-white border border-gray-200 rounded-xl p-5 shadow-sm card-hover"
+            >
+              <div class="flex justify-between items-start mb-3">
+                <h4 class="font-semibold">服务端响应延迟</h4>
+                <span
+                  class="px-2 py-1 bg-danger/10 text-danger text-xs rounded-full"
+                  >严重</span
+                >
+              </div>
+              <p class="text-secondary text-sm mb-3">
+                技术分析指出语雀存在"服务端响应延迟高（TTFB &gt;
+                500ms）"的问题。
+              </p>
+              <div class="bg-gray-100 rounded-lg p-3">
+                <div class="text-xs text-secondary mb-1">
+                  TTFB（Time to First Byte）
+                </div>
+                <div class="flex items-center">
+                  <div class="w-full bg-gray-200 rounded-full h-2">
+                    <div
+                      class="bg-danger h-2 rounded-full"
+                      style="width: 75%"
+                    ></div>
+                  </div>
+                  <span class="ml-2 text-sm font-medium text-danger"
+                    >&gt;500ms</span
+                  >
+                </div>
+                <div class="text-xs text-secondary mt-1">理想值：&lt;200ms</div>
+              </div>
+            </div>
+
+            <div
+              class="bg-white border border-gray-200 rounded-xl p-5 shadow-sm card-hover"
+            >
+              <div class="flex justify-between items-start mb-3">
+                <h4 class="font-semibold">数据库查询性能</h4>
+                <span
+                  class="px-2 py-1 bg-warning/10 text-warning text-xs rounded-full"
+                  >中等</span
+                >
+              </div>
+              <p class="text-secondary text-sm mb-3">
+                语雀使用MySQL作为主要数据库，通过ORM技术进行数据操作。然而，容易导致N+1查询问题。
+              </p>
+              <div class="bg-gray-100 rounded-lg p-3">
+                <div class="text-xs text-secondary mb-1">ORM查询效率</div>
+                <div class="flex items-center">
+                  <div class="w-full bg-gray-200 rounded-full h-2">
+                    <div
+                      class="bg-warning h-2 rounded-full"
+                      style="width: 60%"
+                    ></div>
+                  </div>
+                  <span class="ml-2 text-sm font-medium text-warning"
+                    >需优化</span
+                  >
+                </div>
+                <div class="text-xs text-secondary mt-1">
+                  主要问题：N+1查询、关联查询效率低
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="bg-white border border-gray-200 rounded-xl p-5 shadow-sm card-hover"
+            >
+              <div class="flex justify-between items-start mb-3">
+                <h4 class="font-semibold">缓存策略</h4>
+                <span
+                  class="px-2 py-1 bg-warning/10 text-warning text-xs rounded-full"
+                  >中等</span
+                >
+              </div>
+              <p class="text-secondary text-sm mb-3">
+                虽然语雀使用了Redis等缓存技术，但"CDN缓存命中率低，缓存策略配置不当"的问题依然存在。
+              </p>
+              <div class="bg-gray-100 rounded-lg p-3">
+                <div class="text-xs text-secondary mb-1">缓存命中率</div>
+                <div class="flex items-center">
+                  <div class="w-full bg-gray-200 rounded-full h-2">
+                    <div
+                      class="bg-warning h-2 rounded-full"
+                      style="width: 50%"
+                    ></div>
+                  </div>
+                  <span class="ml-2 text-sm font-medium text-warning">低</span>
+                </div>
+                <div class="text-xs text-secondary mt-1">
+                  建议：优化缓存策略，提高命中率
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <h3 class="text-xl font-semibold mb-4 text-primary">
+            3.3 高可用架构的设计缺陷
+          </h3>
+          <p class="mb-4">
+            语雀在2023年10月23日发生的<strong>长达7-8小时的P0级故障</strong>，暴露出其高可用架构存在严重问题。
+          </p>
+
+          <div class="bg-danger/5 border border-danger/20 rounded-xl p-5 my-6">
+            <div class="flex items-start">
+              <div class="text-danger text-xl mt-1 mr-3">
+                <i class="fa fa-exclamation-circle"></i>
+              </div>
+              <div>
+                <h4 class="font-semibold text-danger mb-2">故障分析</h4>
+                <p class="text-secondary mb-3">
+                  故障的根本原因是"新的运维升级工具中的一个致命bug"，但深层次问题在于"高可用架构体系的设计、运维流程，以及项目规范的不完善"。
+                </p>
+
+                <h5 class="font-medium mb-2">具体表现：</h5>
+                <ul class="list-disc pl-5 space-y-1 text-secondary">
+                  <li>
+                    <strong>缺乏完善的灰度发布机制</strong
+                    >：故障发生时影响了所有用户，说明没有有效的灰度发布策略来控制变更风险
+                  </li>
+                  <li>
+                    <strong>监控和告警机制不足</strong
+                    >：故障持续7-8小时才恢复，说明监控系统未能及时发现问题或告警机制存在缺陷
+                  </li>
+                  <li>
+                    <strong>应急响应能力薄弱</strong
+                    >：长时间的故障恢复时间，反映出应急响应预案和执行能力的不足
+                  </li>
+                </ul>
+
+                <p class="text-secondary mt-3">
+                  语雀后来承诺"从同Region多副本容灾升级为两地三中心的高可用能力"，说明之前的架构在容灾能力上存在明显短板。
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- API响应时间对比图表 -->
+          <div class="mt-8">
+            <h4 class="font-semibold mb-4">API响应时间对比 (TTFB)</h4>
+            <div class="h-64 md:h-80">
+              <canvas
+                id="apiResponseChart"
+                style="
+                  display: block;
+                  box-sizing: border-box;
+                  height: 320px;
+                  width: 1408px;
+                "
+                width="1584"
+                height="360"
+              ></canvas>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 5. 网络传输优化评估 -->
+      <section id="network" class="mb-16 section-fade visible">
+        <div class="bg-white rounded-2xl shadow-sm p-6 md:p-8">
+          <div class="flex items-center mb-6">
+            <div
+              class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center mr-4"
+            >
+              <i class="fa fa-wifi text-primary"></i>
+            </div>
+            <h2 class="text-2xl md:text-3xl font-bold">网络传输优化评估</h2>
+          </div>
+
+          <h3 class="text-xl font-semibold mb-4 text-primary">
+            4.1 CDN部署与节点分布
+          </h3>
+          <p class="mb-4">
+            语雀部署了<strong>CDN服务来加速内容分发</strong>，"通过在全球范围内部署多个节点，缓存并分发你的内容"。理论上，CDN可以通过"智能路由算法和动态缓存策略，实现内容就近分发与传输路径优化"。
+          </p>
+
+          <div class="grid md:grid-cols-2 gap-6 my-6">
+            <div>
+              <h4 class="font-semibold mb-3">CDN工作原理</h4>
+              <div class="bg-light rounded-xl p-5 border border-gray-100">
+                <ol class="space-y-3 text-secondary">
+                  <li class="flex">
+                    <span
+                      class="bg-primary text-white w-6 h-6 rounded-full flex items-center justify-center text-sm mr-3 flex-shrink-0"
+                      >1</span
+                    >
+                    <span>用户发起请求，DNS解析到最近的CDN边缘节点</span>
+                  </li>
+                  <li class="flex">
+                    <span
+                      class="bg-primary text-white w-6 h-6 rounded-full flex items-center justify-center text-sm mr-3 flex-shrink-0"
+                      >2</span
+                    >
+                    <span>CDN边缘节点检查缓存中是否有请求的资源</span>
+                  </li>
+                  <li class="flex">
+                    <span
+                      class="bg-primary text-white w-6 h-6 rounded-full flex items-center justify-center text-sm mr-3 flex-shrink-0"
+                      >3</span
+                    >
+                    <span>如果有缓存且未过期，直接从边缘节点返回资源</span>
+                  </li>
+                  <li class="flex">
+                    <span
+                      class="bg-primary text-white w-6 h-6 rounded-full flex items-center justify-center text-sm mr-3 flex-shrink-0"
+                      >4</span
+                    >
+                    <span>如果无缓存或已过期，从源站获取资源并缓存后返回</span>
+                  </li>
+                </ol>
+              </div>
+            </div>
+
+            <div>
+              <h4 class="font-semibold mb-3">实际CDN问题</h4>
+              <div class="bg-light rounded-xl p-5 border border-gray-100">
+                <ul class="space-y-3 text-secondary">
+                  <li class="flex items-start">
+                    <i class="fa fa-times-circle text-danger mt-1 mr-2"></i>
+                    <div>
+                      <strong>CDN缓存命中率低</strong
+                      >：技术分析明确指出语雀存在"CDN缓存命中率低，缓存策略配置不当"的问题
+                    </div>
+                  </li>
+                  <li class="flex items-start">
+                    <i class="fa fa-times-circle text-danger mt-1 mr-2"></i>
+                    <div>
+                      <strong>节点分布与调度问题</strong
+                      >：跨地域访问时边缘节点调度不智能，导致用户无法访问最近的节点
+                    </div>
+                  </li>
+                  <li class="flex items-start">
+                    <i class="fa fa-times-circle text-danger mt-1 mr-2"></i>
+                    <div>
+                      <strong>回源频率过高</strong
+                      >：高回源频率不仅增加了源站压力，也延长了资源加载时间
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <h3 class="text-xl font-semibold mb-4 text-primary">
+            4.2 资源压缩与传输优化
+          </h3>
+          <p class="mb-4">语雀在资源压缩方面存在明显不足，主要表现在：</p>
+
+          <div class="overflow-x-auto my-6">
+            <table
+              class="min-w-full bg-white border border-gray-200 rounded-lg"
+            >
+              <thead>
+                <tr class="bg-light">
+                  <th class="py-3 px-4 text-left border-b">优化项目</th>
+                  <th class="py-3 px-4 text-left border-b">当前状态</th>
+                  <th class="py-3 px-4 text-left border-b">建议方案</th>
+                  <th class="py-3 px-4 text-left border-b">预期效果</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="py-3 px-4 border-b font-medium">压缩技术</td>
+                  <td class="py-3 px-4 border-b text-danger">
+                    未启用Gzip/Brotli
+                  </td>
+                  <td class="py-3 px-4 border-b text-secondary">
+                    启用Brotli压缩，配置合适压缩级别
+                  </td>
+                  <td class="py-3 px-4 border-b text-success">
+                    减少30-50%传输体积
+                  </td>
+                </tr>
+                <tr class="bg-gray-50">
+                  <td class="py-3 px-4 border-b font-medium">图片格式</td>
+                  <td class="py-3 px-4 border-b text-danger">使用传统格式</td>
+                  <td class="py-3 px-4 border-b text-secondary">
+                    采用WebP/AVIF格式，实现自动降级
+                  </td>
+                  <td class="py-3 px-4 border-b text-success">
+                    减少50%以上图片体积
+                  </td>
+                </tr>
+                <tr>
+                  <td class="py-3 px-4 border-b font-medium">图片优化</td>
+                  <td class="py-3 px-4 border-b text-danger">无懒加载</td>
+                  <td class="py-3 px-4 border-b text-secondary">
+                    实现懒加载，响应式图片
+                  </td>
+                  <td class="py-3 px-4 border-b text-success">
+                    减少首屏加载时间50%
+                  </td>
+                </tr>
+                <tr class="bg-gray-50">
+                  <td class="py-3 px-4 border-b font-medium">资源合并</td>
+                  <td class="py-3 px-4 border-b text-warning">碎片化严重</td>
+                  <td class="py-3 px-4 border-b text-secondary">
+                    合理合并JS/CSS，减少请求数
+                  </td>
+                  <td class="py-3 px-4 border-b text-success">
+                    减少40% HTTP请求
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3 class="text-xl font-semibold mb-4 text-primary">
+            4.3 网络协议与连接优化
+          </h3>
+          <p class="mb-4">语雀在网络协议使用方面明显落后于现代标准：</p>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 my-6">
+            <div
+              class="bg-white border border-gray-200 rounded-xl p-5 shadow-sm card-hover"
+            >
+              <div class="flex justify-between items-start mb-3">
+                <h4 class="font-semibold">HTTP协议版本</h4>
+                <span
+                  class="px-2 py-1 bg-danger/10 text-danger text-xs rounded-full"
+                  >落后</span
+                >
+              </div>
+              <p class="text-secondary text-sm mb-3">
+                分析指出语雀"未使用HTTP/2或多路复用技术"。HTTP/2相比HTTP/1.1有多项优势。
+              </p>
+              <div class="space-y-2">
+                <div class="flex items-center">
+                  <div class="w-2 h-2 rounded-full bg-danger mr-2"></div>
+                  <span class="text-sm text-secondary">当前：HTTP/1.1</span>
+                </div>
+                <div class="flex items-center">
+                  <div class="w-2 h-2 rounded-full bg-success mr-2"></div>
+                  <span class="text-sm text-secondary"
+                    >建议：HTTP/2 + HTTP/3</span
+                  >
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="bg-white border border-gray-200 rounded-xl p-5 shadow-sm card-hover"
+            >
+              <div class="flex justify-between items-start mb-3">
+                <h4 class="font-semibold">TCP优化</h4>
+                <span
+                  class="px-2 py-1 bg-warning/10 text-warning text-xs rounded-full"
+                  >待优化</span
+                >
+              </div>
+              <p class="text-secondary text-sm mb-3">
+                现代Web应用通常会采用TCP Fast
+                Open、Keep-Alive优化等技术来减少连接建立时间。
+              </p>
+              <div class="space-y-2">
+                <div class="flex items-center">
+                  <div class="w-2 h-2 rounded-full bg-warning mr-2"></div>
+                  <span class="text-sm text-secondary"
+                    >TCP Fast Open：未启用</span
+                  >
+                </div>
+                <div class="flex items-center">
+                  <div class="w-2 h-2 rounded-full bg-warning mr-2"></div>
+                  <span class="text-sm text-secondary"
+                    >Keep-Alive：配置不当</span
+                  >
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="bg-white border border-gray-200 rounded-xl p-5 shadow-sm card-hover"
+            >
+              <div class="flex justify-between items-start mb-3">
+                <h4 class="font-semibold">QUIC协议</h4>
+                <span
+                  class="px-2 py-1 bg-danger/10 text-danger text-xs rounded-full"
+                  >未支持</span
+                >
+              </div>
+              <p class="text-secondary text-sm mb-3">
+                HTTP/3基于QUIC协议，可以解决TCP的队头阻塞问题，在弱网环境下表现更好。
+              </p>
+              <div class="space-y-2">
+                <div class="flex items-center">
+                  <div class="w-2 h-2 rounded-full bg-danger mr-2"></div>
+                  <span class="text-sm text-secondary">QUIC：未支持</span>
+                </div>
+                <div class="flex items-center">
+                  <div class="w-2 h-2 rounded-full bg-success mr-2"></div>
+                  <span class="text-sm text-secondary"
+                    >建议：逐步支持HTTP/3</span
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 网络协议性能对比图表 -->
+          <div class="mt-8">
+            <h4 class="font-semibold mb-4">不同网络协议性能对比</h4>
+            <div class="h-64 md:h-80">
+              <canvas
+                id="protocolComparisonChart"
+                style="
+                  display: block;
+                  box-sizing: border-box;
+                  height: 320px;
+                  width: 1408px;
+                "
+                width="1584"
+                height="360"
+              ></canvas>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 6. 多场景性能体验分析 -->
+      <section id="scenarios" class="mb-16 section-fade visible">
+        <div class="bg-white rounded-2xl shadow-sm p-6 md:p-8">
+          <div class="flex items-center mb-6">
+            <div
+              class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center mr-4"
+            >
+              <i class="fa fa-users text-primary"></i>
+            </div>
+            <h2 class="text-2xl md:text-3xl font-bold">多场景性能体验分析</h2>
+          </div>
+
+          <div class="grid md:grid-cols-3 gap-6 my-8">
+            <!-- 普通用户场景 -->
+            <div
+              class="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden card-hover"
+            >
+              <div class="bg-primary/5 p-4 border-b border-gray-100">
+                <div class="flex items-center">
+                  <div
+                    class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center mr-3"
+                  >
+                    <i class="fa fa-user text-primary"></i>
+                  </div>
+                  <h3 class="font-semibold text-lg">普通用户日常使用</h3>
+                </div>
+              </div>
+              <div class="p-5">
+                <div class="mb-4">
+                  <div class="flex justify-between text-sm mb-1">
+                    <span class="text-secondary">整体体验</span>
+                    <span class="font-medium">中等</span>
+                  </div>
+                  <div class="w-full bg-gray-200 rounded-full h-2">
+                    <div
+                      class="bg-warning h-2 rounded-full"
+                      style="width: 60%"
+                    ></div>
+                  </div>
+                </div>
+
+                <h4 class="font-medium mb-2">主要特点：</h4>
+                <ul class="space-y-2 text-secondary text-sm mb-4">
+                  <li class="flex items-start">
+                    <i class="fa fa-check-circle text-success mt-0.5 mr-2"></i>
+                    <span>基础功能体验尚可，简单文本编辑流畅</span>
+                  </li>
+                  <li class="flex items-start">
+                    <i
+                      class="fa fa-exclamation-circle text-warning mt-0.5 mr-2"
+                    ></i>
+                    <span>文档字数破1w，标注复杂后变得卡顿</span>
+                  </li>
+                  <li class="flex items-start">
+                    <i class="fa fa-times-circle text-danger mt-0.5 mr-2"></i>
+                    <span>操作体验不一致，部分功能响应慢</span>
+                  </li>
+                </ul>
+
+                <div class="bg-light rounded-lg p-3 text-sm">
+                  <div class="font-medium mb-1">用户反馈：</div>
+                  <p class="text-secondary italic">
+                    "一开始使用体验还不错，但是当我的文档字数破了1w，并且标注复杂之后似乎就变得特别卡顿"
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- 团队协作场景 -->
+            <div
+              class="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden card-hover"
+            >
+              <div class="bg-primary/5 p-4 border-b border-gray-100">
+                <div class="flex items-center">
+                  <div
+                    class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center mr-3"
+                  >
+                    <i class="fa fa-users text-primary"></i>
+                  </div>
+                  <h3 class="font-semibold text-lg">团队协作高频使用</h3>
+                </div>
+              </div>
+              <div class="p-5">
+                <div class="mb-4">
+                  <div class="flex justify-between text-sm mb-1">
+                    <span class="text-secondary">整体体验</span>
+                    <span class="font-medium">较差</span>
+                  </div>
+                  <div class="w-full bg-gray-200 rounded-full h-2">
+                    <div
+                      class="bg-danger h-2 rounded-full"
+                      style="width: 40%"
+                    ></div>
+                  </div>
+                </div>
+
+                <h4 class="font-medium mb-2">主要特点：</h4>
+                <ul class="space-y-2 text-secondary text-sm mb-4">
+                  <li class="flex items-start">
+                    <i class="fa fa-times-circle text-danger mt-0.5 mr-2"></i>
+                    <span>多人并发编辑时出现图层冲突、节点错位</span>
+                  </li>
+                  <li class="flex items-start">
+                    <i class="fa fa-times-circle text-danger mt-0.5 mr-2"></i>
+                    <span>实时同步存在明显延迟，尤其网络一般时</span>
+                  </li>
+                  <li class="flex items-start">
+                    <i
+                      class="fa fa-exclamation-circle text-warning mt-0.5 mr-2"
+                    ></i>
+                    <span>协作功能资源消耗大，高并发易出现瓶颈</span>
+                  </li>
+                </ul>
+
+                <div class="bg-light rounded-lg p-3 text-sm">
+                  <div class="font-medium mb-1">用户反馈：</div>
+                  <p class="text-secondary italic">
+                    "尤其是在多人并发编辑的场景下，常常出现以下问题：图层冲突、节点错位、操作覆盖、版本不一致"
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- 大型知识库场景 -->
+            <div
+              class="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden card-hover"
+            >
+              <div class="bg-primary/5 p-4 border-b border-gray-100">
+                <div class="flex items-center">
+                  <div
+                    class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center mr-3"
+                  >
+                    <i class="fa fa-book text-primary"></i>
+                  </div>
+                  <h3 class="font-semibold text-lg">大型知识库浏览</h3>
+                </div>
+              </div>
+              <div class="p-5">
+                <div class="mb-4">
+                  <div class="flex justify-between text-sm mb-1">
+                    <span class="text-secondary">整体体验</span>
+                    <span class="font-medium">差</span>
+                  </div>
+                  <div class="w-full bg-gray-200 rounded-full h-2">
+                    <div
+                      class="bg-danger h-2 rounded-full"
+                      style="width: 25%"
+                    ></div>
+                  </div>
+                </div>
+
+                <h4 class="font-medium mb-2">主要特点：</h4>
+                <ul class="space-y-2 text-secondary text-sm mb-4">
+                  <li class="flex items-start">
+                    <i class="fa fa-times-circle text-danger mt-0.5 mr-2"></i>
+                    <span>大型文档加载时间过长（PC端17.32秒）</span>
+                  </li>
+                  <li class="flex items-start">
+                    <i class="fa fa-times-circle text-danger mt-0.5 mr-2"></i>
+                    <span>内存占用急剧上升（达160MB左右）</span>
+                  </li>
+                  <li class="flex items-start">
+                    <i class="fa fa-times-circle text-danger mt-0.5 mr-2"></i>
+                    <span>DOM节点爆炸式增长，导航搜索性能下降</span>
+                  </li>
+                </ul>
+
+                <div class="bg-light rounded-lg p-3 text-sm">
+                  <div class="font-medium mb-1">用户反馈：</div>
+                  <p class="text-secondary italic">
+                    "PC端完全打开我们使用的表格，居然需要17.32秒。移动端，我们都是使用的移动4G网络，打开文档大概耗时1分钟左右"
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 各场景性能对比图表 -->
+          <div class="mt-8">
+            <h4 class="font-semibold mb-4">各场景性能表现评分</h4>
+            <div class="h-64 md:h-80">
+              <canvas
+                id="scenarioPerformanceChart"
+                style="
+                  display: block;
+                  box-sizing: border-box;
+                  height: 320px;
+                  width: 1408px;
+                "
+                width="1584"
+                height="360"
+              ></canvas>
+            </div>
+          </div>
+
+          <div class="mt-10">
+            <h3 class="text-xl font-semibold mb-4 text-primary">
+              场景化性能问题总结
+            </h3>
+            <div class="bg-light rounded-xl p-5 border border-gray-100">
+              <ul class="space-y-3 text-secondary">
+                <li class="flex items-start">
+                  <i class="fa fa-angle-right text-primary mt-1 mr-2"></i>
+                  <div>
+                    <strong>使用门槛效应明显</strong
+                    >：在轻量级使用场景下性能问题不明显，但随着文档复杂度和使用强度增加，性能问题呈指数级恶化
+                  </div>
+                </li>
+                <li class="flex items-start">
+                  <i class="fa fa-angle-right text-primary mt-1 mr-2"></i>
+                  <div>
+                    <strong>资源消耗失控</strong
+                    >：DOM节点数量、内存占用等关键指标随文档规模增长过快，缺乏有效的资源控制机制
+                  </div>
+                </li>
+                <li class="flex items-start">
+                  <i class="fa fa-angle-right text-primary mt-1 mr-2"></i>
+                  <div>
+                    <strong>场景适配不足</strong
+                    >：未能针对不同使用场景（单人/团队、小型/大型文档）提供差异化的性能优化策略
+                  </div>
+                </li>
+                <li class="flex items-start">
+                  <i class="fa fa-angle-right text-primary mt-1 mr-2"></i>
+                  <div>
+                    <strong>移动端体验差</strong
+                    >：在移动端（尤其是4G网络）性能表现远低于桌面端，未能针对移动设备特性进行优化
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 7. 竞品横向对比分析 -->
+      <section id="comparison" class="mb-16 section-fade visible">
+        <div class="bg-white rounded-2xl shadow-sm p-6 md:p-8">
+          <div class="flex items-center mb-6">
+            <div
+              class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center mr-4"
+            >
+              <i class="fa fa-balance-scale text-primary"></i>
+            </div>
+            <h2 class="text-2xl md:text-3xl font-bold">竞品横向对比分析</h2>
+          </div>
+
+          <div class="grid md:grid-cols-2 gap-8 my-8">
+            <div>
+              <h3 class="text-xl font-semibold mb-4 text-primary">
+                7.1 与Notion的性能对比
+              </h3>
+              <p class="mb-4 text-secondary">
+                Notion作为国际知名的全能型知识管理工具，在加载速度方面表现同样不佳，但原因有所不同：
+              </p>
+
+              <div class="bg-light rounded-xl p-5 border border-gray-100 mb-4">
+                <h4 class="font-semibold mb-3">Notion的加载速度问题</h4>
+                <ul class="space-y-2 text-secondary">
+                  <li>• "处理10,000行数据时，加载速度比Airtable慢20%"</li>
+                  <li>
+                    • "国内直连速度平均加载时间3.8秒（对比飞书文档1.2秒）"
+                  </li>
+                  <li>
+                    •
+                    Notion的性能问题主要源于其复杂的功能设计和国内网络环境的影响
+                  </li>
+                </ul>
+              </div>
+
+              <div class="bg-light rounded-xl p-5 border border-gray-100">
+                <h4 class="font-semibold mb-3">技术架构的差异</h4>
+                <p class="text-secondary mb-3">
+                  Notion采用更加复杂的Block架构，"推翻了大家对笔记应用的认知"，这种创新的设计虽然功能强大，但也带来了性能挑战。相比之下，语雀的问题更多在于技术实现和优化不足。
+                </p>
+                <p class="text-secondary">
+                  "在加载速度上，目前Notion则处于绝对的被动状态"，主要是由于服务器地理位置和网络限制。而语雀作为国内产品，理论上应该在网络性能上有优势，但实际表现却不尽如人意。
+                </p>
+              </div>
+            </div>
+
+            <div>
+              <h3 class="text-xl font-semibold mb-4 text-primary">
+                7.2 与腾讯文档的性能对比
+              </h3>
+              <p class="mb-4 text-secondary">
+                腾讯文档在加载速度方面表现相对较好，但也存在一些问题：
+              </p>
+
+              <div class="bg-light rounded-xl p-5 border border-gray-100 mb-4">
+                <h4 class="font-semibold mb-3">腾讯文档的加载性能</h4>
+                <ul class="space-y-2 text-secondary">
+                  <li>
+                    •
+                    "腾讯文档：平均加载时间为1.8秒，首次加载后再次打开相同文件可达到0.5秒的极速响应"
+                  </li>
+                  <li>• 在PPT协作场景下，"文字输入：腾讯文档平均延迟120ms"</li>
+                  <li>• 这些数据显示腾讯文档在基础性能方面有明显优势</li>
+                </ul>
+              </div>
+
+              <div class="bg-light rounded-xl p-5 border border-gray-100">
+                <h4 class="font-semibold mb-3">大文档处理的差异</h4>
+                <p class="text-secondary mb-3">
+                  然而，在处理大型文档时，腾讯文档也会出现问题。用户反馈"由于文档超过12万字，几百M的大小，在腾讯文档打开速度慢如蜗牛。迁移到语雀后，可以个类目一个文档，速度非常快"。这说明在某些特定场景下，语雀可能有优势。
+                </p>
+                <p class="text-secondary">
+                  腾讯文档在移动端表现不佳，"移动端，我们都是使用的移动4G网络，打开文档大概耗时1分钟左右"。这可能与移动端的渲染能力和网络优化有关。
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid md:grid-cols-2 gap-8 my-8">
+            <div>
+              <h3 class="text-xl font-semibold mb-4 text-primary">
+                7.3 与飞书文档的性能对比
+              </h3>
+              <p class="mb-4 text-secondary">
+                飞书文档在加载速度方面表现最为出色：
+              </p>
+
+              <div class="bg-light rounded-xl p-5 border border-gray-100 mb-4">
+                <h4 class="font-semibold mb-3">飞书文档的优异表现</h4>
+                <ul class="space-y-2 text-secondary">
+                  <li>
+                    •
+                    "飞书文档：平均加载时间为2.3秒，得益于预加载技术，连续打开不同PPT文件时速度稳定在2秒左右"
+                  </li>
+                  <li>
+                    •
+                    在协作性能方面，"飞书文档：内容同步平均时间为0.7秒，光标追踪延迟约0.5秒"
+                  </li>
+                </ul>
+              </div>
+
+              <div class="bg-light rounded-xl p-5 border border-gray-100">
+                <h4 class="font-semibold mb-3">预加载技术的应用</h4>
+                <p class="text-secondary">
+                  飞书文档"得益于预加载技术"，能够在用户操作前提前加载相关资源，显著提升了连续操作的流畅度。这种技术的应用体现了飞书在性能优化方面的重视。
+                </p>
+                <p class="text-secondary">
+                  从多个维度的对比来看，飞书文档在加载速度、协作性能、用户体验等方面都表现较好，是目前主流在线文档工具中性能最优的产品之一。
+                </p>
+              </div>
+            </div>
+
+            <div>
+              <h3 class="text-xl font-semibold mb-4 text-primary">
+                7.4 性能对比总结
+              </h3>
+              <p class="mb-4 text-secondary">
+                通过横向对比分析，可以得出以下结论：
+              </p>
+
+              <div class="bg-light rounded-xl p-5 border border-gray-100">
+                <p class="text-secondary mb-4">
+                  <strong>语雀的性能排名靠后</strong
+                  >。在Notion、腾讯文档、飞书文档等主流产品中，语雀的加载速度明显较慢。特别是在日常使用和团队协作场景下，性能劣势更加明显。
+                </p>
+
+                <h4 class="font-semibold mb-3">各产品的性能特点：</h4>
+                <ul class="space-y-2 text-secondary mb-4">
+                  <li>
+                    •
+                    <strong>飞书文档</strong
+                    >：性能最优，特别是在预加载技术的支持下，连续操作体验流畅
+                  </li>
+                  <li>
+                    •
+                    <strong>腾讯文档</strong
+                    >：基础性能良好，但大文档处理能力有限
+                  </li>
+                  <li>
+                    • <strong>Notion</strong>：功能最强大，但受网络环境影响较大
+                  </li>
+                  <li>
+                    •
+                    <strong>语雀</strong
+                    >：在某些特定场景（如超大型文档）可能有优势，但整体性能表现不佳
+                  </li>
+                </ul>
+
+                <p class="text-secondary">
+                  <strong>性能差异的原因</strong
+                  >：不同产品在技术架构、优化策略、资源投入等方面存在差异。飞书和腾讯作为专业的办公软件团队，在性能优化方面投入更多，而语雀可能在功能开发和性能优化之间没有找到最佳平衡点。
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- 竞品性能对比图表 -->
+          <div class="mt-8">
+            <h4 class="font-semibold mb-4">竞品加载时间对比</h4>
+            <div class="h-64 md:h-80">
+              <canvas
+                id="competitorComparisonChart"
+                style="
+                  display: block;
+                  box-sizing: border-box;
+                  height: 320px;
+                  width: 1408px;
+                "
+                width="1584"
+                height="360"
+              ></canvas>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 8. 优化建议与改进方向 -->
+      <section id="optimization" class="mb-16 section-fade visible">
+        <div class="bg-white rounded-2xl shadow-sm p-6 md:p-8">
+          <div class="flex items-center mb-6">
+            <div
+              class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center mr-4"
+            >
+              <i class="fa fa-lightbulb-o text-primary"></i>
+            </div>
+            <h2 class="text-2xl md:text-3xl font-bold">优化建议与改进方向</h2>
+          </div>
+
+          <div class="grid md:grid-cols-2 gap-8 my-8">
+            <div>
+              <h3 class="text-xl font-semibold mb-4 text-primary">
+                7.1 前端性能优化策略
+              </h3>
+              <p class="mb-4 text-secondary">
+                基于前述分析，语雀的前端性能优化需要从多个层面入手：
+              </p>
+
+              <div class="bg-light rounded-xl p-5 border border-gray-100 mb-4">
+                <h4 class="font-semibold mb-3">DOM结构优化</h4>
+                <p class="text-secondary mb-3">
+                  最紧迫的任务是<strong>大幅简化DOM结构</strong>。建议采用虚拟滚动技术，"只渲染当前可见区域范围的行，这样可以减少不必要的渲染从来提升性能"。同时，优化Markdown渲染逻辑，减少不必要的标签嵌套，将DOM节点数量控制在合理范围内。
+                </p>
+              </div>
+
+              <div class="bg-light rounded-xl p-5 border border-gray-100 mb-4">
+                <h4 class="font-semibold mb-3">资源加载优化</h4>
+                <p class="text-secondary mb-3">实施全面的资源优化策略：</p>
+                <ul class="space-y-2 text-secondary">
+                  <li>
+                    •
+                    启用<strong>懒加载机制</strong>，"图片不在页面初始加载时全部加载，而是等用户真的要看（滚动到可视区域）时再加载"
+                  </li>
+                  <li>
+                    •
+                    采用<strong>现代图片格式</strong>，将图片转换为WebP或AVIF格式，可减少50%以上的文件大小
+                  </li>
+                  <li>
+                    •
+                    实施<strong>智能预加载</strong>，"当用户在停留一个界面时候，将对应当前界面通向下一界面的所有信息都加载出来"
+                  </li>
+                  <li>
+                    • 优化<strong>缓存策略</strong>，"配置Cache-Control: public,
+                    max-age=31536000对静态资源"
+                  </li>
+                </ul>
+              </div>
+
+              <div class="bg-light rounded-xl p-5 border border-gray-100">
+                <h4 class="font-semibold mb-3">JavaScript性能提升</h4>
+                <p class="text-secondary mb-3">
+                  重点解决内存泄漏和执行效率问题：
+                </p>
+                <ul class="space-y-2 text-secondary">
+                  <li>
+                    • 引入<strong>Web Worker</strong
+                    >进行耗时操作，避免阻塞主线程
+                  </li>
+                  <li>
+                    •
+                    优化编辑器逻辑，采用<strong>增量渲染</strong>和<strong>局部更新</strong>策略
+                  </li>
+                  <li>
+                    • 实施严格的内存管理，及时清理不再使用的对象和事件监听
+                  </li>
+                  <li>
+                    •
+                    使用<strong>WebAssembly</strong>加速关键计算，如Markdown解析和格式转换
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <div>
+              <h3 class="text-xl font-semibold mb-4 text-primary">
+                7.2 后端架构改进方案
+              </h3>
+              <p class="mb-4 text-secondary">
+                后端性能优化需要从架构层面进行系统性改进：
+              </p>
+
+              <div class="bg-light rounded-xl p-5 border border-gray-100 mb-4">
+                <h4 class="font-semibold mb-3">服务端渲染（SSR）</h4>
+                <p class="text-secondary">
+                  "对Markdown解析引擎做服务端渲染（SSR），输出纯净HTML"。SSR可以显著减少客户端的JavaScript执行负担，加快首屏渲染速度。
+                </p>
+              </div>
+
+              <div class="bg-light rounded-xl p-5 border border-gray-100 mb-4">
+                <h4 class="font-semibold mb-3">Node.js架构优化</h4>
+                <p class="text-secondary mb-3">
+                  针对Node.js单线程的固有问题，实施以下改进：
+                </p>
+                <ul class="space-y-2 text-secondary">
+                  <li>
+                    •
+                    将CPU密集型任务迁移到<strong>函数计算</strong>，"把函数计算引入之后，我们可以将那些CPU密集型、存在不稳定因素的操作统统放到函数计算服务中去执行"
+                  </li>
+                  <li>• 优化事件循环管理，避免长时间阻塞</li>
+                  <li>
+                    • 实施<strong>连接池</strong>和<strong>异步处理</strong>优化
+                  </li>
+                </ul>
+              </div>
+
+              <div class="bg-light rounded-xl p-5 border border-gray-100">
+                <h4 class="font-semibold mb-3">数据库和缓存优化</h4>
+                <ul class="space-y-2 text-secondary">
+                  <li>
+                    •
+                    优化ORM查询，解决N+1查询问题，"通过适当的操作来降低数据库的QPS"
+                  </li>
+                  <li>• 实施多级缓存策略，包括Redis内存缓存和CDN边缘缓存</li>
+                  <li>• 优化数据库查询语句，使用批量操作减少数据库交互</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid md:grid-cols-2 gap-8 my-8">
+            <div>
+              <h3 class="text-xl font-semibold mb-4 text-primary">
+                7.3 网络传输优化措施
+              </h3>
+              <p class="mb-4 text-secondary">
+                网络传输优化需要系统性的技术升级：
+              </p>
+
+              <div class="bg-light rounded-xl p-5 border border-gray-100 mb-4">
+                <h4 class="font-semibold mb-3">协议升级</h4>
+                <p class="text-secondary mb-3">全面升级网络协议栈：</p>
+                <ul class="space-y-2 text-secondary">
+                  <li>
+                    •
+                    部署<strong>HTTP/2</strong>，利用其多路复用、头部压缩等特性提升传输效率
+                  </li>
+                  <li>
+                    •
+                    逐步引入<strong>HTTP/3</strong>，解决TCP队头阻塞问题，提升弱网环境性能
+                  </li>
+                  <li>• 优化TCP参数，启用TCP Fast Open减少连接建立时间</li>
+                </ul>
+              </div>
+
+              <div class="bg-light rounded-xl p-5 border border-gray-100">
+                <h4 class="font-semibold mb-3">CDN优化策略</h4>
+                <ul class="space-y-2 text-secondary">
+                  <li>
+                    •
+                    重新设计CDN节点分布，确保"节点数量和分布范围越广，越能覆盖更多的用户"
+                  </li>
+                  <li>• 优化缓存策略，提高CDN命中率，减少回源请求</li>
+                  <li>• 实施智能调度，"基于用户地理位置选择最优接入点"</li>
+                </ul>
+              </div>
+            </div>
+
+            <div>
+              <h3 class="text-xl font-semibold mb-4 text-primary">
+                7.4 场景化性能改进建议
+              </h3>
+              <p class="mb-4 text-secondary">
+                针对不同使用场景的特殊需求，提出以下改进建议：
+              </p>
+
+              <div class="bg-light rounded-xl p-5 border border-gray-100 mb-4">
+                <h4 class="font-semibold mb-3">日常使用场景优化</h4>
+                <ul class="space-y-2 text-secondary">
+                  <li>
+                    •
+                    实施<strong>渐进式加载</strong>，"先展示文本骨架，再填充媒体内容"
+                  </li>
+                  <li>• 优化常用操作的响应速度，如文档打开、保存、编辑等</li>
+                  <li>• 提供轻量化视图模式，减少资源消耗</li>
+                </ul>
+              </div>
+
+              <div class="bg-light rounded-xl p-5 border border-gray-100 mb-4">
+                <h4 class="font-semibold mb-3">团队协作场景优化</h4>
+                <ul class="space-y-2 text-secondary">
+                  <li>• 改进多人协作的实时同步机制，降低延迟</li>
+                  <li>• 优化版本管理和冲突处理算法</li>
+                  <li>• 提供离线协作模式，支持弱网环境下的操作</li>
+                </ul>
+              </div>
+
+              <div class="bg-light rounded-xl p-5 border border-gray-100">
+                <h4 class="font-semibold mb-3">大型知识库场景优化</h4>
+                <ul class="space-y-2 text-secondary">
+                  <li>
+                    •
+                    实施<strong>文档分片加载</strong>，将大文档拆分为多个部分按需加载
+                  </li>
+                  <li>• 优化搜索和导航功能，使用高效的数据结构和算法</li>
+                  <li>• 提供智能缓存策略，缓存常用文档和查询结果</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-10">
+            <h3 class="text-xl font-semibold mb-4 text-primary">
+              7.5 性能监控与持续优化
+            </h3>
+            <p class="mb-4 text-secondary">
+              建立完善的性能监控体系是持续改进的基础：
+            </p>
+
+            <div class="bg-light rounded-xl p-5 border border-gray-100">
+              <div class="grid md:grid-cols-3 gap-6">
+                <div>
+                  <h4 class="font-semibold mb-3">性能指标监控</h4>
+                  <p class="text-secondary mb-3">建立全面的性能监控体系：</p>
+                  <ul class="space-y-2 text-secondary">
+                    <li>
+                      • 监控核心Web
+                      Vitals指标：LCP（最大内容绘制）、FID（首次输入延迟）、CLS（累积布局偏移）
+                    </li>
+                    <li>• 监控TTFB、页面加载时间、资源加载时间等关键指标</li>
+                    <li>• 实施用户体验监控，收集真实用户的性能反馈</li>
+                  </ul>
+                </div>
+
+                <div>
+                  <h4 class="font-semibold mb-3">自动化测试体系</h4>
+                  <p class="text-secondary mb-3">建立性能回归测试机制：</p>
+                  <ul class="space-y-2 text-secondary">
+                    <li>• "建立自动化性能回归测试流水线（Lighthouse CI）"</li>
+                    <li>• 定期进行性能基准测试，对比历史数据</li>
+                    <li>• 实施A/B测试，量化不同优化策略的效果</li>
+                  </ul>
+                </div>
+
+                <div>
+                  <h4 class="font-semibold mb-3">持续优化文化</h4>
+                  <p class="text-secondary mb-3">
+                    将性能优化纳入日常开发流程：
+                  </p>
+                  <ul class="space-y-2 text-secondary">
+                    <li>• 在需求评审阶段评估性能影响</li>
+                    <li>• 在开发过程中进行性能分析和优化</li>
+                    <li>• 建立性能优化的激励机制，鼓励团队关注性能问题</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 结论与行动计划 -->
+      <section id="conclusion" class="mb-16 section-fade visible">
+        <div
+          class="bg-gradient-to-r from-primary to-primary/80 rounded-2xl shadow-lg p-6 md:p-8 text-white"
+          style="background-color: lightblue; color: black"
+        >
+          <div class="flex items-center mb-6">
+            <div
+              class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center mr-4"
+            >
+              <i class="fa fa-flag-checkered text-white"></i>
+            </div>
+            <h2 class="text-2xl md:text-3xl font-bold">结论与行动计划</h2>
+          </div>
+
+          <div class="mb-6">
+            <p class="text-lg mb-4">
+              通过深入分析，我们可以明确得出结论：<strong>语雀网页版确实存在严重的加载速度问题，在主流互联网大厂的在线文档产品中性能表现较差</strong>。
+            </p>
+
+            <p class="mb-4">主要问题集中在：</p>
+            <ul class="space-y-2 mb-6">
+              <li class="flex items-start">
+                <i class="fa fa-arrow-right mt-1 mr-2"></i>
+                <span
+                  ><strong>前端层面</strong
+                  >：DOM结构过度复杂（1.4万字文档产生1.4万个DOM节点），缺乏现代加载优化机制，内存管理不当</span
+                >
+              </li>
+              <li class="flex items-start">
+                <i class="fa fa-arrow-right mt-1 mr-2"></i>
+                <span
+                  ><strong>后端层面</strong
+                  >：Node.js单线程架构的固有缺陷，API响应延迟高（TTFB &gt;
+                  500ms），高可用架构设计不完善</span
+                >
+              </li>
+              <li class="flex items-start">
+                <i class="fa fa-arrow-right mt-1 mr-2"></i>
+                <span
+                  ><strong>网络层面</strong
+                  >：CDN缓存命中率低，未使用HTTP/2等现代协议，资源压缩不足</span
+                >
+              </li>
+              <li class="flex items-start">
+                <i class="fa fa-arrow-right mt-1 mr-2"></i>
+                <span
+                  ><strong>场景适配</strong
+                  >：大型文档处理能力差（PC端17.32秒，移动端1分钟），多场景性能表现不均衡</span
+                >
+              </li>
+            </ul>
+
+            <p class="mb-6">
+              基于分析结果，建议语雀团队采取以下<strong>优先级行动计划</strong>：
+            </p>
+          </div>
+
+          <div class="grid md:grid-cols-3 gap-6">
+            <div class="bg-white/10 backdrop-blur-sm rounded-xl p-5">
+              <h3 class="text-xl font-semibold mb-3 flex items-center">
+                <span
+                  class="bg-white/20 w-8 h-8 rounded-full flex items-center justify-center mr-2"
+                  >1</span
+                >
+                短期（1-3个月）
+              </h3>
+              <ul class="space-y-2 text-sm">
+                <li>• 实施DOM结构优化，将页面DOM节点数量减少50%以上</li>
+                <li>• 引入图片懒加载和WebP格式支持</li>
+                <li>• 启用CDN缓存策略，提高命中率至80%以上</li>
+                <li>• 优化关键API响应时间，将TTFB降至300ms以内</li>
+              </ul>
+            </div>
+
+            <div class="bg-white/10 backdrop-blur-sm rounded-xl p-5">
+              <h3 class="text-xl font-semibold mb-3 flex items-center">
+                <span
+                  class="bg-white/20 w-8 h-8 rounded-full flex items-center justify-center mr-2"
+                  >2</span
+                >
+                中期（3-6个月）
+              </h3>
+              <ul class="space-y-2 text-sm">
+                <li>• 引入服务端渲染（SSR）技术</li>
+                <li>• 将CPU密集型任务迁移到函数计算</li>
+                <li>• 部署HTTP/2协议，开始评估HTTP/3</li>
+                <li>• 建立完善的性能监控体系</li>
+              </ul>
+            </div>
+
+            <div class="bg-white/10 backdrop-blur-sm rounded-xl p-5">
+              <h3 class="text-xl font-semibold mb-3 flex items-center">
+                <span
+                  class="bg-white/20 w-8 h-8 rounded-full flex items-center justify-center mr-2"
+                  >3</span
+                >
+                长期（6个月以上）
+              </h3>
+              <ul class="space-y-2 text-sm">
+                <li>• 重构前端渲染引擎，采用更高效的渲染机制</li>
+                <li>• 优化后端微服务架构，提升可扩展性</li>
+                <li>• 全面升级网络基础设施，支持最新协议</li>
+                <li>• 建立持续性能优化的文化和机制</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="mt-8 p-4 bg-white/10 backdrop-blur-sm rounded-lg">
+            <p class="text-sm">
+              语雀作为蚂蚁集团的重要产品，其性能问题不仅影响用户体验，也关系到企业的技术形象。通过系统性的性能优化，不仅可以显著提升产品竞争力，也能为其他类似产品提供宝贵的技术经验。建议语雀团队高度重视性能问题，将其作为产品发展的核心战略之一，通过持续的技术创新和优化，打造真正高效、流畅的知识管理平台。
+            </p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="bg-dark text-white py-8">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col md:flex-row justify-between items-center">
+          <div class="mb-4 md:mb-0">
+            <p class="text-sm">
+              © 2023 语雀性能研究报告. All rights reserved.
+            </p>
+          </div>
+          <div class="flex space-x-6">
+            <a
+              href="#"
+              class="text-gray-400 hover:text-white transition-colors"
+            >
+              <i class="fa fa-github text-xl"></i>
+            </a>
+            <a
+              href="#"
+              class="text-gray-400 hover:text-white transition-colors"
+            >
+              <i class="fa fa-twitter text-xl"></i>
+            </a>
+            <a
+              href="#"
+              class="text-gray-400 hover:text-white transition-colors"
+            >
+              <i class="fa fa-linkedin text-xl"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <script
+      type="module"
+      src="./src/语雀网页版加载速度优化研究报告.js"
+    ></script>
+  </body>
+</html>

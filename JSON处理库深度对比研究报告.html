@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <link rel="icon" href="vite.svg" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="深入对比分析stream-json和large-json-reader-writer两个主流JSON处理库的性能、内存管理、API设计和社区支持等特性，为技术选型提供科学依据。包含详细的性能测试数据、技术特性对比表和适用场景分析。"
+    />
+    <title>JSON处理库深度对比研究报告</title>
+    <link rel="stylesheet" href="./src/style.css" />
+
+    <link rel="stylesheet" href="/css/all.min.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "Poppins", "Noto Sans SC", sans-serif;
+        background-color: #ffffff;
+      }
+      .card {
+        background-color: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 1.25rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        overflow: hidden;
+        position: relative;
+      }
+      .highlight-gradient-blue {
+        background: linear-gradient(
+          135deg,
+          rgba(59, 130, 246, 0),
+          rgba(59, 130, 246, 0.05)
+        );
+      }
+      .highlight-gradient-purple {
+        background: linear-gradient(
+          135deg,
+          rgba(168, 85, 247, 0),
+          rgba(168, 85, 247, 0.05)
+        );
+      }
+      .highlight-gradient-green {
+        background: linear-gradient(
+          135deg,
+          rgba(34, 197, 94, 0),
+          rgba(34, 197, 94, 0.05)
+        );
+      }
+      .highlight-gradient-amber {
+        background: linear-gradient(
+          135deg,
+          rgba(245, 158, 11, 0),
+          rgba(245, 158, 11, 0.05)
+        );
+      }
+      .highlight-gradient-red {
+        background: linear-gradient(
+          135deg,
+          rgba(239, 68, 68, 0),
+          rgba(239, 68, 68, 0.05)
+        );
+      }
+    </style>
+  </head>
+  <body class="bg-white">
+    <div class="max-w-7xl mx-auto p-4 md:p-8">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-6">
+        <!-- 标题卡片 -->
+        <div
+          class="card md:col-span-4 md:row-span-1 p-8 flex flex-col justify-center"
+        >
+          <div
+            class="absolute top-0 left-0 w-full h-full highlight-gradient-blue"
+          ></div>
+          <div class="relative">
+            <h1 class="text-4xl md:text-5xl font-black text-gray-800 mb-4">
+              JSON处理库深度对比研究报告
+            </h1>
+            <p class="text-lg text-gray-500">
+              stream-json vs large-json-reader-writer 全面技术分析
+            </p>
+          </div>
+        </div>
+        <!-- 研究目标卡片 -->
+        <div
+          class="card md:col-span-2 md:row-span-1 p-6 flex flex-col justify-center"
+        >
+          <div
+            class="absolute top-0 left-0 w-full h-full highlight-gradient-purple"
+          ></div>
+          <div class="relative">
+            <div class="flex items-center mb-4">
+              <i class="fa-solid fa-bullseye text-2xl text-purple-500 mr-3"></i>
+              <h2 class="text-2xl font-bold text-gray-800">研究目标</h2>
+            </div>
+            <p class="text-gray-600">
+              评估主流JSON处理库在性能、内存管理、API设计和社区支持等方面的表现，为技术选型提供科学依据。
+            </p>
+          </div>
+        </div>
+        <!-- 研究对象卡片 -->
+        <div
+          class="card md:col-span-2 md:row-span-1 p-6 flex flex-col justify-center"
+        >
+          <div
+            class="absolute top-0 left-0 w-full h-full highlight-gradient-green"
+          ></div>
+          <div class="relative">
+            <div class="flex items-center mb-4">
+              <i class="fa-solid fa-code text-2xl text-green-500 mr-3"></i>
+              <h2 class="text-2xl font-bold text-gray-800">研究对象</h2>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+              <div class="bg-gray-50 rounded-lg p-3">
+                <p class="font-semibold text-gray-800">stream-json</p>
+                <p class="text-sm text-gray-500">成熟的流式JSON处理库</p>
+              </div>
+              <div class="bg-gray-50 rounded-lg p-3">
+                <p class="font-semibold text-gray-800">
+                  large-json-reader-writer
+                </p>
+                <p class="text-sm text-gray-500">新兴的JSON读写工具</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- 性能对比图表卡片 -->
+        <div class="card md:col-span-4 md:row-span-2 p-6 flex flex-col">
+          <div
+            class="absolute top-0 left-0 w-full h-full highlight-gradient-amber"
+          ></div>
+          <div class="relative flex-none mb-4">
+            <h2 class="text-xl font-bold text-gray-800">性能对比分析</h2>
+            <p class="text-sm text-gray-500">不同库的吞吐量和CPU使用情况对比</p>
+          </div>
+          <div class="relative flex-grow h-64 md:h-auto">
+            <canvas id="performanceChart"></canvas>
+          </div>
+        </div>
+        <!-- 技术特性对比卡片 -->
+        <div class="card md:col-span-4 md:row-span-2 p-6">
+          <div
+            class="absolute top-0 left-0 w-full h-full highlight-gradient-blue"
+          ></div>
+          <div class="relative">
+            <h2 class="text-xl font-bold text-gray-800 mb-4">技术特性对比</h2>
+            <div class="overflow-x-auto">
+              <table class="w-full">
+                <thead>
+                  <tr class="border-b border-gray-200">
+                    <th class="text-left py-3 px-4 font-semibold text-gray-700">
+                      特性
+                    </th>
+                    <th class="text-left py-3 px-4 font-semibold text-gray-700">
+                      stream-json
+                    </th>
+                    <th class="text-left py-3 px-4 font-semibold text-gray-700">
+                      large-json-reader-writer
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="border-b border-gray-100">
+                    <td class="py-3 px-4 text-gray-600">流式处理能力</td>
+                    <td class="py-3 px-4">
+                      <span class="inline-flex items-center">
+                        <i
+                          class="fa-solid fa-check-circle text-green-500 mr-2"
+                        ></i>
+                        <span class="text-sm font-medium">真正流式处理</span>
+                      </span>
+                    </td>
+                    <td class="py-3 px-4">
+                      <span class="inline-flex items-center">
+                        <i
+                          class="fa-solid fa-check-circle text-green-500 mr-2"
+                        ></i>
+                        <span class="text-sm font-medium">分块处理</span>
+                      </span>
+                    </td>
+                  </tr>
+                  <tr class="border-b border-gray-100">
+                    <td class="py-3 px-4 text-gray-600">内存管理</td>
+                    <td class="py-3 px-4">
+                      <span class="inline-flex items-center">
+                        <i
+                          class="fa-solid fa-check-circle text-green-500 mr-2"
+                        ></i>
+                        <span class="text-sm font-medium"
+                          >精细控制，内存占用恒定</span
+                        >
+                      </span>
+                    </td>
+                    <td class="py-3 px-4">
+                      <span class="inline-flex items-center">
+                        <i
+                          class="fa-solid fa-check-circle text-green-500 mr-2"
+                        ></i>
+                        <span class="text-sm font-medium"
+                          >自动清理，避免溢出</span
+                        >
+                      </span>
+                    </td>
+                  </tr>
+                  <tr class="border-b border-gray-100">
+                    <td class="py-3 px-4 text-gray-600">API设计</td>
+                    <td class="py-3 px-4">
+                      <span class="inline-flex items-center">
+                        <i class="fa-solid fa-cogs text-blue-500 mr-2"></i>
+                        <span class="text-sm font-medium"
+                          >函数式风格，流管道</span
+                        >
+                      </span>
+                    </td>
+                    <td class="py-3 px-4">
+                      <span class="inline-flex items-center">
+                        <i class="fa-solid fa-cube text-blue-500 mr-2"></i>
+                        <span class="text-sm font-medium"
+                          >面向对象，简洁API</span
+                        >
+                      </span>
+                    </td>
+                  </tr>
+                  <tr class="border-b border-gray-100">
+                    <td class="py-3 px-4 text-gray-600">格式支持</td>
+                    <td class="py-3 px-4">
+                      <span class="inline-flex items-center">
+                        <i
+                          class="fa-solid fa-layer-group text-purple-500 mr-2"
+                        ></i>
+                        <span class="text-sm font-medium"
+                          >JSON, JSON Streaming, NDJSON</span
+                        >
+                      </span>
+                    </td>
+                    <td class="py-3 px-4">
+                      <span class="inline-flex items-center">
+                        <i
+                          class="fa-solid fa-file-code text-purple-500 mr-2"
+                        ></i>
+                        <span class="text-sm font-medium">标准JSON</span>
+                      </span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="py-3 px-4 text-gray-600">错误处理</td>
+                    <td class="py-3 px-4">
+                      <span class="inline-flex items-center">
+                        <i
+                          class="fa-solid fa-exclamation-triangle text-amber-500 mr-2"
+                        ></i>
+                        <span class="text-sm font-medium"
+                          >详细错误信息，Verifier工具</span
+                        >
+                      </span>
+                    </td>
+                    <td class="py-3 px-4">
+                      <span class="inline-flex items-center">
+                        <i
+                          class="fa-solid fa-exclamation-triangle text-amber-500 mr-2"
+                        ></i>
+                        <span class="text-sm font-medium"
+                          >基础验证，错误提示</span
+                        >
+                      </span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <!-- 社区活跃度卡片 -->
+        <div class="card md:col-span-2 md:row-span-2 p-6 flex flex-col">
+          <div
+            class="absolute top-0 left-0 w-full h-full highlight-gradient-green"
+          ></div>
+          <div class="relative flex-none mb-4">
+            <h2 class="text-xl font-bold text-gray-800">社区活跃度对比</h2>
+            <p class="text-sm text-gray-500">项目创建时间、Star数和维护频率</p>
+          </div>
+          <div class="relative flex-grow h-64 md:h-auto">
+            <canvas id="communityChart"></canvas>
+          </div>
+        </div>
+        <!-- 适用场景卡片 -->
+        <div class="card md:col-span-2 md:row-span-2 p-6">
+          <div
+            class="absolute top-0 left-0 w-full h-full highlight-gradient-purple"
+          ></div>
+          <div class="relative">
+            <h2 class="text-xl font-bold text-gray-800 mb-4">适用场景分析</h2>
+            <div class="space-y-4">
+              <div class="bg-white/50 rounded-lg p-4 border border-purple-100">
+                <h3
+                  class="font-semibold text-purple-800 mb-2 flex items-center"
+                >
+                  <i class="fa-solid fa-water mr-2"></i>stream-json 最佳场景
+                </h3>
+                <ul class="text-sm text-gray-700 space-y-1">
+                  <li>• 处理超大型JSON文件 (>内存容量)</li>
+                  <li>• 实时数据流处理</li>
+                  <li>• 自定义数据处理管道</li>
+                  <li>• 内存敏感环境</li>
+                </ul>
+              </div>
+              <div class="bg-white/50 rounded-lg p-4 border border-purple-100">
+                <h3
+                  class="font-semibold text-purple-800 mb-2 flex items-center"
+                >
+                  <i class="fa-solid fa-file-import mr-2"></i
+                  >large-json-reader-writer 最佳场景
+                </h3>
+                <ul class="text-sm text-gray-700 space-y-1">
+                  <li>• 大型JSON文件的综合处理</li>
+                  <li>• 快速原型开发</li>
+                  <li>• 简单分块处理需求</li>
+                  <li>• 需要进度跟踪的场景</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- 最终建议卡片 -->
+        <div class="card md:col-span-4 md:row-span-1 p-8 flex items-center">
+          <div
+            class="absolute top-0 left-0 w-full h-full highlight-gradient-red"
+          ></div>
+          <div class="relative flex items-center">
+            <div class="w-1/4 flex justify-center">
+              <i class="fa-solid fa-lightbulb text-6xl text-amber-500"></i>
+            </div>
+            <div class="w-3/4">
+              <h2 class="text-2xl font-bold text-gray-800 mb-2">
+                最终选型建议
+              </h2>
+              <p class="text-gray-600">
+                <span class="font-semibold">stream-json</span>
+                适合处理超大型JSON文件和需要精细控制的场景；
+                <span class="font-semibold">large-json-reader-writer</span>
+                适合快速开发和综合功能需求。
+                建议根据项目具体需求和团队技术背景进行选择。
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+  <script type="module" src="./src/JSON处理库深度对比研究报告.js"></script>
+</html>

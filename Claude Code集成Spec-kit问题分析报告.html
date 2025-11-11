@@ -1,0 +1,470 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <link rel="icon" href="vite.svg" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Claude Code集成Spec-kit问题分析报告</title>
+    <meta
+      name="description"
+      content="深入分析Claude Code集成Spec-kit时出现的'问题复杂度过高'提示，探讨Spec-kit七阶段工作流与Claude Code 20万token上下文窗口限制之间的根本冲突，包括累积性上下文过载、主线污染、信息压缩等核心问题，并提供短期缓解、中期架构调整和长期技术路线等分层次解决方案。"
+    />
+    <link rel="stylesheet" href="/src/style.css" />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "Noto Sans SC", sans-serif;
+        background-color: #ffffff;
+      }
+      .card {
+        background-color: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 1.25rem; /* 20px */
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        overflow: hidden;
+        position: relative;
+      }
+      .card:hover {
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+        transform: translateY(-2px);
+      }
+      .highlight-gradient-blue {
+        background: linear-gradient(
+          135deg,
+          rgba(59, 130, 246, 0),
+          rgba(59, 130, 246, 0.05)
+        );
+      }
+      .highlight-gradient-green {
+        background: linear-gradient(
+          135deg,
+          rgba(34, 197, 94, 0),
+          rgba(34, 197, 94, 0.05)
+        );
+      }
+      .highlight-gradient-purple {
+        background: linear-gradient(
+          135deg,
+          rgba(168, 85, 247, 0),
+          rgba(168, 85, 247, 0.05)
+        );
+      }
+      .highlight-gradient-orange {
+        background: linear-gradient(
+          135deg,
+          rgba(249, 115, 22, 0),
+          rgba(249, 115, 22, 0.05)
+        );
+      }
+      .highlight-gradient-red {
+        background: linear-gradient(
+          135deg,
+          rgba(239, 68, 68, 0),
+          rgba(239, 68, 68, 0.05)
+        );
+      }
+      .highlight-gradient-cyan {
+        background: linear-gradient(
+          135deg,
+          rgba(6, 182, 212, 0),
+          rgba(6, 182, 212, 0.05)
+        );
+      }
+      .text-gradient-blue {
+        background: linear-gradient(to right, #3b82f6, #60a5fa);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      .text-gradient-green {
+        background: linear-gradient(to right, #22c55e, #4ade80);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      .text-gradient-purple {
+        background: linear-gradient(to right, #a855f7, #c084fc);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      .text-gradient-orange {
+        background: linear-gradient(to right, #f97316, #fb923c);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      .text-gradient-red {
+        background: linear-gradient(to right, #ef4444, #f87171);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      .text-gradient-cyan {
+        background: linear-gradient(to right, #06b6d4, #22d3ee);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+    </style>
+  </head>
+  <body class="bg-white">
+    <div class="max-w-7xl mx-auto p-4 md:p-8">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-6">
+        <!-- 标题卡片 -->
+        <div
+          class="card md:col-span-4 md:row-span-1 p-8 flex flex-col justify-center"
+        >
+          <div
+            class="absolute top-0 left-0 w-full h-full highlight-gradient-blue"
+          ></div>
+          <div class="relative">
+            <div class="text-sm text-gray-500 mb-2">技术分析报告</div>
+            <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+              Claude Code集成Spec-kit问题分析
+            </h1>
+            <p class="text-xl text-gray-600 font-light">
+              深入解析"问题复杂度过高"提示的根本原因与解决方案
+            </p>
+          </div>
+        </div>
+
+        <!-- 问题概述卡片 -->
+        <div class="card md:col-span-2 md:row-span-2 p-8 flex flex-col">
+          <div
+            class="absolute top-0 left-0 w-full h-full highlight-gradient-red"
+          ></div>
+          <div class="relative flex flex-col flex-grow">
+            <div class="flex items-center mb-6">
+              <i
+                class="fa-solid fa-triangle-exclamation text-3xl text-red-500 mr-4"
+              ></i>
+              <h2 class="text-2xl font-bold text-gray-900">问题概述</h2>
+            </div>
+            <div class="space-y-4 flex-grow">
+              <div class="bg-red-50 border-l-4 border-red-400 p-4 rounded">
+                <p class="text-red-800 font-medium">核心冲突</p>
+                <p class="text-gray-700 mt-1">
+                  Spec-kit多步骤长流程提示与Claude
+                  Code上下文窗口管理机制之间的根本性冲突
+                </p>
+              </div>
+              <div class="bg-gray-50 p-4 rounded">
+                <p class="text-gray-800 font-medium">典型表现</p>
+                <ul class="text-gray-700 mt-2 space-y-1">
+                  <li class="flex items-start">
+                    <i
+                      class="fa-solid fa-circle-minus text-red-400 mt-1.5 mr-2"
+                    ></i
+                    >频繁提示"问题复杂度过高"
+                  </li>
+                  <li class="flex items-start">
+                    <i
+                      class="fa-solid fa-circle-minus text-red-400 mt-1.5 mr-2"
+                    ></i
+                    >需要进行上下文压缩操作
+                  </li>
+                  <li class="flex items-start">
+                    <i
+                      class="fa-solid fa-circle-minus text-red-400 mt-1.5 mr-2"
+                    ></i
+                    >无法完全按照既定流程执行
+                  </li>
+                  <li class="flex items-start">
+                    <i
+                      class="fa-solid fa-circle-minus text-red-400 mt-1.5 mr-2"
+                    ></i
+                    >响应中途被截断
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 上下文窗口限制卡片 -->
+        <div
+          class="card md:col-span-2 md:row-span-1 p-8 flex flex-col justify-center items-center text-center"
+        >
+          <div
+            class="absolute top-0 left-0 w-full h-full highlight-gradient-purple"
+          ></div>
+          <div class="relative">
+            <i class="fa-solid fa-memory text-5xl text-purple-500 mb-4"></i>
+            <h2 class="text-2xl font-bold text-gray-900 mb-2">
+              Claude Code上下文窗口
+            </h2>
+            <p class="text-7xl font-black text-gradient-purple mb-2">200,000</p>
+            <p class="text-lg text-gray-600">tokens上限</p>
+            <p class="text-sm text-gray-500 mt-3">约150,000词或500页文本</p>
+          </div>
+        </div>
+
+        <!-- Spec-kit工作流程卡片 -->
+        <div class="card md:col-span-2 md:row-span-1 p-8 flex flex-col">
+          <div
+            class="absolute top-0 left-0 w-full h-full highlight-gradient-green"
+          ></div>
+          <div class="relative">
+            <h2 class="text-2xl font-bold text-gray-900 mb-4">
+              Spec-kit七阶段工作流
+            </h2>
+            <div class="grid grid-cols-1 gap-2">
+              <div class="flex items-center p-2 bg-green-50 rounded">
+                <span
+                  class="bg-green-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm mr-3"
+                  >1</span
+                >
+                <span class="font-medium text-gray-800"
+                  >/speckit.constitution</span
+                >
+              </div>
+              <div class="flex items-center p-2 bg-green-50 rounded">
+                <span
+                  class="bg-green-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm mr-3"
+                  >2</span
+                >
+                <span class="font-medium text-gray-800">/speckit.specify</span>
+              </div>
+              <div class="flex items-center p-2 bg-green-50 rounded">
+                <span
+                  class="bg-green-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm mr-3"
+                  >3</span
+                >
+                <span class="font-medium text-gray-800">/speckit.clarify</span>
+              </div>
+              <div class="flex items-center p-2 bg-green-50 rounded">
+                <span
+                  class="bg-green-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm mr-3"
+                  >4</span
+                >
+                <span class="font-medium text-gray-800">/speckit.plan</span>
+              </div>
+              <div class="flex items-center p-2 bg-green-50 rounded">
+                <span
+                  class="bg-green-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm mr-3"
+                  >5</span
+                >
+                <span class="font-medium text-gray-800">/speckit.tasks</span>
+              </div>
+              <div class="flex items-center p-2 bg-green-50 rounded">
+                <span
+                  class="bg-green-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm mr-3"
+                  >6</span
+                >
+                <span class="font-medium text-gray-800">/speckit.analyze</span>
+              </div>
+              <div class="flex items-center p-2 bg-green-50 rounded">
+                <span
+                  class="bg-green-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm mr-3"
+                  >7</span
+                >
+                <span class="font-medium text-gray-800"
+                  >/speckit.implement</span
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 问题根本原因卡片 -->
+        <div class="card md:col-span-3 md:row-span-2 p-8 flex flex-col">
+          <div
+            class="absolute top-0 left-0 w-full h-full highlight-gradient-orange"
+          ></div>
+          <div class="relative flex flex-col flex-grow">
+            <div class="flex items-center mb-6">
+              <i
+                class="fa-solid fa-magnifying-glass-chart text-3xl text-orange-500 mr-4"
+              ></i>
+              <h2 class="text-2xl font-bold text-gray-900">根本原因分析</h2>
+            </div>
+            <div class="space-y-6 flex-grow">
+              <div class="bg-orange-50 p-5 rounded-lg">
+                <h3 class="text-lg font-semibold text-orange-800 mb-2">
+                  累积性上下文过载
+                </h3>
+                <p class="text-gray-700">
+                  Spec
+                  Kit的7阶段工作流需要在每个阶段都保留完整的历史对话信息，导致上下文窗口快速填满。随着对话进行，信息逐渐膨胀，直至超出模型Context上限。
+                </p>
+              </div>
+              <div class="bg-orange-50 p-5 rounded-lg">
+                <h3 class="text-lg font-semibold text-orange-800 mb-2">
+                  主线污染与注意力分散
+                </h3>
+                <p class="text-gray-700">
+                  无关或过时的内容（如早期假设或失败尝试）残留在上下文中，模型在长序列处理中容易忽略关键早期信息，造成逻辑偏差。
+                </p>
+              </div>
+              <div class="bg-orange-50 p-5 rounded-lg">
+                <h3 class="text-lg font-semibold text-orange-800 mb-2">
+                  记忆"压缩"导致的信息丢失
+                </h3>
+                <p class="text-gray-700">
+                  当记忆被塞满时，AI会开始"压缩"信息，导致关键细节丢失，这解释了为何AI经常遗忘用户五分钟前才强调的关键信息。
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 工作流复杂度卡片 -->
+        <div class="card md:col-span-1 md:row-span-2 p-6 flex flex-col">
+          <div
+            class="absolute top-0 left-0 w-full h-full highlight-gradient-cyan"
+          ></div>
+          <div class="relative flex flex-col flex-grow">
+            <h2 class="text-xl font-bold text-gray-900 mb-4">工作流复杂度</h2>
+            <div class="space-y-4 flex-grow flex flex-col justify-around">
+              <div class="text-center">
+                <p class="text-5xl font-black text-gradient-cyan">5-15</p>
+                <p class="text-sm text-gray-600 mt-1">典型任务数量</p>
+              </div>
+              <div class="text-center">
+                <p class="text-5xl font-black text-gradient-cyan">90</p>
+                <p class="text-sm text-gray-600 mt-1">复杂项目可达任务数</p>
+              </div>
+              <div class="text-center">
+                <p class="text-5xl font-black text-gradient-cyan">3,500</p>
+                <p class="text-sm text-gray-600 mt-1">平均代码行数</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 问题表现统计图表 -->
+        <div class="card md:col-span-2 md:row-span-2 p-8 flex flex-col">
+          <div
+            class="absolute top-0 left-0 w-full h-full highlight-gradient-blue"
+          ></div>
+          <div class="relative flex flex-col flex-grow">
+            <h2 class="text-2xl font-bold text-gray-900 mb-4">
+              问题表现频率分析
+            </h2>
+            <div class="flex-grow h-64">
+              <canvas id="problemFrequencyChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- 工作流阶段Token消耗图表 -->
+        <div class="card md:col-span-2 md:row-span-2 p-8 flex flex-col">
+          <div
+            class="absolute top-0 left-0 w-full h-full highlight-gradient-purple"
+          ></div>
+          <div class="relative flex flex-col flex-grow">
+            <h2 class="text-2xl font-bold text-gray-900 mb-4">
+              工作流阶段Token消耗
+            </h2>
+            <div class="flex-grow h-64">
+              <canvas id="workflowTokenChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- 解决方案概述卡片 -->
+        <div class="card md:col-span-4 md:row-span-1 p-8 flex flex-col">
+          <div
+            class="absolute top-0 left-0 w-full h-full highlight-gradient-green"
+          ></div>
+          <div class="relative">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">解决方案概述</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div class="bg-green-50 p-5 rounded-lg">
+                <h3
+                  class="text-lg font-semibold text-green-800 mb-3 flex items-center"
+                >
+                  <i class="fa-solid fa-scissors mr-2"></i>短期缓解策略
+                </h3>
+                <ul class="text-gray-700 space-y-2">
+                  <li class="flex items-start">
+                    <i class="fa-solid fa-check text-green-500 mt-1 mr-2"></i
+                    >任务拆分优化
+                  </li>
+                  <li class="flex items-start">
+                    <i class="fa-solid fa-check text-green-500 mt-1 mr-2"></i
+                    >上下文管理改进
+                  </li>
+                  <li class="flex items-start">
+                    <i class="fa-solid fa-check text-green-500 mt-1 mr-2"></i
+                    >工具配置优化
+                  </li>
+                </ul>
+              </div>
+              <div class="bg-green-50 p-5 rounded-lg">
+                <h3
+                  class="text-lg font-semibold text-green-800 mb-3 flex items-center"
+                >
+                  <i class="fa-solid fa-cogs mr-2"></i>中期架构调整
+                </h3>
+                <ul class="text-gray-700 space-y-2">
+                  <li class="flex items-start">
+                    <i class="fa-solid fa-check text-green-500 mt-1 mr-2"></i
+                    >工作流重构
+                  </li>
+                  <li class="flex items-start">
+                    <i class="fa-solid fa-check text-green-500 mt-1 mr-2"></i
+                    >上下文隔离策略
+                  </li>
+                  <li class="flex items-start">
+                    <i class="fa-solid fa-check text-green-500 mt-1 mr-2"></i
+                    >混合解决方案
+                  </li>
+                </ul>
+              </div>
+              <div class="bg-green-50 p-5 rounded-lg">
+                <h3
+                  class="text-lg font-semibold text-green-800 mb-3 flex items-center"
+                >
+                  <i class="fa-solid fa-rocket mr-2"></i>长期技术路线
+                </h3>
+                <ul class="text-gray-700 space-y-2">
+                  <li class="flex items-start">
+                    <i class="fa-solid fa-check text-green-500 mt-1 mr-2"></i
+                    >标准化协议采用
+                  </li>
+                  <li class="flex items-start">
+                    <i class="fa-solid fa-check text-green-500 mt-1 mr-2"></i
+                    >新技术评估与采用
+                  </li>
+                  <li class="flex items-start">
+                    <i class="fa-solid fa-check text-green-500 mt-1 mr-2"></i
+                    >开发范式转变
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 未来展望卡片 -->
+        <div
+          class="card md:col-span-4 md:row-span-1 p-8 flex flex-col justify-center"
+        >
+          <div
+            class="absolute top-0 left-0 w-full h-full highlight-gradient-blue"
+          ></div>
+          <div class="relative">
+            <h2 class="text-2xl font-bold text-gray-900 mb-4">未来展望</h2>
+            <p class="text-lg text-gray-700 leading-relaxed">
+              随着AI技术的快速发展，上下文窗口限制问题有望在未来3-5年内得到根本性解决。主流AI模型将普遍支持1M+
+              tokens的上下文窗口，部分先进模型可能实现"无限上下文"的技术突破。
+              同时，MCP等开放标准的成熟将推动AI开发工具的互操作性大幅提升，跨会话上下文共享将成为标配功能。软件开发将从"编程"向"描述"转变，开发者只需专注于需求描述，AI负责完整的实现流程。
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script
+      type="module"
+      src="./src/Claude Code集成Spec-kit问题分析报告.js"
+    ></script>
+  </body>
+</html>

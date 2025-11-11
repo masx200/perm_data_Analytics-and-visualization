@@ -1,0 +1,43 @@
+{
+  "name": "@masx200/uuid-online-generator",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "format": "prettier --write .",
+    "dev": "vite --host --no-open",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.1.16",
+    "@types/prismjs": "^1.26.5",
+    "@types/uuid": "^11.0.0",
+    "rollup-plugin-html-minifier": "^2.0.0",
+    "vite": "^7.1.7",
+    "vite-plugin-prismjs": "^0.0.11",
+    "vite-plugin-pwa": "^1.1.0"
+  },
+  "dependencies": {
+    "@masx200/vite-plugin-virtual-http-resolve": "^1.0.1",
+    "@tailwindcss/postcss": "^4.1.16",
+    "@types/node": "^24.9.2",
+    "autoprefixer": "^10.4.21",
+    "axios": "^1.12.2",
+    "chart.js": "^4.5.1",
+    "prettier": "^3.6.2",
+    "prismjs": "^1.30.0",
+    "tailwindcss": "^4.1.16",
+    "undici": "^7.16.0",
+    "uuid": "^13.0.0"
+  },
+  "description": "这是一个现代化的技术博客和研究报告展示平台，包含博客主页和多个深度技术研究报告。支持动态文章加载、元数据提取、分类筛选、搜索等功能。",
+  "main": "postcss.config.js",
+  "repository": {
+    "type": "git",
+    "url": "https://gitee.com/masx200/json-processing-libraries-comparison"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

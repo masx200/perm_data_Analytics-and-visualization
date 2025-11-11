@@ -1,0 +1,414 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ZFS vs EXT4 数据完整性对比研究</title>
+    <meta
+      name="description"
+      content="深入对比ZFS与EXT4文件系统在数据完整性保护方面的能力差异。通过虚拟磁盘实验验证，ZFS端到端校验机制能立即检测数据篡改，而EXT4默认配置无法检测数据块级别篡改。研究涵盖技术原理、错误检测能力、性能影响分析及企业级应用场景，为关键数据存储提供选型依据。"
+    />
+    <link rel="icon" href="vite.svg" />
+    <link rel="stylesheet" href="./src/style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&family=Poppins:wght@300;400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "Poppins", "Noto Sans SC", sans-serif;
+        background-color: #ffffff;
+      }
+      .card {
+        background-color: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 1.25rem; /* 20px */
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        overflow: hidden;
+        position: relative;
+      }
+      .card:hover {
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+        transform: translateY(-2px);
+      }
+      .highlight-gradient-blue {
+        background: linear-gradient(
+          135deg,
+          rgba(59, 130, 246, 0),
+          rgba(59, 130, 246, 0.05)
+        );
+      }
+      .highlight-gradient-green {
+        background: linear-gradient(
+          135deg,
+          rgba(34, 197, 94, 0),
+          rgba(34, 197, 94, 0.05)
+        );
+      }
+      .highlight-gradient-amber {
+        background: linear-gradient(
+          135deg,
+          rgba(245, 158, 11, 0),
+          rgba(245, 158, 11, 0.05)
+        );
+      }
+      .highlight-gradient-red {
+        background: linear-gradient(
+          135deg,
+          rgba(239, 68, 68, 0),
+          rgba(239, 68, 68, 0.05)
+        );
+      }
+      .highlight-gradient-purple {
+        background: linear-gradient(
+          135deg,
+          rgba(168, 85, 247, 0),
+          rgba(168, 85, 247, 0.05)
+        );
+      }
+      .highlight-gradient-cyan {
+        background: linear-gradient(
+          135deg,
+          rgba(6, 182, 212, 0),
+          rgba(6, 182, 212, 0.05)
+        );
+      }
+    </style>
+  </head>
+  <body class="bg-white">
+    <div class="max-w-7xl mx-auto p-4 md:p-8">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-6">
+        <!-- 标题卡片 -->
+        <div class="card md:col-span-4 p-8 flex flex-col justify-center">
+          <div
+            class="absolute top-0 left-0 w-full h-full highlight-gradient-blue"
+          ></div>
+          <div class="relative">
+            <h1 class="text-4xl md:text-5xl font-black text-gray-800 mb-4">
+              ZFS vs EXT4
+            </h1>
+            <h2 class="text-2xl md:text-3xl font-bold text-blue-600 mb-6">
+              数据完整性保护对比研究
+            </h2>
+            <p class="text-lg text-gray-600 max-w-3xl">
+              通过虚拟磁盘实验，深入分析ZFS端到端校验机制与EXT4默认配置在面对数据篡改时的安全性差异，揭示ZFS在关键数据存储场景中的显著优势。
+            </p>
+          </div>
+        </div>
+
+        <!-- 实验结果摘要卡片 -->
+        <div class="card md:col-span-2 p-8 flex flex-col justify-center">
+          <div
+            class="absolute top-0 left-0 w-full h-full highlight-gradient-green"
+          ></div>
+          <div class="relative">
+            <div class="flex items-center mb-4">
+              <i
+                class="fa-solid fa-check-circle text-3xl text-green-500 mr-4"
+              ></i>
+              <h3 class="text-2xl font-bold text-gray-800">实验结论</h3>
+            </div>
+            <p class="text-gray-700 text-lg font-medium mb-2">
+              ZFS 凭借其端到端校验机制能够
+            </p>
+            <p class="text-green-600 text-3xl font-bold">立即检测到数据篡改</p>
+            <p class="text-gray-700 text-lg font-medium mt-6 mb-2">
+              而 EXT4 在默认配置下
+            </p>
+            <p class="text-red-500 text-3xl font-bold">
+              无法检测数据块级别的篡改
+            </p>
+          </div>
+        </div>
+
+        <!-- 技术原理对比卡片 -->
+        <div class="card md:col-span-2 p-8 flex flex-col justify-center">
+          <div
+            class="absolute top-0 left-0 w-full h-full highlight-gradient-amber"
+          ></div>
+          <div class="relative">
+            <div class="flex items-center mb-4">
+              <i class="fa-solid fa-cogs text-3xl text-amber-500 mr-4"></i>
+              <h3 class="text-2xl font-bold text-gray-800">技术原理</h3>
+            </div>
+            <div class="mb-4">
+              <p class="text-gray-700 font-medium">ZFS</p>
+              <p class="text-blue-600 text-xl font-bold">
+                256位校验和 + Merkle树结构
+              </p>
+              <p class="text-gray-500 text-sm">覆盖所有数据和元数据</p>
+            </div>
+            <div>
+              <p class="text-gray-700 font-medium">EXT4</p>
+              <p class="text-gray-600 text-xl font-bold">仅元数据校验</p>
+              <p class="text-gray-500 text-sm">对用户数据缺乏保护</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 实验设计卡片 -->
+        <div class="card md:col-span-2 p-8 flex flex-col">
+          <div
+            class="absolute top-0 left-0 w-full h-full highlight-gradient-purple"
+          ></div>
+          <div class="relative">
+            <div class="flex items-center mb-6">
+              <i
+                class="fa-solid fa-flask-vial text-3xl text-purple-500 mr-4"
+              ></i>
+              <h3 class="text-2xl font-bold text-gray-800">实验设计</h3>
+            </div>
+            <div class="space-y-4">
+              <div class="flex items-start">
+                <div class="w-2 h-2 rounded-full bg-purple-500 mt-2 mr-3"></div>
+                <div>
+                  <p class="font-medium text-gray-800">虚拟磁盘镜像</p>
+                  <p class="text-gray-600">200MB 大小，使用稀疏文件技术</p>
+                </div>
+              </div>
+              <div class="flex items-start">
+                <div class="w-2 h-2 rounded-full bg-purple-500 mt-2 mr-3"></div>
+                <div>
+                  <p class="font-medium text-gray-800">测试数据</p>
+                  <p class="text-gray-600">1000个连续"A"字符，首个字符被篡改</p>
+                </div>
+              </div>
+              <div class="flex items-start">
+                <div class="w-2 h-2 rounded-full bg-purple-500 mt-2 mr-3"></div>
+                <div>
+                  <p class="font-medium text-gray-800">修改工具</p>
+                  <p class="text-gray-600">xxd 十六进制编辑器</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 应用场景卡片 -->
+        <div class="card md:col-span-2 p-8 flex flex-col">
+          <div
+            class="absolute top-0 left-0 w-full h-full highlight-gradient-cyan"
+          ></div>
+          <div class="relative">
+            <div class="flex items-center mb-6">
+              <i class="fa-solid fa-server text-3xl text-cyan-500 mr-4"></i>
+              <h3 class="text-2xl font-bold text-gray-800">关键应用场景</h3>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+              <div class="flex items-center p-3 bg-cyan-50 rounded-lg">
+                <i class="fa-solid fa-database text-cyan-600 mr-3"></i>
+                <span class="text-gray-700 font-medium">企业级数据库</span>
+              </div>
+              <div class="flex items-center p-3 bg-cyan-50 rounded-lg">
+                <i class="fa-solid fa-cloud text-cyan-600 mr-3"></i>
+                <span class="text-gray-700 font-medium">云计算与虚拟化</span>
+              </div>
+              <div class="flex items-center p-3 bg-cyan-50 rounded-lg">
+                <i class="fa-solid fa-money-bill-wave text-cyan-600 mr-3"></i>
+                <span class="text-gray-700 font-medium">金融交易系统</span>
+              </div>
+              <div class="flex items-center p-3 bg-cyan-50 rounded-lg">
+                <i class="fa-solid fa-heart-pulse text-cyan-600 mr-3"></i>
+                <span class="text-gray-700 font-medium">医疗信息系统</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 错误检测能力对比图表 -->
+        <div class="card md:col-span-4 p-8 flex flex-col">
+          <div
+            class="absolute top-0 left-0 w-full h-full highlight-gradient-amber"
+          ></div>
+          <div class="relative">
+            <div class="flex items-center mb-6">
+              <i
+                class="fa-solid fa-chart-line text-3xl text-amber-500 mr-4"
+              ></i>
+              <h3 class="text-2xl font-bold text-gray-800">错误检测能力对比</h3>
+            </div>
+            <div class="h-80">
+              <canvas id="errorDetectionChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- 性能影响分析卡片 -->
+        <div class="card md:col-span-2 p-8 flex flex-col">
+          <div
+            class="absolute top-0 left-0 w-full h-full highlight-gradient-blue"
+          ></div>
+          <div class="relative">
+            <div class="flex items-center mb-6">
+              <i class="fa-solid fa-gauge-high text-3xl text-blue-500 mr-4"></i>
+              <h3 class="text-2xl font-bold text-gray-800">性能影响分析</h3>
+            </div>
+            <div class="space-y-4">
+              <div>
+                <div class="flex justify-between mb-1">
+                  <span class="text-gray-700 font-medium">CPU开销</span>
+                  <span class="text-blue-600 font-bold">低-中</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2.5">
+                  <div
+                    class="bg-blue-500 h-2.5 rounded-full"
+                    style="width: 40%"
+                  ></div>
+                </div>
+              </div>
+              <div>
+                <div class="flex justify-between mb-1">
+                  <span class="text-gray-700 font-medium">内存需求</span>
+                  <span class="text-blue-600 font-bold">较高</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2.5">
+                  <div
+                    class="bg-blue-500 h-2.5 rounded-full"
+                    style="width: 75%"
+                  ></div>
+                </div>
+              </div>
+              <div>
+                <div class="flex justify-between mb-1">
+                  <span class="text-gray-700 font-medium">I/O性能</span>
+                  <span class="text-blue-600 font-bold">相当</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2.5">
+                  <div
+                    class="bg-blue-500 h-2.5 rounded-full"
+                    style="width: 30%"
+                  ></div>
+                </div>
+              </div>
+              <div>
+                <div class="flex justify-between mb-1">
+                  <span class="text-gray-700 font-medium">实际应用性能</span>
+                  <span class="text-blue-600 font-bold">优秀</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2.5">
+                  <div
+                    class="bg-blue-500 h-2.5 rounded-full"
+                    style="width: 90%"
+                  ></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 核心优势总结卡片 -->
+        <div class="card md:col-span-2 p-8 flex flex-col">
+          <div
+            class="absolute top-0 left-0 w-full h-full highlight-gradient-green"
+          ></div>
+          <div class="relative">
+            <div class="flex items-center mb-6">
+              <i class="fa-solid fa-star text-3xl text-green-500 mr-4"></i>
+              <h3 class="text-2xl font-bold text-gray-800">ZFS核心优势</h3>
+            </div>
+            <div class="space-y-4">
+              <div class="flex items-start">
+                <i
+                  class="fa-solid fa-shield-halved text-green-500 mt-1 mr-3"
+                ></i>
+                <div>
+                  <p class="font-bold text-gray-800">端到端校验</p>
+                  <p class="text-gray-600 text-sm">
+                    覆盖所有数据和元数据，提供全面保护
+                  </p>
+                </div>
+              </div>
+              <div class="flex items-start">
+                <i class="fa-solid fa-bolt text-green-500 mt-1 mr-3"></i>
+                <div>
+                  <p class="font-bold text-gray-800">实时错误检测</p>
+                  <p class="text-gray-600 text-sm">
+                    数据读取时自动验证，立即报告错误
+                  </p>
+                </div>
+              </div>
+              <div class="flex items-start">
+                <i class="fa-solid fa-wrench text-green-500 mt-1 mr-3"></i>
+                <div>
+                  <p class="font-bold text-gray-800">自动修复能力</p>
+                  <p class="text-gray-600 text-sm">
+                    冗余配置下可自动修复检测到的错误
+                  </p>
+                </div>
+              </div>
+              <div class="flex items-start">
+                <i
+                  class="fa-solid fa-magnifying-glass-chart text-green-500 mt-1 mr-3"
+                ></i>
+                <div>
+                  <p class="font-bold text-gray-800">精确错误定位</p>
+                  <p class="text-gray-600 text-sm">
+                    精确指出受影响的文件和错误类型
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 未来发展趋势卡片 -->
+        <div class="card md:col-span-4 p-8 flex flex-col">
+          <div
+            class="absolute top-0 left-0 w-full h-full highlight-gradient-purple"
+          ></div>
+          <div class="relative">
+            <div class="flex items-center mb-6">
+              <i class="fa-solid fa-rocket text-3xl text-purple-500 mr-4"></i>
+              <h3 class="text-2xl font-bold text-gray-800">未来发展趋势</h3>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+              <div class="bg-purple-50 p-4 rounded-lg">
+                <i
+                  class="fa-solid fa-cloud-arrow-up text-3xl text-purple-500 mb-3"
+                ></i>
+                <h4 class="font-bold text-gray-800 mb-2">云原生集成</h4>
+                <p class="text-gray-600 text-sm">
+                  与Kubernetes等容器编排系统深度集成
+                </p>
+              </div>
+              <div class="bg-purple-50 p-4 rounded-lg">
+                <i class="fa-solid fa-brain text-3xl text-purple-500 mb-3"></i>
+                <h4 class="font-bold text-gray-800 mb-2">AI应用优化</h4>
+                <p class="text-gray-600 text-sm">
+                  大规模数据集处理与AI训练基础设施
+                </p>
+              </div>
+              <div class="bg-purple-50 p-4 rounded-lg">
+                <i
+                  class="fa-solid fa-satellite-dish text-3xl text-purple-500 mb-3"
+                ></i>
+                <h4 class="font-bold text-gray-800 mb-2">边缘计算</h4>
+                <p class="text-gray-600 text-sm">
+                  轻量化版本适应资源受限的边缘环境
+                </p>
+              </div>
+              <div class="bg-purple-50 p-4 rounded-lg">
+                <i class="fa-solid fa-lock text-3xl text-purple-500 mb-3"></i>
+                <h4 class="font-bold text-gray-800 mb-2">量子安全</h4>
+                <p class="text-gray-600 text-sm">
+                  研究抗量子密码学算法，确保未来安全
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script
+      type="module"
+      src="./src/ZFS vs EXT4 数据完整性对比研究.js"
+    ></script>
+  </body>
+</html>

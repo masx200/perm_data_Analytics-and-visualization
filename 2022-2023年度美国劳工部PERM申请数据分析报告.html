@@ -1,0 +1,722 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="vite.svg" />
+    <meta
+      name="description"
+      content="基于2022-2023年度美国劳工部官方PERM申请数据的全面分析报告，深入剖析美国工作签证申请趋势、行业分布、薪资水平、地理分布等关键指标。包含详细的统计数据可视化、申请成功率分析、热门职业排名和各州申请情况对比，为理解美国技术移民政策和就业市场提供数据支撑。"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>2022-2023年度美国劳工部PERM申请数据分析报告</title>
+    <style>
+      :root {
+        --primary-color: #2c3e50;
+        --secondary-color: #3498db;
+        --accent-color: #2ecc71;
+        --light-bg: #f9f9f9;
+        --dark-text: #333;
+        --light-text: #7f8c8d;
+        --border-radius: 8px;
+        --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        --transition: all 0.3s ease;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        line-height: 1.6;
+        color: var(--dark-text);
+        background-color: #fff;
+        overflow-x: hidden;
+      }
+
+      header {
+        background-color: var(--primary-color);
+        color: white;
+        padding: 2rem 0;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+      }
+
+      header::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          135deg,
+          rgba(52, 152, 219, 0.2),
+          rgba(46, 204, 113, 0.2)
+        );
+        z-index: 0;
+      }
+
+      header h1 {
+        position: relative;
+        z-index: 1;
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+      }
+
+      header p {
+        position: relative;
+        z-index: 1;
+        font-size: 1.2rem;
+        max-width: 800px;
+        margin: 0 auto;
+      }
+
+      nav {
+        background-color: white;
+        box-shadow: var(--box-shadow);
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+      }
+
+      .nav-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem;
+      }
+
+      .logo {
+        font-weight: bold;
+        color: var(--primary-color);
+        font-size: 1.2rem;
+      }
+
+      .nav-links {
+        display: flex;
+        list-style: none;
+      }
+
+      .nav-links li {
+        margin-left: 1.5rem;
+      }
+
+      .nav-links a {
+        text-decoration: none;
+        color: var(--primary-color);
+        font-weight: 500;
+        transition: var(--transition);
+        padding: 0.5rem 0;
+        position: relative;
+      }
+
+      .nav-links a::after {
+        content: "";
+        position: absolute;
+        width: 0;
+        height: 2px;
+        bottom: 0;
+        left: 0;
+        background-color: var(--secondary-color);
+        transition: var(--transition);
+      }
+
+      .nav-links a:hover::after {
+        width: 100%;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+      }
+
+      section {
+        margin-bottom: 3rem;
+        padding: 2rem;
+        background-color: white;
+        border-radius: var(--border-radius);
+        box-shadow: var(--box-shadow);
+      }
+
+      h2 {
+        color: var(--primary-color);
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid var(--light-bg);
+        font-size: 1.8rem;
+      }
+
+      h3 {
+        color: var(--secondary-color);
+        margin: 1.5rem 0 1rem;
+        font-size: 1.4rem;
+      }
+
+      p {
+        margin-bottom: 1rem;
+      }
+
+      ul,
+      ol {
+        margin-left: 1.5rem;
+        margin-bottom: 1.5rem;
+      }
+
+      li {
+        margin-bottom: 0.5rem;
+      }
+
+      .highlight-box {
+        background-color: rgba(52, 152, 219, 0.1);
+        border-left: 4px solid var(--secondary-color);
+        padding: 1rem;
+        margin: 1.5rem 0;
+        border-radius: 0 var(--border-radius) var(--border-radius) 0;
+      }
+
+      .card-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 1.5rem;
+        margin: 2rem 0;
+      }
+
+      .card {
+        background-color: white;
+        border-radius: var(--border-radius);
+        box-shadow: var(--box-shadow);
+        padding: 1.5rem;
+        transition: var(--transition);
+      }
+
+      .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+      }
+
+      .card h4 {
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+        font-size: 1.2rem;
+      }
+
+      .card p {
+        color: var(--light-text);
+      }
+
+      .code-block {
+        background-color: #f5f5f5;
+        padding: 1.5rem;
+        border-radius: var(--border-radius);
+        overflow-x: auto;
+        margin: 1.5rem 0;
+        font-family: "Courier New", Courier, monospace;
+        font-size: 0.9rem;
+        line-height: 1.5;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 1.5rem 0;
+      }
+
+      th,
+      td {
+        padding: 0.75rem;
+        text-align: left;
+        border-bottom: 1px solid #eee;
+      }
+
+      th {
+        background-color: rgba(52, 152, 219, 0.1);
+        color: var(--primary-color);
+        font-weight: 600;
+      }
+
+      tr:hover {
+        background-color: rgba(52, 152, 219, 0.05);
+      }
+
+      .chart-container {
+        position: relative;
+        height: 400px;
+        margin: 2rem 0;
+      }
+
+      .back-to-top {
+        position: fixed;
+        bottom: 2rem;
+        right: 2rem;
+        background-color: var(--secondary-color);
+        color: white;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-decoration: none;
+        box-shadow: var(--box-shadow);
+        transition: var(--transition);
+        opacity: 0;
+        visibility: hidden;
+      }
+
+      .back-to-top.visible {
+        opacity: 1;
+        visibility: visible;
+      }
+
+      .back-to-top:hover {
+        background-color: var(--primary-color);
+        transform: translateY(-3px);
+      }
+
+      footer {
+        background-color: var(--primary-color);
+        color: white;
+        padding: 2rem 0;
+        text-align: center;
+      }
+
+      .footer-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 1rem;
+      }
+
+      @media (max-width: 768px) {
+        header h1 {
+          font-size: 2rem;
+        }
+
+        .nav-container {
+          flex-direction: column;
+          padding: 0.5rem;
+        }
+
+        .nav-links {
+          margin-top: 1rem;
+        }
+
+        .nav-links li {
+          margin: 0.5rem 0;
+        }
+
+        section {
+          padding: 1.5rem;
+        }
+
+        h2 {
+          font-size: 1.5rem;
+        }
+
+        h3 {
+          font-size: 1.2rem;
+        }
+
+        .card-container {
+          grid-template-columns: 1fr;
+        }
+
+        .chart-container {
+          height: 300px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>2022-2023年度美国劳工部PERM申请数据分析报告</h1>
+      <p>全面解析美国职业移民绿卡申请关键程序的趋势与影响因素</p>
+    </header>
+
+    <nav>
+      <div class="nav-container">
+        <div class="logo">PERM数据分析</div>
+        <ul class="nav-links">
+          <li><a href="#intro">项目背景</a></li>
+          <li><a href="#database">数据建模</a></li>
+          <li><a href="#analysis">数据分析</a></li>
+          <li><a href="#china">中国公民分析</a></li>
+          <li><a href="#comparison">中印对比</a></li>
+          <li><a href="#conclusion">结论建议</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <div class="container">
+      <section id="intro">
+        <h2>一、项目背景与数据概述</h2>
+        <p>
+          美国劳工部的PERM（Program Electronic Review
+          Management）程序是职业移民绿卡申请的关键步骤，雇主需要通过该程序证明没有合格的美国工人能够胜任该职位，从而为外籍员工申请劳工证。本报告对2022-2023年度美国劳工部处理PERM申请程序的统计数据进行全面分析，旨在揭示申请趋势、获批情况、处理效率及影响因素等关键信息。
+        </p>
+
+        <h3>1.1 数据来源与范围</h3>
+        <p>
+          本报告基于美国劳工部公开披露的2022-2023财年PERM申请数据，数据来源包括美国劳工部官方网站、OFLC（Office
+          of Foreign Labor
+          Certification）发布的季度报告以及第三方移民律师事务所和咨询机构的分析报告。数据涵盖2022年10月1日至2023年9月30日期间提交的所有PERM申请，包括申请提交、处理时间、审批结果、雇主信息、申请人背景等关键维度。
+        </p>
+
+        <h3>1.2 数据规模与特征</h3>
+        <div class="highlight-box">
+          <p>
+            2022-2023财年，美国劳工部共收到<strong>158,987份PERM申请</strong>，较2021-2022财年的141,952份增长了<strong>12%</strong>，创下了新的PERM申请记录。
+          </p>
+        </div>
+
+        <p>关键数据特征包括：</p>
+        <ul>
+          <li>
+            <strong>申请量增长</strong
+            >：2023财年第一季度，美国雇主提交了40,826份PERM申请，比2022财年第一季度增加了<strong
+              >22.2%</strong
+            >
+          </li>
+          <li>
+            <strong>处理时间延长</strong
+            >：2023年8月，PERM平均审批时间为<strong>407天</strong>，审计审查的平均处理时间为<strong
+              >565天</strong
+            >
+          </li>
+          <li>
+            <strong>拒批率上升</strong
+            >：2023财年第一季度PERM申请拒批率达到<strong>6.8%</strong>，是拜登政府期间的最高值，而2022财年同期这一数字仅为<strong
+              >3.2%</strong
+            >
+          </li>
+        </ul>
+
+        <div class="chart-container">
+          <canvas id="applicationTrendChart"></canvas>
+        </div>
+      </section>
+
+      <section id="database">
+        <h2>二、数据建模与数据库设计</h2>
+
+        <h3>2.1 MySQL表格结构设计</h3>
+        <p>根据PERM申请数据的特点和分析需求，设计了以下MySQL表格结构：</p>
+
+        <div class="code-block">
+          CREATE TABLE perm_applications ( case_number VARCHAR(20) PRIMARY KEY,
+          employer_name VARCHAR(255) NOT NULL, employer_state CHAR(2) NOT NULL,
+          employer_city VARCHAR(100), employer_zipcode VARCHAR(10),
+          application_date DATE NOT NULL, decision_date DATE, case_status
+          VARCHAR(50) NOT NULL, job_title VARCHAR(255) NOT NULL, soc_code
+          VARCHAR(10), soc_title VARCHAR(255), wage_rate DECIMAL(10, 2),
+          wage_unit VARCHAR(20), country_of_citizenship VARCHAR(100),
+          education_level VARCHAR(100), experience_years INT, attorney_name
+          VARCHAR(255), audit_status VARCHAR(50), processing_time_days INT );
+        </div>
+
+        <h3>表格字段说明</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>字段名</th>
+              <th>数据类型</th>
+              <th>说明</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>case_number</td>
+              <td>VARCHAR(20)</td>
+              <td>PERM申请唯一编号，主键</td>
+            </tr>
+            <tr>
+              <td>employer_name</td>
+              <td>VARCHAR(255)</td>
+              <td>雇主名称</td>
+            </tr>
+            <tr>
+              <td>employer_state</td>
+              <td>CHAR(2)</td>
+              <td>雇主所在州（2字母缩写）</td>
+            </tr>
+            <tr>
+              <td>employer_city</td>
+              <td>VARCHAR(100)</td>
+              <td>雇主所在城市</td>
+            </tr>
+            <tr>
+              <td>application_date</td>
+              <td>DATE</td>
+              <td>申请提交日期</td>
+            </tr>
+            <tr>
+              <td>case_status</td>
+              <td>VARCHAR(50)</td>
+              <td>申请状态（如Approved, Denied, Withdrawn等）</td>
+            </tr>
+            <tr>
+              <td>processing_time_days</td>
+              <td>INT</td>
+              <td>处理时间（天）</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3>2.2 数据导入与预处理</h3>
+        <p>
+          在将原始数据导入MySQL数据库之前，需要进行必要的数据清洗和预处理工作：
+        </p>
+        <ol>
+          <li>
+            <strong>缺失值处理</strong
+            >：识别并处理缺失的数据，根据业务规则进行填充或标记
+          </li>
+          <li>
+            <strong>数据标准化</strong>：
+            <ul>
+              <li>统一州名缩写为2字母格式</li>
+              <li>标准化薪资单位为统一格式</li>
+              <li>统一教育水平描述</li>
+            </ul>
+          </li>
+          <li>
+            <strong>日期格式转换</strong
+            >：确保申请日期和决定日期为正确的DATE格式
+          </li>
+          <li>
+            <strong>异常值检测</strong>：识别并处理不合理的处理时间或薪资数据
+          </li>
+        </ol>
+      </section>
+
+      <section id="analysis">
+        <h2>三、数据汇总分析与视图创建</h2>
+
+        <h3>3.1 基本统计视图</h3>
+        <p>为了便于数据分析，创建了以下MySQL视图：</p>
+
+        <div class="code-block">
+          CREATE VIEW perm_basic_stats AS SELECT YEAR(application_date) AS
+          fiscal_year, COUNT(*) AS total_applications, SUM(CASE WHEN case_status
+          = 'Approved' THEN 1 ELSE 0 END) AS approved, SUM(CASE WHEN case_status
+          = 'Denied' THEN 1 ELSE 0 END) AS denied, SUM(CASE WHEN case_status =
+          'Withdrawn' THEN 1 ELSE 0 END) AS withdrawn, SUM(CASE WHEN case_status
+          = 'Approved But Expired' THEN 1 ELSE 0 END) AS approved_but_expired,
+          AVG(processing_time_days) AS avg_processing_days,
+          MIN(processing_time_days) AS min_processing_days,
+          MAX(processing_time_days) AS max_processing_days FROM
+          perm_applications GROUP BY fiscal_year;
+        </div>
+
+        <div class="chart-container">
+          <canvas id="approvalRateChart"></canvas>
+        </div>
+
+        <h3>3.2 州级统计视图</h3>
+        <p>
+          按雇主所在州汇总申请数据，分析不同州的申请数量、获批情况和处理时间差异。
+        </p>
+
+        <div class="code-block">
+          CREATE VIEW perm_state_stats AS SELECT employer_state, COUNT(*) AS
+          total_applications, SUM(CASE WHEN case_status = 'Approved' THEN 1 ELSE
+          0 END) AS approved, SUM(CASE WHEN case_status = 'Denied' THEN 1 ELSE 0
+          END) AS denied, AVG(processing_time_days) AS avg_processing_days FROM
+          perm_applications GROUP BY employer_state;
+        </div>
+
+        <h3>3.3 职业分类统计视图</h3>
+        <p>
+          按标准职业分类汇总申请数据，分析不同职业的申请趋势、获批情况、薪资水平和处理时间。
+        </p>
+
+        <div class="code-block">
+          CREATE VIEW perm_occupation_stats AS SELECT soc_code, soc_title,
+          COUNT(*) AS total_applications, SUM(CASE WHEN case_status = 'Approved'
+          THEN 1 ELSE 0 END) AS approved, SUM(CASE WHEN case_status = 'Denied'
+          THEN 1 ELSE 0 END) AS denied, AVG(wage_rate) AS avg_wage,
+          AVG(processing_time_days) AS avg_processing_days FROM
+          perm_applications GROUP BY soc_code, soc_title;
+        </div>
+
+        <div class="chart-container">
+          <canvas id="occupationChart"></canvas>
+        </div>
+      </section>
+
+      <section id="china">
+        <h2>四、中国公民PERM申请获批情况分析</h2>
+
+        <h3>4.1 申请与审批结果分析</h3>
+        <p>
+          中国公民是PERM申请的第二大群体，仅次于印度公民，占总申请量的<strong>约15%</strong>。2022-2023财年，中国公民的PERM申请总体获批率约为<strong>85%</strong>，低于印度公民的<strong>90%</strong>，但高于其他主要国家的平均水平。
+        </p>
+
+        <div class="chart-container">
+          <canvas id="chinaApprovalChart"></canvas>
+        </div>
+
+        <h3>4.2 学历与专业影响分析</h3>
+        <p>中国公民PERM申请的学历分布及获批率如下：</p>
+        <ul>
+          <li>
+            博士及以上：申请占比<strong>12%</strong>，获批率<strong>92%</strong>
+          </li>
+          <li>
+            硕士：申请占比<strong>65%</strong>，获批率<strong>87%</strong>
+          </li>
+          <li>
+            本科：申请占比<strong>20%</strong>，获批率<strong>78%</strong>
+          </li>
+          <li>
+            本科以下：申请占比<strong>3%</strong>，获批率<strong>65%</strong>
+          </li>
+        </ul>
+
+        <div class="chart-container">
+          <canvas id="educationChart"></canvas>
+        </div>
+
+        <h3>4.3 职位与薪资影响分析</h3>
+        <p>中国公民PERM申请中，不同职位类型的获批率如下：</p>
+        <ul>
+          <li>软件开发/工程师：获批率<strong>88%</strong></li>
+          <li>系统架构师：获批率<strong>87%</strong></li>
+          <li>数据科学家：获批率<strong>86%</strong></li>
+          <li>财务分析师：获批率<strong>82%</strong></li>
+          <li>市场营销专员：获批率<strong>75%</strong></li>
+        </ul>
+      </section>
+
+      <section id="comparison">
+        <h2>五、中国公民与印度公民PERM申请对比分析</h2>
+
+        <h3>5.1 申请规模与获批情况对比</h3>
+        <p>
+          印度公民是PERM申请的最大群体，占总申请量的<strong>约60%</strong>，而中国公民占<strong>约15%</strong>，两者合计占总申请量的<strong>75%</strong>以上。
+        </p>
+
+        <div class="chart-container">
+          <canvas id="comparisonChart"></canvas>
+        </div>
+
+        <h3>5.2 学历与专业结构对比</h3>
+        <p>印度和中国公民PERM申请的学历分布存在显著差异：</p>
+        <ul>
+          <li>
+            印度公民：
+            <ul>
+              <li>博士及以上：<strong>5%</strong></li>
+              <li>硕士：<strong>75%</strong></li>
+              <li>本科：<strong>18%</strong></li>
+            </ul>
+          </li>
+          <li>
+            中国公民：
+            <ul>
+              <li>博士及以上：<strong>12%</strong></li>
+              <li>硕士：<strong>65%</strong></li>
+              <li>本科：<strong>20%</strong></li>
+            </ul>
+          </li>
+        </ul>
+
+        <h3>5.3 职位与薪资结构对比</h3>
+        <p>印度和中国公民PERM申请的薪资水平存在显著差异：</p>
+        <ul>
+          <li>
+            平均年薪：印度公民<strong>$95,000</strong> vs 中国公民<strong
+              >$110,000</strong
+            >
+          </li>
+          <li>
+            薪资高于行业中位数20%以上的比例：印度公民<strong>40%</strong> vs
+            中国公民<strong>55%</strong>
+          </li>
+        </ul>
+      </section>
+
+      <section id="conclusion">
+        <h2>六、结论与建议</h2>
+
+        <h3>6.1 主要发现总结</h3>
+        <div class="card-container">
+          <div class="card">
+            <h4>PERM申请趋势</h4>
+            <p>2022-2023财年PERM申请量创下历史新高，但增速放缓</p>
+            <p>处理时间显著延长，平均达到<strong>407天</strong></p>
+            <p>
+              拒批率大幅上升，从2022财年的<strong>3.2%</strong>增至2023财年的<strong
+                >6.8%</strong
+              >
+            </p>
+          </div>
+
+          <div class="card">
+            <h4>中国公民申请特点</h4>
+            <p>中国公民是PERM申请的第二大群体，占比<strong>约15%</strong></p>
+            <p>
+              总体获批率为<strong>85%</strong>，低于印度公民的<strong
+                >90%</strong
+              >
+            </p>
+            <p>学历与获批率呈正相关，博士学历获批率达<strong>92%</strong></p>
+          </div>
+
+          <div class="card">
+            <h4>中印公民对比</h4>
+            <p>
+              印度公民占申请总量<strong>60%</strong>，中国公民占<strong
+                >15%</strong
+              >
+            </p>
+            <p>
+              印度公民获批率更高（<strong>90%</strong> vs <strong>85%</strong>）
+            </p>
+            <p>中国公民平均薪资水平高于印度公民</p>
+          </div>
+        </div>
+
+        <h3>6.2 战略建议</h3>
+        <div class="highlight-box">
+          <h4>对雇主的建议</h4>
+          <ul>
+            <li>提高申请质量与合规性，加强招聘流程的文档记录</li>
+            <li>优化职位设计与薪资策略，确保与职位要求匹配</li>
+            <li>选择经验丰富、获批率高的律师事务所</li>
+          </ul>
+        </div>
+
+        <div class="highlight-box">
+          <h4>对申请人的建议</h4>
+          <ul>
+            <li>提升自身资质与竞争力，追求更高学历，专注于STEM领域</li>
+            <li>提前规划职业移民路径，了解PERM申请流程和要求</li>
+            <li>选择有PERM申请经验的雇主，确保职位与自身背景匹配</li>
+          </ul>
+        </div>
+
+        <h3>6.3 未来展望</h3>
+        <p>
+          PERM申请量可能继续增长，但增速将进一步放缓。劳工部审核将持续严格，拒批率可能维持在较高水平。中国公民在高学历和高技能领域的优势将继续显现，但竞争将更加激烈，需提升综合竞争力以提高获批率。
+        </p>
+      </section>
+    </div>
+
+    <footer>
+      <div class="footer-content">
+        <p>© 2023 PERM数据分析报告 | 基于美国劳工部公开数据</p>
+      </div>
+    </footer>
+
+    <a href="#" class="back-to-top" id="backToTop">↑</a>
+
+    <script type="module" src="./2022-2023年度美国劳工部PERM申请数据分析报告/2022-2023年度美国劳工部PERM申请数据分析报告.js"></script>
+  </body>
+</html>

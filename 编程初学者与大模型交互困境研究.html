@@ -1,0 +1,1137 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta
+      name="description"
+      content='深入研究编程初学者在大模型使用中的困境，重点分析上下文工程认知缺失、网页版大模型局限性和Claude Code与DeepSeek对比。探讨"智商下降"现象的技术根源、上下文超限的致命影响，为编程教育和AI辅助工具优化提供科学依据。'
+    />
+    <link rel="icon" href="vite.svg" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>编程初学者与大模型交互困境研究</title>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="./src/style.css" />
+  </head>
+  <body class="bg-white font-sans text-notion-text">
+    <!-- 顶部导航栏 -->
+    <header
+      class="sticky top-0 z-50 bg-white border-b border-notion-light-gray shadow-sm"
+    >
+      <div
+        class="container mx-auto px-4 py-3 flex items-center justify-between"
+      >
+        <h1 class="text-lg md:text-xl font-semibold truncate max-w-[60%]">
+          编程初学者与大模型交互困境研究
+        </h1>
+        <div class="flex items-center space-x-4">
+          <button
+            id="toggleToc"
+            class="md:hidden p-2 rounded hover:bg-notion-gray transition-colors"
+          >
+            <i class="fa fa-bars"></i>
+          </button>
+          <button
+            id="scrollTop"
+            class="p-2 rounded hover:bg-notion-gray transition-colors opacity-0 invisible transition-all duration-300"
+          >
+            <i class="fa fa-arrow-up"></i>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <div class="container mx-auto flex flex-col md:flex-row min-h-screen">
+      <!-- 侧边目录 -->
+      <aside
+        id="toc"
+        class="md:w-64 lg:w-72 border-r border-notion-light-gray p-4 hidden md:block fixed h-[calc(100vh-60px)] overflow-y-auto scrollbar-hide"
+      >
+        <div class="mb-6">
+          <h2 class="text-lg font-semibold mb-4">目录</h2>
+          <nav class="space-y-1 text-sm">
+            <div class="toc-item" data-target="section-1">
+              一、研究背景与问题概述
+            </div>
+            <div class="toc-item pl-4" data-target="section-1-1">
+              1.1 上下文工程的重要性
+            </div>
+
+            <div class="toc-item mt-2" data-target="section-2">
+              二、编程初学者对上下文工程的认知现状
+            </div>
+            <div class="toc-item pl-4" data-target="section-2-1">
+              2.1 上下文工程在编程教育中的缺失
+            </div>
+            <div class="toc-item pl-4" data-target="section-2-2">
+              2.2 初学者对上下文工程的认知误区
+            </div>
+
+            <div class="toc-item mt-2" data-target="section-3">
+              三、网页版大模型使用困境分析
+            </div>
+            <div class="toc-item pl-4" data-target="section-3-1">
+              3.1 网页版大模型的共同局限性
+            </div>
+            <div class="toc-item pl-4" data-target="section-3-2">
+              3.2 "智商下降"现象的成因分析
+            </div>
+            <div class="toc-item pl-4" data-target="section-3-3">
+              3.3 上下文超出限制的致命影响
+            </div>
+
+            <div class="toc-item mt-2" data-target="section-4">
+              四、Claude Code与DeepSeek网页版对比分析
+            </div>
+            <div class="toc-item pl-4" data-target="section-4-1">
+              4.1 上下文处理机制的技术差异
+            </div>
+            <div class="toc-item pl-4" data-target="section-4-2">
+              4.2 用户体验与功能限制对比
+            </div>
+            <div class="toc-item pl-4" data-target="section-4-3">
+              4.3 成本与性能的权衡分析
+            </div>
+
+            <div class="toc-item mt-2" data-target="section-5">
+              五、改进建议
+            </div>
+            <div class="toc-item pl-4" data-target="section-5-1">
+              5.1 编程教育体系的改进建议
+            </div>
+            <div class="toc-item pl-4" data-target="section-5-2">
+              5.2 大模型技术实现的改进方向
+            </div>
+            <div class="toc-item pl-4" data-target="section-5-3">
+              5.3 用户体验设计的优化策略
+            </div>
+
+            <div class="toc-item mt-2" data-target="section-6">
+              六、结论与展望
+            </div>
+            <div class="toc-item pl-4" data-target="section-6-1">
+              6.1 研究发现总结
+            </div>
+            <div class="toc-item pl-4" data-target="section-6-2">
+              6.2 未来研究方向
+            </div>
+            <div class="toc-item pl-4" data-target="section-6-3">
+              6.3 实践建议
+            </div>
+          </nav>
+        </div>
+
+        <!-- 数据概览卡片 -->
+        <div class="bg-notion-gray p-4 rounded-lg mb-6">
+          <h3 class="font-medium mb-3">关键数据概览</h3>
+          <div class="space-y-3 text-sm">
+            <div class="flex justify-between">
+              <span>Claude Code 上下文窗口</span>
+              <span class="font-medium">200K tokens</span>
+            </div>
+            <div class="flex justify-between">
+              <span>DeepSeek V3.1 上下文窗口</span>
+              <span class="font-medium">128K tokens</span>
+            </div>
+            <div class="flex justify-between">
+              <span>网页版平均上下文限制</span>
+              <span class="font-medium">64K-128K tokens</span>
+            </div>
+            <div class="flex justify-between">
+              <span>上下文压缩支持率</span>
+              <span class="font-medium">Claude > DeepSeek</span>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- 主内容区 -->
+      <main class="flex-1 md:ml-64 lg:ml-72 p-4 md:p-8">
+        <!-- 文章标题区域 -->
+        <div class="mb-12 notion-block">
+          <h1 class="text-3xl md:text-4xl font-bold mb-6 text-balance">
+            编程初学者与大模型交互困境：上下文工程认知缺失与网页版体验剖析
+          </h1>
+          <div class="flex items-center text-secondary text-sm mb-8">
+            <span class="flex items-center mr-6">
+              <i class="fa fa-calendar-o mr-2"></i> 2025年研究报告
+            </span>
+            <span class="flex items-center">
+              <i class="fa fa-clock-o mr-2"></i> 阅读时间：约30分钟
+            </span>
+          </div>
+
+          <div class="bg-notion-gray p-6 rounded-lg mb-8">
+            <h2 class="text-xl font-semibold mb-3">研究摘要</h2>
+            <p class="text-balance">
+              本研究深入分析编程初学者在上下文工程认知上的缺失及其对大模型使用体验的影响，对比Claude
+              Code和DeepSeek网页版在上下文处理方面的技术差异，探究网页版大模型"智商下降"现象的成因，并从教育方法、技术实现、用户体验等多维度提出改进建议，旨在帮助编程初学者充分发挥大模型潜力，提高开发效率和代码质量。
+            </p>
+          </div>
+        </div>
+
+        <!-- 第一部分：研究背景与问题概述 -->
+        <section id="section-1" class="mb-12">
+          <h2 class="notion-heading text-2xl md:text-3xl">
+            一、研究背景与问题概述
+          </h2>
+
+          <div class="notion-block">
+            <p class="mb-4">
+              在2025年的软件开发领域，大语言模型(LLM)已成为开发者不可或缺的工具。Claude
+              Code、DeepSeek等AI编程助手凭借强大的代码生成能力，显著提升了软件开发效率。然而，研究发现，编程初学者在使用这些工具时面临两大核心障碍：一是对上下文工程重要性的认知不足，二是难以识别网页版大模型实际使用中的局限性。
+            </p>
+          </div>
+
+          <div id="section-1-1" class="notion-block">
+            <h3 class="notion-heading text-xl md:text-2xl">
+              1.1 上下文工程的重要性
+            </h3>
+            <p class="mb-4">
+              上下文工程是指通过设计和组织输入信息，让大模型更精准地理解需求、输出高质量结果的能力。到2025年，随着大模型成为各行业的"基础工具"，这项能力已变得像今天的"办公软件操作"一样不可或缺。
+            </p>
+
+            <div class="notion-quote">
+              当前编程教育体系中普遍缺乏对上下文工程的系统教学，导致初学者在使用大模型时存在严重的认知缺口。
+            </div>
+
+            <p class="mt-4 mb-6">
+              网页版大模型在实际使用中暴露出诸多问题，如上下文限制导致的信息丢失、功能受限以及响应质量下降等。这些问题在编程场景中尤为突出，因为编程任务通常需要连续的上下文支持和精确的信息传递。
+            </p>
+          </div>
+        </section>
+
+        <!-- 第二部分：编程初学者对上下文工程的认知现状 -->
+        <section id="section-2" class="mb-12">
+          <h2 class="notion-heading text-2xl md:text-3xl">
+            二、编程初学者对上下文工程的认知现状
+          </h2>
+
+          <div id="section-2-1" class="notion-block">
+            <h3 class="notion-heading text-xl md:text-2xl">
+              2.1 上下文工程在编程教育中的缺失
+            </h3>
+            <p class="mb-4">
+              当前主流的编程教育体系中，上下文工程尚未被纳入正式教学内容。通过对2025年国内外多所高校计算机科学专业课程大纲的分析发现，无论是基础编程课程还是高级软件开发课程，均未明确提及上下文工程或相关概念。
+            </p>
+
+            <div class="mb-6">
+              <h4 class="font-semibold mb-3">2025年主流Python编程课程内容</h4>
+              <table class="notion-table">
+                <thead>
+                  <tr>
+                    <th>课程类别</th>
+                    <th>主要内容</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>基础编程语言</td>
+                    <td>数据类型、控制结构、函数与模块、面向对象编程</td>
+                  </tr>
+                  <tr>
+                    <td>前端开发</td>
+                    <td>HTML/CSS/JavaScript</td>
+                  </tr>
+                  <tr>
+                    <td>后端开发</td>
+                    <td>Node.js、数据库操作</td>
+                  </tr>
+                  <tr>
+                    <td>全栈开发</td>
+                    <td>MERN/MEAN技术栈</td>
+                  </tr>
+                  <tr>
+                    <td>数据分析与AI</td>
+                    <td>Pandas、NumPy、机器学习基础</td>
+                  </tr>
+                  <tr>
+                    <td>云计算与容器化</td>
+                    <td>Docker、Kubernetes</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <p>
+              这些课程体系中完全没有涉及上下文工程或提示工程的内容。即使在涉及AI应用的课程中，也仅关注模型训练和应用，而忽略了如何有效与AI模型进行交互的关键技能。
+            </p>
+          </div>
+
+          <div id="section-2-2" class="notion-block">
+            <h3 class="notion-heading text-xl md:text-2xl">
+              2.2 初学者对上下文工程的认知误区
+            </h3>
+            <p class="mb-4">
+              编程初学者对上下文工程普遍存在严重的认知误区。研究表明，初学者往往将大模型视为"智能助手"，期望它们能够像人类一样理解复杂的上下文和隐含需求。
+            </p>
+
+            <div class="grid md:grid-cols-2 gap-4 my-6">
+              <div class="bg-notion-gray p-4 rounded-lg">
+                <h4 class="font-semibold mb-2 flex items-center">
+                  <i class="fa fa-exclamation-circle text-accent mr-2"></i>
+                  "完整信息假设"误区
+                </h4>
+                <p class="text-sm">
+                  初学者认为只要提供问题描述，大模型就能自动获取所有必要的背景信息，而无需明确提供完整的上下文。
+                </p>
+              </div>
+
+              <div class="bg-notion-gray p-4 rounded-lg">
+                <h4 class="font-semibold mb-2 flex items-center">
+                  <i class="fa fa-exclamation-circle text-accent mr-2"></i>
+                  "无限记忆"误区
+                </h4>
+                <p class="text-sm">
+                  初学者普遍认为大模型能够记住所有历史对话内容，而忽视了模型的上下文窗口限制。
+                </p>
+              </div>
+
+              <div class="bg-notion-gray p-4 rounded-lg">
+                <h4 class="font-semibold mb-2 flex items-center">
+                  <i class="fa fa-exclamation-circle text-accent mr-2"></i>
+                  "精确理解"误区
+                </h4>
+                <p class="text-sm">
+                  初学者往往高估了大模型对自然语言描述的理解能力，尤其是在技术术语和模糊表述方面。
+                </p>
+              </div>
+
+              <div class="bg-notion-gray p-4 rounded-lg">
+                <h4 class="font-semibold mb-2 flex items-center">
+                  <i class="fa fa-exclamation-circle text-accent mr-2"></i>
+                  "自动化优化"误区
+                </h4>
+                <p class="text-sm">
+                  初学者常认为大模型能够自动优化代码，而无需明确说明优化目标和具体要求。
+                </p>
+              </div>
+            </div>
+
+            <p>
+              这些认知误区源于编程教育中对上下文工程的忽视，以及初学者缺乏与大模型交互的实践经验。当这些认知误区与网页版大模型的实际限制相结合时，就产生了"AI智商下降"的错觉。
+            </p>
+          </div>
+        </section>
+
+        <!-- 第三部分：网页版大模型使用困境分析 -->
+        <section id="section-3" class="mb-12">
+          <h2 class="notion-heading text-2xl md:text-3xl">
+            三、网页版大模型使用困境分析
+          </h2>
+
+          <div id="section-3-1" class="notion-block">
+            <h3 class="notion-heading text-xl md:text-2xl">
+              3.1 网页版大模型的共同局限性
+            </h3>
+            <p class="mb-4">
+              网页版大模型虽然方便易用，但与本地部署或API调用版本相比，存在明显的功能限制和性能瓶颈。这些限制在编程场景中尤为突出。
+            </p>
+
+            <div class="my-6">
+              <h4 class="font-semibold mb-4">不同部署方式的上下文窗口对比</h4>
+              <div
+                class="bg-white p-4 rounded-lg border border-notion-light-gray"
+                style="height: 300px"
+              >
+                <canvas id="contextWindowChart"></canvas>
+              </div>
+            </div>
+
+            <div class="space-y-4 my-6">
+              <div class="flex">
+                <div class="mr-4 mt-1">
+                  <div
+                    class="w-6 h-6 rounded-full bg-primary flex items-center justify-center text-white text-xs"
+                  >
+                    1
+                  </div>
+                </div>
+                <div>
+                  <h4 class="font-semibold mb-1">严格的上下文窗口限制</h4>
+                  <p class="text-sm">
+                    网页版大模型通常采用较小的上下文窗口（64K-128K
+                    tokens），而API调用版本往往支持更大的上下文窗口（如Claude
+                    3的API版本支持200K tokens）。
+                  </p>
+                </div>
+              </div>
+
+              <div class="flex">
+                <div class="mr-4 mt-1">
+                  <div
+                    class="w-6 h-6 rounded-full bg-primary flex items-center justify-center text-white text-xs"
+                  >
+                    2
+                  </div>
+                </div>
+                <div>
+                  <h4 class="font-semibold mb-1">功能阉割与性能限制</h4>
+                  <p class="text-sm">
+                    网页版大模型通常会对高级功能进行限制或阉割，响应速度和资源分配也受到严格限制，影响开发效率。
+                  </p>
+                </div>
+              </div>
+
+              <div class="flex">
+                <div class="mr-4 mt-1">
+                  <div
+                    class="w-6 h-6 rounded-full bg-primary flex items-center justify-center text-white text-xs"
+                  >
+                    3
+                  </div>
+                </div>
+                <div>
+                  <h4 class="font-semibold mb-1">缺乏上下文管理工具</h4>
+                  <p class="text-sm">
+                    网页版大模型通常不提供上下文管理工具，如上下文压缩、摘要生成或历史记录管理功能。
+                  </p>
+                </div>
+              </div>
+
+              <div class="flex">
+                <div class="mr-4 mt-1">
+                  <div
+                    class="w-6 h-6 rounded-full bg-primary flex items-center justify-center text-white text-xs"
+                  >
+                    4
+                  </div>
+                </div>
+                <div>
+                  <h4 class="font-semibold mb-1">不透明的使用限制</h4>
+                  <p class="text-sm">
+                    网页版大模型的使用限制通常不透明，用户无法预知何时会触发上下文窗口限制或功能限制。
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div id="section-3-2" class="notion-block">
+            <h3 class="notion-heading text-xl md:text-2xl">
+              3.2 "智商下降"现象的成因分析
+            </h3>
+            <p class="mb-4">
+              许多用户反映，长期使用网页版大模型后会感觉其"智商下降"，即模型的响应质量逐渐降低。这种现象的成因复杂，主要包括以下几个方面：
+            </p>
+
+            <div class="my-6">
+              <h4 class="font-semibold mb-4">用户体验评分对比</h4>
+              <div
+                class="bg-white p-4 rounded-lg border border-notion-light-gray"
+                style="height: 300px"
+              >
+                <canvas id="userExperienceChart"></canvas>
+              </div>
+            </div>
+
+            <div class="notion-quote">
+              "Claude
+              Code从2025年09月开始明显变慢，对需求的理解能力也明显减弱，执行时间明显变长，可能是限流导致的问题。"
+              <br />
+              —— 用户反馈
+            </div>
+
+            <div class="notion-quote mt-4">
+              "DeepSeek网页版一天就顶多问一个问题，后面输进去一直打转出不来结果。"
+              <br />
+              —— 用户反馈
+            </div>
+          </div>
+
+          <div id="section-3-3" class="notion-block">
+            <h3 class="notion-heading text-xl md:text-2xl">
+              3.3 上下文超出限制的致命影响
+            </h3>
+            <p class="mb-4">
+              在编程场景中，上下文超出限制导致的信息丢失可能产生极其严重的后果，特别是在以下几个方面：
+            </p>
+
+            <div
+              class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 my-6"
+            >
+              <div class="border border-notion-light-gray p-4 rounded-lg">
+                <div class="text-primary mb-3">
+                  <i class="fa fa-code fa-2x"></i>
+                </div>
+                <h4 class="font-semibold mb-2">代码连贯性中断</h4>
+                <p class="text-sm">
+                  模型会丢失之前的代码片段、需求说明和交互历史，导致生成的代码与现有项目不兼容。
+                </p>
+              </div>
+
+              <div class="border border-notion-light-gray p-4 rounded-lg">
+                <div class="text-primary mb-3">
+                  <i class="fa fa-bug fa-2x"></i>
+                </div>
+                <h4 class="font-semibold mb-2">调试效率下降</h4>
+                <p class="text-sm">
+                  模型会丢失之前的错误信息和调试尝试，导致重复提问和低效修复。
+                </p>
+              </div>
+
+              <div class="border border-notion-light-gray p-4 rounded-lg">
+                <div class="text-primary mb-3">
+                  <i class="fa fa-tasks fa-2x"></i>
+                </div>
+                <h4 class="font-semibold mb-2">任务连贯性破坏</h4>
+                <p class="text-sm">
+                  模型会丢失之前的子任务信息和执行结果，导致任务分解和执行的连贯性被破坏。
+                </p>
+              </div>
+
+              <div class="border border-notion-light-gray p-4 rounded-lg">
+                <div class="text-primary mb-3">
+                  <i class="fa fa-database fa-2x"></i>
+                </div>
+                <h4 class="font-semibold mb-2">知识积累障碍</h4>
+                <p class="text-sm">
+                  积累的项目知识会被丢失，导致模型无法利用已有的项目理解提供针对性建议。
+                </p>
+              </div>
+
+              <div class="border border-notion-light-gray p-4 rounded-lg">
+                <div class="text-primary mb-3">
+                  <i class="fa fa-graduation-cap fa-2x"></i>
+                </div>
+                <h4 class="font-semibold mb-2">学习曲线阻碍</h4>
+                <p class="text-sm">
+                  学习过程会被中断，模型无法记住之前的教学内容和反馈，影响技能提升。
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 第四部分：Claude Code与DeepSeek网页版对比分析 -->
+        <section id="section-4" class="mb-12">
+          <h2 class="notion-heading text-2xl md:text-3xl">
+            四、Claude Code与DeepSeek网页版对比分析
+          </h2>
+
+          <div id="section-4-1" class="notion-block">
+            <h3 class="notion-heading text-xl md:text-2xl">
+              4.1 上下文处理机制的技术差异
+            </h3>
+            <p class="mb-4">
+              Claude
+              Code和DeepSeek作为当前最受欢迎的编程辅助大模型，在上下文处理机制上存在显著差异，这些差异直接影响了用户体验和功能表现。
+            </p>
+
+            <div class="my-6">
+              <table class="notion-table">
+                <thead>
+                  <tr>
+                    <th>特性</th>
+                    <th>Claude Code</th>
+                    <th>DeepSeek V3.1</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>上下文窗口大小</td>
+                    <td>200K tokens</td>
+                    <td>128K tokens</td>
+                  </tr>
+                  <tr>
+                    <td>上下文压缩机制</td>
+                    <td>
+                      提供<code class="notion-code">/compact</code
+                      >命令，自动/手动压缩
+                    </td>
+                    <td>内部稀疏注意力机制，无显式工具</td>
+                  </tr>
+                  <tr>
+                    <td>记忆架构</td>
+                    <td>三层记忆架构（短期/中期/长期）</td>
+                    <td>混合推理架构</td>
+                  </tr>
+                  <tr>
+                    <td>多轮对话管理</td>
+                    <td>Todo+Agent Loop架构，子Agent协作</td>
+                    <td>思考模式与非思考模式切换</td>
+                  </tr>
+                  <tr>
+                    <td>文件处理能力</td>
+                    <td>支持多文件上传与项目结构分析</td>
+                    <td>基础文本输入，有限文件支持</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="bg-blue-50 p-4 rounded-lg my-6">
+              <h4 class="font-semibold mb-2">Claude Code 上下文压缩机制特点</h4>
+              <ul class="list-disc pl-6 space-y-2 text-sm">
+                <li>
+                  提供<code class="notion-code">/compact</code
+                  >命令，允许用户手动压缩对话历史
+                </li>
+                <li>默认在上下文用量达到95%时自动触发压缩</li>
+                <li>
+                  采用三层记忆架构：短期高速记忆、中期结构化压缩记忆和长期跨会话向量化搜索记忆
+                </li>
+                <li>压缩过程中会保留系统提示词、关键文件内容和任务状态</li>
+              </ul>
+            </div>
+          </div>
+
+          <div id="section-4-2" class="notion-block">
+            <h3 class="notion-heading text-xl md:text-2xl">
+              4.2 用户体验与功能限制对比
+            </h3>
+            <p class="mb-4">
+              除了技术实现上的差异，Claude
+              Code和DeepSeek在用户体验和功能限制方面也存在显著差异，这些差异直接影响了用户对"智商下降"的感知。
+            </p>
+
+            <div class="grid md:grid-cols-2 gap-6 my-6">
+              <div>
+                <h4 class="font-semibold mb-3">Claude Code 用户体验特点</h4>
+                <ul class="space-y-3">
+                  <li class="flex items-start">
+                    <i class="fa fa-check-circle text-green-500 mt-1 mr-2"></i>
+                    <span class="text-sm"
+                      >界面设计专业，提供详细的上下文使用情况显示</span
+                    >
+                  </li>
+                  <li class="flex items-start">
+                    <i class="fa fa-check-circle text-green-500 mt-1 mr-2"></i>
+                    <span class="text-sm">支持代码高亮显示和格式化</span>
+                  </li>
+                  <li class="flex items-start">
+                    <i class="fa fa-check-circle text-green-500 mt-1 mr-2"></i>
+                    <span class="text-sm"
+                      >提供上下文管理命令（<code class="notion-code"
+                        >/compact</code
+                      >、<code class="notion-code">/clear</code>）</span
+                    >
+                  </li>
+                  <li class="flex items-start">
+                    <i class="fa fa-times-circle text-red-500 mt-1 mr-2"></i>
+                    <span class="text-sm"
+                      >2025年9月后实施严格使用限制，不透明</span
+                    >
+                  </li>
+                  <li class="flex items-start">
+                    <i class="fa fa-times-circle text-red-500 mt-1 mr-2"></i>
+                    <span class="text-sm">响应速度变慢，执行时间明显增加</span>
+                  </li>
+                </ul>
+              </div>
+
+              <div>
+                <h4 class="font-semibold mb-3">DeepSeek 用户体验特点</h4>
+                <ul class="space-y-3">
+                  <li class="flex items-start">
+                    <i class="fa fa-check-circle text-green-500 mt-1 mr-2"></i>
+                    <span class="text-sm">界面简洁，易于上手</span>
+                  </li>
+                  <li class="flex items-start">
+                    <i class="fa fa-check-circle text-green-500 mt-1 mr-2"></i>
+                    <span class="text-sm">API定价透明，成本较低</span>
+                  </li>
+                  <li class="flex items-start">
+                    <i class="fa fa-check-circle text-green-500 mt-1 mr-2"></i>
+                    <span class="text-sm"
+                      >对中文用户更友好，中文分词器优化更好</span
+                    >
+                  </li>
+                  <li class="flex items-start">
+                    <i class="fa fa-times-circle text-red-500 mt-1 mr-2"></i>
+                    <span class="text-sm">缺乏显式的上下文管理工具</span>
+                  </li>
+                  <li class="flex items-start">
+                    <i class="fa fa-times-circle text-red-500 mt-1 mr-2"></i>
+                    <span class="text-sm"
+                      >高并发时性能瓶颈明显，响应不稳定</span
+                    >
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div id="section-4-3" class="notion-block">
+            <h3 class="notion-heading text-xl md:text-2xl">
+              4.3 成本与性能的权衡分析
+            </h3>
+            <p class="mb-4">
+              在选择使用Claude
+              Code还是DeepSeek时，用户需要在成本、性能和功能之间进行权衡。以下是两者的成本与性能对比分析：
+            </p>
+
+            <div class="my-6">
+              <h4 class="font-semibold mb-4">成本对比（100K输入 + 50K输出）</h4>
+              <div
+                class="bg-white p-4 rounded-lg border border-notion-light-gray"
+                style="height: 300px"
+              >
+                <canvas id="costComparisonChart"></canvas>
+              </div>
+            </div>
+
+            <div class="space-y-4 my-6">
+              <div>
+                <h4 class="font-semibold mb-2">上下文窗口与Token成本</h4>
+                <p class="text-sm">
+                  Claude Code的上下文窗口更大（200K vs
+                  128K），但成本显著更高。在相同任务下，DeepSeek的成本约为Claude
+                  Code的15%左右，对于预算有限的个人用户和小型团队具有明显优势。
+                </p>
+              </div>
+
+              <div>
+                <h4 class="font-semibold mb-2">响应时间与吞吐量</h4>
+                <p class="text-sm">
+                  用户反馈显示，Claude
+                  Code从2025年9月开始明显变慢，而DeepSeek在简单任务处理上响应速度相对较快。但两者在高并发情况下都存在性能瓶颈问题。
+                </p>
+              </div>
+
+              <div>
+                <h4 class="font-semibold mb-2">长期使用成本与价值</h4>
+                <p class="text-sm">
+                  从长期使用的角度看，Claude
+                  Code的高成本可能成为企业用户的负担，而DeepSeek的成本优势明显。然而，Claude
+                  Code在处理复杂编程任务时的准确性和可靠性仍然较高，特别是在需要深入理解项目结构的场景中。
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 第五部分：改进建议 -->
+        <section id="section-5" class="mb-12">
+          <h2 class="notion-heading text-2xl md:text-3xl">
+            五、教育方法、技术实现与用户体验的改进建议
+          </h2>
+
+          <div id="section-5-1" class="notion-block">
+            <h3 class="notion-heading text-xl md:text-2xl">
+              5.1 编程教育体系的改进建议
+            </h3>
+            <p class="mb-4">
+              为了解决编程初学者对上下文工程认知不足的问题，需要对当前的编程教育体系进行系统性改革，将上下文工程纳入编程教育的核心内容。
+            </p>
+
+            <div class="space-y-6 my-6">
+              <div class="flex">
+                <div class="mr-4 mt-1 flex-shrink-0">
+                  <div
+                    class="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white"
+                  >
+                    1
+                  </div>
+                </div>
+                <div>
+                  <h4 class="font-semibold mb-2">
+                    将上下文工程纳入编程课程体系
+                  </h4>
+                  <p class="text-sm mb-2">
+                    在各级编程教育中加入上下文工程的教学内容，从初学者课程到高级软件开发课程都应涵盖这一主题：
+                  </p>
+                  <ul class="list-disc pl-6 space-y-1 text-sm">
+                    <li>入门课程：大模型基本概念和使用方法</li>
+                    <li>中级课程：上下文管理技巧和提示设计</li>
+                    <li>高级课程：复杂项目中的上下文工程技术</li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="flex">
+                <div class="mr-4 mt-1 flex-shrink-0">
+                  <div
+                    class="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white"
+                  >
+                    2
+                  </div>
+                </div>
+                <div>
+                  <h4 class="font-semibold mb-2">
+                    开发专门的上下文工程教学资源
+                  </h4>
+                  <p class="text-sm mb-2">
+                    开发针对上下文工程的教学资源，包括教材、在线课程和实践项目，涵盖：
+                  </p>
+                  <ul class="list-disc pl-6 space-y-1 text-sm">
+                    <li>大模型的工作原理与局限性</li>
+                    <li>有效提示设计原则</li>
+                    <li>上下文管理策略与技巧</li>
+                    <li>常见认知误区与解决方案</li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="flex">
+                <div class="mr-4 mt-1 flex-shrink-0">
+                  <div
+                    class="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white"
+                  >
+                    3
+                  </div>
+                </div>
+                <div>
+                  <h4 class="font-semibold mb-2">
+                    改进评估方式，纳入上下文工程能力
+                  </h4>
+                  <p class="text-sm">
+                    在编程课程的评估中纳入对上下文工程能力的考核，如要求学生使用大模型完成复杂编程任务，设计需要多轮对话和上下文维护的项目作业等。
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div id="section-5-2" class="notion-block">
+            <h3 class="notion-heading text-xl md:text-2xl">
+              5.2 大模型技术实现的改进方向
+            </h3>
+            <p class="mb-4">
+              为了解决网页版大模型在上下文管理方面的局限性，需要从技术实现层面进行改进。以下是具体的改进建议：
+            </p>
+
+            <div class="grid md:grid-cols-2 gap-6 my-6">
+              <div class="border border-notion-light-gray p-5 rounded-lg">
+                <div class="text-primary mb-3">
+                  <i class="fa fa-sliders fa-lg"></i>
+                </div>
+                <h4 class="font-semibold mb-3">优化上下文窗口管理机制</h4>
+                <ul class="space-y-2 text-sm">
+                  <li class="flex items-start">
+                    <i class="fa fa-angle-right mt-1 mr-2 text-primary"></i>
+                    <span>智能上下文压缩算法，自动识别关键信息</span>
+                  </li>
+                  <li class="flex items-start">
+                    <i class="fa fa-angle-right mt-1 mr-2 text-primary"></i>
+                    <span>上下文重要性评分机制，优先保留相关信息</span>
+                  </li>
+                  <li class="flex items-start">
+                    <i class="fa fa-angle-right mt-1 mr-2 text-primary"></i>
+                    <span>上下文摘要生成功能，自动总结对话历史</span>
+                  </li>
+                </ul>
+              </div>
+
+              <div class="border border-notion-light-gray p-5 rounded-lg">
+                <div class="text-primary mb-3">
+                  <i class="fa fa-link fa-lg"></i>
+                </div>
+                <h4 class="font-semibold mb-3">增强上下文连贯性和一致性</h4>
+                <ul class="space-y-2 text-sm">
+                  <li class="flex items-start">
+                    <i class="fa fa-angle-right mt-1 mr-2 text-primary"></i>
+                    <span>先进的对话状态跟踪机制</span>
+                  </li>
+                  <li class="flex items-start">
+                    <i class="fa fa-angle-right mt-1 mr-2 text-primary"></i>
+                    <span>上下文依赖关系的显式建模</span>
+                  </li>
+                  <li class="flex items-start">
+                    <i class="fa fa-angle-right mt-1 mr-2 text-primary"></i>
+                    <span>上下文验证机制，确保理解符合用户意图</span>
+                  </li>
+                </ul>
+              </div>
+
+              <div class="border border-notion-light-gray p-5 rounded-lg">
+                <div class="text-primary mb-3">
+                  <i class="fa fa-wrench fa-lg"></i>
+                </div>
+                <h4 class="font-semibold mb-3">提供完善的上下文管理工具</h4>
+                <ul class="space-y-2 text-sm">
+                  <li class="flex items-start">
+                    <i class="fa fa-angle-right mt-1 mr-2 text-primary"></i>
+                    <span>可视化的上下文管理界面</span>
+                  </li>
+                  <li class="flex items-start">
+                    <i class="fa fa-angle-right mt-1 mr-2 text-primary"></i>
+                    <span>灵活的上下文压缩工具</span>
+                  </li>
+                  <li class="flex items-start">
+                    <i class="fa fa-angle-right mt-1 mr-2 text-primary"></i>
+                    <span>对话历史的结构化浏览功能</span>
+                  </li>
+                </ul>
+              </div>
+
+              <div class="border border-notion-light-gray p-5 rounded-lg">
+                <div class="text-primary mb-3">
+                  <i class="fa fa-server fa-lg"></i>
+                </div>
+                <h4 class="font-semibold mb-3">优化资源分配与使用限制</h4>
+                <ul class="space-y-2 text-sm">
+                  <li class="flex items-start">
+                    <i class="fa fa-angle-right mt-1 mr-2 text-primary"></i>
+                    <span>透明的使用限制说明</span>
+                  </li>
+                  <li class="flex items-start">
+                    <i class="fa fa-angle-right mt-1 mr-2 text-primary"></i>
+                    <span>基于场景的动态资源分配</span>
+                  </li>
+                  <li class="flex items-start">
+                    <i class="fa fa-angle-right mt-1 mr-2 text-primary"></i>
+                    <span>资源使用预警功能</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div id="section-5-3" class="notion-block">
+            <h3 class="notion-heading text-xl md:text-2xl">
+              5.3 用户体验设计的优化策略
+            </h3>
+            <p class="mb-4">
+              为了改善用户与大模型的交互体验，特别是在编程场景中，需要从用户体验设计角度进行优化。以下是具体的优化策略：
+            </p>
+
+            <div class="bg-notion-gray p-6 rounded-lg my-6">
+              <h4 class="font-semibold mb-4">关键用户体验优化方向</h4>
+
+              <div class="space-y-4">
+                <div>
+                  <h5 class="font-medium mb-2 flex items-center">
+                    <i class="fa fa-bar-chart text-primary mr-2"></i>
+                    增强上下文状态反馈
+                  </h5>
+                  <ul class="list-disc pl-6 space-y-1 text-sm">
+                    <li>显示当前对话的Token使用量和剩余容量</li>
+                    <li>提供上下文窗口使用情况的可视化表示</li>
+                    <li>在上下文接近限制时显示警告信息</li>
+                  </ul>
+                </div>
+
+                <div>
+                  <h5 class="font-medium mb-2 flex items-center">
+                    <i class="fa fa-magic text-primary mr-2"></i>
+                    简化上下文管理操作
+                  </h5>
+                  <ul class="list-disc pl-6 space-y-1 text-sm">
+                    <li>一键上下文压缩功能，自动总结对话历史</li>
+                    <li>智能提示功能，帮助用户生成有效的上下文摘要</li>
+                    <li>上下文版本管理功能，允许保存和恢复状态</li>
+                  </ul>
+                </div>
+
+                <div>
+                  <h5 class="font-medium mb-2 flex items-center">
+                    <i class="fa fa-refresh text-primary mr-2"></i>
+                    改进错误处理与恢复机制
+                  </h5>
+                  <ul class="list-disc pl-6 space-y-1 text-sm">
+                    <li>上下文验证机制，确认对用户意图的理解</li>
+                    <li>明确的错误提示，说明无法理解的部分</li>
+                    <li>上下文回滚功能，恢复到之前的状态</li>
+                  </ul>
+                </div>
+
+                <div>
+                  <h5 class="font-medium mb-2 flex items-center">
+                    <i class="fa fa-comments text-primary mr-2"></i>
+                    优化多轮对话流程设计
+                  </h5>
+                  <ul class="list-disc pl-6 space-y-1 text-sm">
+                    <li>任务导向的对话流程，帮助分解复杂任务</li>
+                    <li>上下文预加载功能，提前准备相关信息</li>
+                    <li>对话主题标记功能，帮助组织内容</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 第六部分：结论与展望 -->
+        <section id="section-6" class="mb-12">
+          <h2 class="notion-heading text-2xl md:text-3xl">六、结论与展望</h2>
+
+          <div id="section-6-1" class="notion-block">
+            <h3 class="notion-heading text-xl md:text-2xl">6.1 研究发现总结</h3>
+            <p class="mb-4">
+              本研究通过对编程初学者与大模型交互困境的深入分析，得出以下关键发现：
+            </p>
+
+            <div class="space-y-3 my-6">
+              <div class="flex items-start">
+                <div class="mt-1 mr-3 flex-shrink-0">
+                  <i class="fa fa-check-circle text-primary"></i>
+                </div>
+                <p class="text-sm">
+                  <strong>上下文工程教育的缺失</strong
+                  >是导致编程初学者无法充分发挥大模型潜力的主要原因。
+                </p>
+              </div>
+
+              <div class="flex items-start">
+                <div class="mt-1 mr-3 flex-shrink-0">
+                  <i class="fa fa-check-circle text-primary"></i>
+                </div>
+                <p class="text-sm">
+                  <strong>初学者对大模型存在严重的认知误区</strong
+                  >，包括"完整信息假设"、"无限记忆"、"精确理解"和"自动化优化"等误区。
+                </p>
+              </div>
+
+              <div class="flex items-start">
+                <div class="mt-1 mr-3 flex-shrink-0">
+                  <i class="fa fa-check-circle text-primary"></i>
+                </div>
+                <p class="text-sm">
+                  <strong>网页版大模型存在显著的功能限制和性能瓶颈</strong
+                  >，包括上下文窗口限制、功能阉割、性能限制和不透明的使用限制等。
+                </p>
+              </div>
+
+              <div class="flex items-start">
+                <div class="mt-1 mr-3 flex-shrink-0">
+                  <i class="fa fa-check-circle text-primary"></i>
+                </div>
+                <p class="text-sm">
+                  <strong>上下文超出限制在编程场景中具有致命影响</strong
+                  >，导致代码连贯性中断、调试效率下降、任务连贯性破坏等问题。
+                </p>
+              </div>
+
+              <div class="flex items-start">
+                <div class="mt-1 mr-3 flex-shrink-0">
+                  <i class="fa fa-check-circle text-primary"></i>
+                </div>
+                <p class="text-sm">
+                  <strong
+                    >Claude Code和DeepSeek在上下文处理机制上存在显著差异</strong
+                  >，各有优势和局限性。
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div id="section-6-2" class="notion-block">
+            <h3 class="notion-heading text-xl md:text-2xl">6.2 未来研究方向</h3>
+            <p class="mb-4">基于本研究的发现，提出以下未来研究方向：</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-6">
+              <div class="border border-notion-light-gray p-4 rounded-lg">
+                <h4 class="font-semibold mb-2">上下文工程教学方法的创新研究</h4>
+                <p class="text-sm">
+                  探索创新的上下文工程教学方法，如基于项目的学习、案例教学和同伴学习等，研究如何将上下文工程与现有编程课程有机结合。
+                </p>
+              </div>
+
+              <div class="border border-notion-light-gray p-4 rounded-lg">
+                <h4 class="font-semibold mb-2">
+                  大模型上下文管理机制的技术创新
+                </h4>
+                <p class="text-sm">
+                  探索更先进的上下文管理机制，如基于注意力机制的上下文压缩、基于图模型的上下文表示和基于强化学习的上下文优化等。
+                </p>
+              </div>
+
+              <div class="border border-notion-light-gray p-4 rounded-lg">
+                <h4 class="font-semibold mb-2">
+                  编程场景下的上下文工程最佳实践研究
+                </h4>
+                <p class="text-sm">
+                  深入探索编程场景下的上下文工程最佳实践，包括如何设计有效的提示、如何管理复杂项目的上下文、如何处理多文件依赖关系等。
+                </p>
+              </div>
+
+              <div class="border border-notion-light-gray p-4 rounded-lg">
+                <h4 class="font-semibold mb-2">多模态上下文工程的研究与应用</h4>
+                <p class="text-sm">
+                  探索多模态上下文工程，即如何结合文本、代码、图像和其他形式的信息进行有效的上下文设计，研究多模态环境中的上下文管理。
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div id="section-6-3" class="notion-block">
+            <h3 class="notion-heading text-xl md:text-2xl">6.3 实践建议</h3>
+            <p class="mb-4">
+              基于本研究的发现和未来研究方向，提出以下实践建议：
+            </p>
+
+            <div class="space-y-6 my-6">
+              <div>
+                <h4 class="font-semibold mb-3 flex items-center">
+                  <i class="fa fa-university text-primary mr-2"></i>
+                  对教育机构的建议
+                </h4>
+                <ul class="list-disc pl-6 space-y-1 text-sm">
+                  <li>
+                    将上下文工程纳入编程课程体系，从入门到高级课程都应涵盖相关内容
+                  </li>
+                  <li>
+                    开发专门的上下文工程教学资源，包括教材、在线课程和实践项目
+                  </li>
+                  <li>改进评估方式，纳入对上下文工程能力的考核</li>
+                  <li>培训教师掌握上下文工程的教学方法和评估技巧</li>
+                </ul>
+              </div>
+
+              <div>
+                <h4 class="font-semibold mb-3 flex items-center">
+                  <i class="fa fa-code-fork text-primary mr-2"></i>
+                  对大模型开发者的建议
+                </h4>
+                <ul class="list-disc pl-6 space-y-1 text-sm">
+                  <li>
+                    优化上下文窗口管理机制，提供更智能的上下文压缩和摘要生成功能
+                  </li>
+                  <li>
+                    增强上下文连贯性和一致性，开发更先进的对话状态跟踪机制
+                  </li>
+                  <li>提供更完善的上下文管理工具，简化上下文管理操作</li>
+                  <li>
+                    优化资源分配与使用限制策略，提高用户体验的一致性和可预测性
+                  </li>
+                </ul>
+              </div>
+
+              <div>
+                <h4 class="font-semibold mb-3 flex items-center">
+                  <i class="fa fa-user text-primary mr-2"></i>
+                  对编程初学者的建议
+                </h4>
+                <ul class="list-disc pl-6 space-y-1 text-sm">
+                  <li>主动学习上下文工程知识，了解大模型的工作原理和局限性</li>
+                  <li>
+                    培养良好的上下文管理习惯，如定期总结对话历史、主动压缩上下文等
+                  </li>
+                  <li>实践有效的提示设计原则，提高与大模型交互的效率</li>
+                  <li>反思和分析与大模型的交互过程，不断改进上下文工程能力</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="notion-quote">
+              在未来的软件开发中，大模型将扮演越来越重要的角色，而上下文工程将成为开发者的核心能力之一。通过加强教育、改进技术实现和优化用户体验，我们可以帮助编程初学者克服上下文工程认知不足的问题，充分发挥大模型在软件开发中的潜力。
+            </div>
+          </div>
+        </section>
+
+        <!-- 页脚 -->
+        <footer
+          class="mt-16 pt-8 border-t border-notion-light-gray text-center text-sm text-secondary"
+        >
+          <p class="mb-2">© 2025 编程初学者与大模型交互困境研究项目组</p>
+          <p>本研究报告仅供学术研究和教育目的使用</p>
+        </footer>
+      </main>
+    </div>
+
+    <!-- 回到顶部按钮（移动端） -->
+    <button
+      id="mobileScrollTop"
+      class="fixed bottom-6 right-6 bg-primary text-white w-10 h-10 rounded-full flex items-center justify-center shadow-lg opacity-0 invisible transition-all duration-300 md:hidden"
+    >
+      <i class="fa fa-arrow-up"></i>
+    </button>
+
+    <script src="/src/编程初学者与大模型交互困境研究.js" type="module"></script>
+  </body>
+</html>

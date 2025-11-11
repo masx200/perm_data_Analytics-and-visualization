@@ -1,0 +1,132 @@
+#noteContainer .c-item {
+  padding: 0;
+  /*border-top: 1px solid #f2f2f2;;*/
+}
+
+#noteContainer .c-item-inner {
+  border: 1px solid #e2e2e2;
+  background-color: #fffbeb;
+  padding: 5px 0;
+  margin-top: 0;
+}
+
+#noteContainer .c-header-photo {
+  float: left;
+  display: block;
+  width: 30px;
+  height: 30px;
+  /*border: 1px solid #e8e8e8;*/
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+#noteContainer .c-header-photo-inner {
+  display: none;
+}
+
+#noteContainer .c-header-photo img {
+  width: 100%;
+  height: 100%;
+  border-style: none;
+}
+
+#noteContainer .c-content {
+  margin-left: 42px;
+  overflow: hidden;
+}
+
+#noteContainer .c-content-inner {
+  margin-left: 5px;
+  margin-right: 5px;
+  overflow: hidden;
+}
+
+#noteContainer .c-content .c-user-info {
+  margin-bottom: 4px;
+}
+
+#noteContainer .c-content .c-user-info-inner {
+  margin-bottom: 4px;
+  margin-top: 6px;
+}
+
+#noteContainer .c-content .c-user-name {
+  color: #000000a6;
+  font-weight: 700;
+}
+
+#noteContainer .c-content .c-create-time {
+  color: #777777;
+}
+
+#noteContainer .c-content p {
+  color: #222222;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+#noteContainer .c-content .c-footer-action {
+  margin-top: 6px;
+}
+
+#noteContainer .c-content .c-reply {
+  color: #406599;
+  cursor: pointer;
+}
+
+#noteContainer .c-content .c-reply-note {
+  margin-top: 26px;
+}
+
+#noteContainer .c-content .c-reply-container {
+  margin-top: 26px;
+}
+
+#noteContainer .c-content .c-reply-container input {
+  /*display: inline-block;*/
+  /*width: calc(100% - 70px);*/
+  /*margin-left: 1px;*/
+}
+
+#noteContainer .c-user-type {
+  background-color: #e2e2e2;
+  font-size: 12px;
+  padding: 2px 5px;
+  color: #5fb878;
+  margin: 0 5px;
+}
+
+#noteContainer .c-user-type-vip {
+  background-color: #e2e2e2;
+  font-size: 12px;
+  padding: 2px 5px;
+  color: red;
+  margin: 0 5px;
+}
+
+#noteContainer .c-user-type-admin {
+  background-color: #e2e2e2;
+  font-size: 12px;
+  padding: 2px 5px;
+  color: #ff5722;
+  margin: 0 5px;
+}
+
+.viewMore {
+  display: block;
+  color: #406599;
+  font-size: 14px;
+  line-height: 30px;
+  text-align: center;
+  background-color: #f4f5f6;
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+.add-note-show {
+  display: block;
+}
+
+.add-note-hide {
+  display: none;
+}
