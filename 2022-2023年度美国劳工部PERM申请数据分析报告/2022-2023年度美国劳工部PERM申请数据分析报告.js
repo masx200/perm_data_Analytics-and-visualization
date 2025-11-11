@@ -357,9 +357,19 @@ document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
   anchor.addEventListener("click", function (e) {
     e.preventDefault();
 
-    document.querySelector(this.getAttribute("href")).scrollIntoView({
-      behavior: "smooth",
-    });
+    const targetId = this.getAttribute("href");
+
+    // 跳过空的hash或者只包含#的链接
+    if (!targetId || targetId === "#") {
+      return;
+    }
+
+    const targetElement = document.querySelector(targetId);
+    if (targetElement) {
+      targetElement.scrollIntoView({
+        behavior: "smooth",
+      });
+    }
   });
 });
 
@@ -372,6 +382,15 @@ window.addEventListener("scroll", () => {
   } else {
     backToTopButton.classList.remove("visible");
   }
+});
+
+// 返回顶部按钮点击事件
+backToTopButton.addEventListener("click", (e) => {
+  e.preventDefault();
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
 });
 
 // 导航高亮
