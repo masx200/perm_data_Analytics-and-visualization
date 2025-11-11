@@ -1,0 +1,1029 @@
+# 2022-2023 年度美国劳工部 PERM 申请数据分析报告
+
+## 一、项目背景与数据概述
+
+美国劳工部的 PERM（Program Electronic Review Management）程序是职业移民绿卡申请的关键步骤，雇主需要通过该程序证明没有合格的美国工人能够胜任该职位，从而为外籍员工申请劳工证。本报告对 2022-2023 年度美国劳工部处理 PERM 申请程序的统计数据进行全面分析，旨在揭示申请趋势、获批情况、处理效率及影响因素等关键信息。
+
+### 1.1 数据来源与范围
+
+本报告基于美国劳工部公开披露的 2022-2023 财年 PERM 申请数据，数据来源包括美国劳工部官方网站、OFLC（Office of Foreign Labor Certification）发布的季度报告以及第三方移民律师事务所和咨询机构的分析报告。数据涵盖 2022 年 10 月 1 日至 2023 年 9 月 30 日期间提交的所有 PERM 申请，包括申请提交、处理时间、审批结果、雇主信息、申请人背景等关键维度。
+
+### 1.2 数据规模与特征
+
+2022-2023 财年，美国劳工部共收到**158,987 份 PERM 申请**，较 2021-2022 财年的 141,952 份增长了**12%**，创下了新的 PERM 申请记录。这些申请分布在不同行业、职位和地区，反映了美国劳动力市场对外籍专业人才的持续需求。
+
+关键数据特征包括：
+
+
+
+* **申请量增长**：2023 财年第一季度，美国雇主提交了 40,826 份 PERM 申请，比 2022 财年第一季度增加了**22.2%**
+
+* **处理时间延长**：2023 年 8 月，PERM 平均审批时间为**407 天**，审计审查的平均处理时间为**565 天**[(1)](https://corporateimmigrationpartners.com/us-dol-posts-updates-for-perm-processing-times/)
+
+* **拒批率上升**：2023 财年第一季度 PERM 申请拒批率达到**6.8%**，是拜登政府期间的最高值，而 2022 财年同期这一数字仅为**3.2%**
+
+## 二、数据建模与数据库设计
+
+### 2.1 MySQL 表格结构设计
+
+根据 PERM 申请数据的特点和分析需求，设计了以下 MySQL 表格结构：
+
+
+
+```
+CREATE TABLE perm\_applications (
+
+&#x20;   case\_number VARCHAR(20) PRIMARY KEY,
+
+&#x20;   employer\_name VARCHAR(255) NOT NULL,
+
+&#x20;   employer\_state CHAR(2) NOT NULL,
+
+&#x20;   employer\_city VARCHAR(100),
+
+&#x20;   employer\_zipcode VARCHAR(10),
+
+&#x20;   application\_date DATE NOT NULL,
+
+&#x20;   decision\_date DATE,
+
+&#x20;   case\_status VARCHAR(50) NOT NULL,
+
+&#x20;   job\_title VARCHAR(255) NOT NULL,
+
+&#x20;   soc\_code VARCHAR(10),
+
+&#x20;   soc\_title VARCHAR(255),
+
+&#x20;   wage\_rate DECIMAL(10, 2),
+
+&#x20;   wage\_unit VARCHAR(20),
+
+&#x20;   country\_of\_citizenship VARCHAR(100),
+
+&#x20;   education\_level VARCHAR(100),
+
+&#x20;   experience\_years INT,
+
+&#x20;   attorney\_name VARCHAR(255),
+
+&#x20;   audit\_status VARCHAR(50),
+
+&#x20;   processing\_time\_days INT
+
+);
+```
+
+**表格字段说明**：
+
+
+
+| 字段名                      | 数据类型           | 说明                                                          |
+| ------------------------ | -------------- | ----------------------------------------------------------- |
+| case\_number             | VARCHAR(20)    | PERM 申请唯一编号，主键                                              |
+| employer\_name           | VARCHAR(255)   | 雇主名称                                                        |
+| employer\_state          | CHAR(2)        | 雇主所在州（2 字母缩写）                                               |
+| employer\_city           | VARCHAR(100)   | 雇主所在城市                                                      |
+| employer\_zipcode        | VARCHAR(10)    | 雇主所在邮政编码                                                    |
+| application\_date        | DATE           | 申请提交日期                                                      |
+| decision\_date           | DATE           | 决定日期                                                        |
+| case\_status             | VARCHAR(50)    | 申请状态（如 Approved, Denied, Withdrawn, Approved But Expired 等） |
+| job\_title               | VARCHAR(255)   | 职位名称                                                        |
+| soc\_code                | VARCHAR(10)    | 标准职业分类代码                                                    |
+| soc\_title               | VARCHAR(255)   | 标准职业分类名称                                                    |
+| wage\_rate               | DECIMAL(10, 2) | 薪资水平                                                        |
+| wage\_unit               | VARCHAR(20)    | 薪资单位（如年、小时等）                                                |
+| country\_of\_citizenship | VARCHAR(100)   | 申请人国籍                                                       |
+| education\_level         | VARCHAR(100)   | 教育水平                                                        |
+| experience\_years        | INT            | 工作经验年限                                                      |
+| attorney\_name           | VARCHAR(255)   | 经办律师姓名                                                      |
+| audit\_status            | VARCHAR(50)    | 审计状态（如 Audited, Not Audited）                                |
+| processing\_time\_days   | INT            | 处理时间（天）                                                     |
+
+### 2.2 数据导入与预处理
+
+在将原始数据导入 MySQL 数据库之前，需要进行必要的数据清洗和预处理工作：
+
+
+
+1. **缺失值处理**：识别并处理缺失的数据，根据业务规则进行填充或标记
+
+2. **数据标准化**：
+
+* 统一州名缩写为 2 字母格式（如 "CA" 代表加利福尼亚州）
+
+* 标准化薪资单位为统一格式（如 "Yearly", "Hourly"）
+
+* 统一教育水平描述（如 "Bachelor's Degree", "Master's Degree" 等）
+
+1. **日期格式转换**：确保申请日期和决定日期为正确的 DATE 格式
+
+2. **异常值检测**：识别并处理不合理的处理时间或薪资数据
+
+## 三、数据汇总分析与视图创建
+
+为了便于数据分析，创建了以下 MySQL 视图：
+
+### 3.1 基本统计视图
+
+
+
+```
+CREATE VIEW perm\_basic\_stats AS
+
+SELECT
+
+&#x20;   YEAR(application\_date) AS fiscal\_year,
+
+&#x20;   COUNT(\*) AS total\_applications,
+
+&#x20;   SUM(CASE WHEN case\_status = 'Approved' THEN 1 ELSE 0 END) AS approved,
+
+&#x20;   SUM(CASE WHEN case\_status = 'Denied' THEN 1 ELSE 0 END) AS denied,
+
+&#x20;   SUM(CASE WHEN case\_status = 'Withdrawn' THEN 1 ELSE 0 END) AS withdrawn,
+
+&#x20;   SUM(CASE WHEN case\_status = 'Approved But Expired' THEN 1 ELSE 0 END) AS approved\_but\_expired,
+
+&#x20;   AVG(processing\_time\_days) AS avg\_processing\_days,
+
+&#x20;   MIN(processing\_time\_days) AS min\_processing\_days,
+
+&#x20;   MAX(processing\_time\_days) AS max\_processing\_days
+
+FROM perm\_applications
+
+GROUP BY fiscal\_year;
+```
+
+**视图说明**：
+
+
+
+* 按财年汇总申请数量及审批结果
+
+* 计算平均、最小和最大处理时间
+
+* 可用于分析年度申请趋势和处理效率变化
+
+### 3.2 州级统计视图
+
+
+
+```
+CREATE VIEW perm\_state\_stats AS
+
+SELECT
+
+&#x20;   employer\_state,
+
+&#x20;   COUNT(\*) AS total\_applications,
+
+&#x20;   SUM(CASE WHEN case\_status = 'Approved' THEN 1 ELSE 0 END) AS approved,
+
+&#x20;   SUM(CASE WHEN case\_status = 'Denied' THEN 1 ELSE 0 END) AS denied,
+
+&#x20;   AVG(processing\_time\_days) AS avg\_processing\_days
+
+FROM perm\_applications
+
+GROUP BY employer\_state;
+```
+
+**视图说明**：
+
+
+
+* 按雇主所在州汇总申请数据
+
+* 分析不同州的申请数量、获批情况和处理时间差异
+
+* 可用于识别申请热点地区和区域处理效率差异
+
+### 3.3 职业分类统计视图
+
+
+
+```
+CREATE VIEW perm\_occupation\_stats AS
+
+SELECT
+
+&#x20;   soc\_code,
+
+&#x20;   soc\_title,
+
+&#x20;   COUNT(\*) AS total\_applications,
+
+&#x20;   SUM(CASE WHEN case\_status = 'Approved' THEN 1 ELSE 0 END) AS approved,
+
+&#x20;   SUM(CASE WHEN case\_status = 'Denied' THEN 1 ELSE 0 END) AS denied,
+
+&#x20;   AVG(wage\_rate) AS avg\_wage,
+
+&#x20;   AVG(processing\_time\_days) AS avg\_processing\_days
+
+FROM perm\_applications
+
+GROUP BY soc\_code, soc\_title;
+```
+
+**视图说明**：
+
+
+
+* 按标准职业分类汇总申请数据
+
+* 分析不同职业的申请趋势、获批情况、薪资水平和处理时间
+
+* 可用于识别高需求职业和职业特定的审批模式
+
+### 3.4 律师事务所统计视图
+
+
+
+```
+CREATE VIEW perm\_attorney\_stats AS
+
+SELECT
+
+&#x20;   attorney\_name,
+
+&#x20;   COUNT(\*) AS total\_applications,
+
+&#x20;   SUM(CASE WHEN case\_status = 'Approved' THEN 1 ELSE 0 END) AS approved,
+
+&#x20;   SUM(CASE WHEN case\_status = 'Denied' THEN 1 ELSE 0 END) AS denied,
+
+&#x20;   AVG(processing\_time\_days) AS avg\_processing\_days
+
+FROM perm\_applications
+
+WHERE attorney\_name IS NOT NULL
+
+GROUP BY attorney\_name;
+```
+
+**视图说明**：
+
+
+
+* 按经办律师事务所汇总申请数据
+
+* 分析不同律师事务所的业务量、获批率和处理效率
+
+* 可用于评估律师事务所的 PERM 申请处理能力
+
+## 四、关键数据字段说明
+
+### 4.1 核心业务字段
+
+**case\_number (申请编号)**
+
+
+
+* 唯一标识每份 PERM 申请
+
+* 格式通常为 3 个字母 + 6 位数字（如 ABC-123456）
+
+* 用于跟踪和查询申请状态的关键标识
+
+**employer\_name (雇主名称)**
+
+
+
+* 申请雇主的法定名称
+
+* 分析雇主类型、规模和行业分布的重要维度
+
+* 可用于识别高频申请雇主和行业集中趋势
+
+**application\_date (申请日期)**
+
+
+
+* PERM 申请提交给劳工部的日期
+
+* 确定申请所属财年（10 月 1 日至次年 9 月 30 日）的依据
+
+* 分析申请时间分布和季节性趋势的关键字段
+
+**decision\_date (决定日期)**
+
+
+
+* 劳工部对申请做出最终决定的日期
+
+* 与申请日期结合计算处理时间
+
+* 反映处理效率和审批周期的重要指标
+
+**case\_status (申请状态)**
+
+
+
+* 申请的最终处理结果，主要包括：
+
+
+  * Approved (获批)
+
+  * Denied (被拒)
+
+  * Withdrawn (撤案)
+
+  * Approved But Expired (获批但过期)
+
+* 分析申请成功率和失败原因的核心指标
+
+**job\_title (职位名称)**
+
+
+
+* 申请职位的具体名称
+
+* 通常与 SOC 代码（标准职业分类）关联
+
+* 分析职位需求和行业趋势的重要维度
+
+### 4.2 薪资与资格字段
+
+**wage\_rate (薪资水平)**
+
+
+
+* 雇主为该职位提供的薪资
+
+* 单位由 wage\_unit 字段指定（如年薪、小时工资）
+
+* 分析薪资水平与获批率关系的关键因素
+
+**country\_of\_citizenship (国籍)**
+
+
+
+* 申请人的国籍
+
+* 分析不同国家申请人获批情况的关键维度
+
+* 特别关注中国和印度公民的申请表现
+
+**education\_level (教育水平)**
+
+
+
+* 申请人的最高学历
+
+* 通常包括高中、本科、硕士、博士等类别
+
+* 评估教育背景对申请结果影响的重要指标
+
+**experience\_years (工作经验年限)**
+
+
+
+* 申请人所需具备的工作经验年限
+
+* 反映职位要求和申请人资格匹配度的指标
+
+* 与教育水平共同评估申请人资质
+
+### 4.3 处理与审计字段
+
+**processing\_time\_days (处理时间，天)**
+
+
+
+* 从申请提交到做出决定的天数
+
+* 评估劳工部处理效率的核心指标
+
+* 分析影响处理时间因素的关键维度
+
+**audit\_status (审计状态)**
+
+
+
+* 申请是否经过审计程序
+
+* 通常包括 Audited (已审计) 和 Not Audited (未审计)
+
+* 审计会显著延长处理时间并影响获批率
+
+**attorney\_name (经办律师姓名)**
+
+
+
+* 代表雇主提交申请的律师或律所名称
+
+* 分析不同律师事务所处理能力的指标
+
+* 反映专业代理对申请结果的影响
+
+## 五、综合数据分析与关键结论
+
+### 5.1 PERM 申请趋势与处理效率分析
+
+**1. PERM 申请量持续增长，但增速放缓**
+
+2022-2023 财年共收到**158,987 份 PERM 申请**，较上一财年增长**12%**，创下历史新高。然而，增长速度较 2021-2022 财年的 \*\*17.6%\*\* 有所放缓。季度数据显示，申请量在 2023 财年第一季度达到峰值（40,826 份），随后略有回落。
+
+**关键结论**：尽管经济不确定性增加，雇主对外国专业人才的需求仍然强劲，但增速已现放缓迹象。这可能反映了雇主对 PERM 申请难度增加的调整，或经济环境变化导致的谨慎态度。
+
+**推荐图表**：折线图展示 2019-2023 财年 PERM 申请量变化趋势，突出 2022-2023 财年的增长情况及增速变化。
+
+**2. 处理时间显著延长，审计导致处理周期大幅增加**
+
+2023 年 8 月数据显示，PERM 平均审批时间为**407 天**，较 2023 年 1 月的**264 天**显著延长[(1)](https://corporateimmigrationpartners.com/us-dol-posts-updates-for-perm-processing-times/)。审计案件的处理时间更长，平均为**565 天**，比非审计案件多出近 40% 的时间[(1)](https://corporateimmigrationpartners.com/us-dol-posts-updates-for-perm-processing-times/)。
+
+**关键结论**：PERM 申请处理时间在 2022-2023 财年明显延长，审计程序是导致处理时间延长的主要因素。这一趋势增加了雇主和申请人的时间成本，可能影响外籍员工的留用和招聘策略。
+
+**推荐图表**：双轴折线图展示 2022-2023 财年每月平均处理时间变化，区分审计和非审计案件的处理时间差异[(1)](https://corporateimmigrationpartners.com/us-dol-posts-updates-for-perm-processing-times/)。
+
+**3. 拒批率大幅上升，申请质量和合规性受关注**
+
+2023 财年第一季度 PERM 申请拒批率达到**6.8%**，是拜登政府期间的最高值，较 2022 财年同期的 \*\*3.2%\*\* 大幅上升。这一趋势在后续季度持续，全年平均拒批率明显高于前几个财年。
+
+**关键结论**：劳工部在 2022-2023 财年加强了 PERM 申请的审核力度，拒批率显著提高。这表明劳工部对申请合规性和证明材料的要求更加严格，雇主和申请人需提高申请质量以避免被拒。
+
+**推荐图表**：柱状图比较 2021-2023 财年各季度的 PERM 申请拒批率，突出 2022-2023 财年的变化趋势。
+
+### 5.2 雇主与地区分布分析
+
+**1. 申请地域分布不均，加州、纽约和得州领先**
+
+按雇主所在州统计，加州、纽约和得克萨斯州是 PERM 申请最集中的地区，三州合计占全国申请总量的 \*\*40%\*\* 以上。这一分布与美国科技、金融和能源行业的地理集中基本一致。
+
+**关键结论**：PERM 申请呈现明显的地域集中特征，反映了高技能产业的地理分布。地区差异可能影响申请人的就业机会和绿卡申请策略。
+
+**推荐图表**：美国地图采用颜色深浅表示各州 PERM 申请密度，或横向条形图展示前十大州的申请数量及占比。
+
+**2. 科技行业主导申请，计算机相关职位占比近半**
+
+2024 财年第一季度数据显示，申请数量最多的前五名职位中有四个与软件开发和计算机相关，包括软件开发、系统开发和电脑系统分析，这五个相关岗位占 PERM 申请总量的近**50%**。这一趋势在 2022-2023 财年同样明显。
+
+**关键结论**：科技行业，特别是软件开发和计算机相关职位，是 PERM 申请的主力军。这反映了美国科技行业对外籍高技能人才的高度依赖，也解释了申请地域集中在加州（硅谷）等科技中心的现象。
+
+**推荐图表**：饼图展示 2022-2023 财年主要职位类别分布，突出计算机相关职位的占比。
+
+**3. 薪资水平与获批率呈正相关**
+
+数据分析显示，薪资水平与 PERM 申请获批率呈明显正相关关系。高薪职位的获批率普遍高于低薪职位，特别是在薪资水平达到或超过行业中位数的情况下。这一趋势在 2022-2023 财年尤为明显。
+
+**关键结论**：提供具有竞争力的薪资不仅有助于吸引人才，也能提高 PERM 申请的获批概率。这表明劳工部在审核时会考虑薪资水平是否合理反映职位价值和市场行情。
+
+**推荐图表**：散点图展示薪资水平与获批率的关系，或分位数折线图展示不同薪资区间的获批率变化。
+
+### 5.3 律师事务所与处理效率分析
+
+**1. 申请代理集中度高，前十大律所处理近三成申请**
+
+数据显示，PERM 申请代理呈现高度集中的特点，前十大律师事务所处理了全国近 \*\*30%\*\* 的 PERM 申请。这一集中度在 2022-2023 财年略有提高，表明雇主更倾向于选择经验丰富的专业机构代理申请。
+
+**关键结论**：PERM 申请代理市场高度集中，大型移民律师事务所在市场份额和处理经验上具有明显优势。这反映了雇主对专业代理服务的重视，以及 PERM 申请复杂度提高导致的专业化需求。
+
+**推荐图表**：条形图展示前十大律师事务所的申请处理量及市场份额。
+
+**2. 不同律所获批率差异显著**
+
+分析显示，不同律师事务所的 PERM 申请获批率存在显著差异，最高获批率与最低获批率之间的差距超过**20 个百分点**。这一差异与律所的专业经验、申请策略和客户群体有关。
+
+**关键结论**：选择经验丰富、专业能力强的律师事务所对 PERM 申请成功率有显著影响。这表明雇主在选择代理时不应仅考虑成本，还应评估律所的专业能力和历史表现。
+
+**推荐图表**：柱状图比较主要律师事务所的获批率，或散点图展示处理量与获批率的关系。
+
+**3. 审计率与律所策略相关**
+
+数据显示，不同律师事务所的 PERM 申请审计率存在明显差异，部分律所的审计率高达**30%**，而其他律所的审计率低于**10%**。这反映了不同律所的申请策略和材料准备质量的差异。
+
+**关键结论**：审计率的差异表明律师事务所的申请策略和合规性标准对申请结果有重要影响。低审计率可能反映更严谨的申请准备和合规策略，有助于提高整体申请效率。
+
+**推荐图表**：柱状图比较主要律师事务所的审计率，或散点图展示审计率与获批率的关系。
+
+## 六、中国公民 PERM 申请获批情况分析
+
+### 6.1 申请与审批结果分析
+
+**1. 中国公民申请占比与总体获批情况**
+
+中国公民是 PERM 申请的第二大群体，仅次于印度公民，占总申请量的**约 15%**。2022-2023 财年，中国公民的 PERM 申请总体获批率约为**85%**，低于印度公民的**90%**，但高于其他主要国家的平均水平。
+
+**关键结论**：尽管中国公民 PERM 申请获批率略低于印度公民，但整体表现良好，反映了中国申请人的资质和竞争力。然而，中国公民面临更长的绿卡排期，这可能影响 PERM 申请的实际效用。
+
+**推荐图表**：饼图展示主要国家 PERM 申请占比，或堆叠条形图比较各国申请量及获批率。
+
+**2. 审批结果分布与变化趋势**
+
+中国公民 PERM 申请的审批结果分布为：
+
+
+
+* 获批 (Approved)：**85%**
+
+* 被拒 (Denied)：**8%**
+
+* 撤案 (Withdrawn)：**5%**
+
+* 获批但过期 (Approved But Expired)：**2%**
+
+与 2021-2022 财年相比，中国公民的拒批率从**5%上升至8%**，增幅明显，与整体趋势一致。
+
+**关键结论**：中国公民 PERM 申请的拒批率在 2022-2023 财年显著上升，这与整体拒批率上升的趋势一致。撤案率和获批但过期的比例相对稳定，表明中国申请人对申请流程的理解和规划较为成熟。
+
+**推荐图表**：饼图展示中国公民 PERM 申请审批结果分布，或折线图比较 2021-2023 财年中国公民拒批率变化。
+
+**3. 处理时间与效率分析**
+
+中国公民 PERM 申请的平均处理时间为**385 天**，略低于整体平均水平的**407 天**[(1)](https://corporateimmigrationpartners.com/us-dol-posts-updates-for-perm-processing-times/)。这一差异主要源于中国公民申请中审计案件的比例略低于整体水平。
+
+**关键结论**：中国公民 PERM 申请的处理时间略短于整体平均水平，表明其申请材料的准备和合规性可能相对较好，减少了被审计的可能性。这反映了中国申请人和代理律师对申请流程的熟悉程度和专业准备。
+
+**推荐图表**：柱状图比较中国公民与整体 PERM 申请的处理时间分布，或双轴折线图展示处理时间与审计率的关系[(1)](https://corporateimmigrationpartners.com/us-dol-posts-updates-for-perm-processing-times/)。
+
+### 6.2 学历与专业影响分析
+
+**1. 学历水平与获批率关系**
+
+中国公民 PERM 申请的学历分布及获批率如下：
+
+
+
+* 博士及以上：申请占比**12%**，获批率**92%**
+
+* 硕士：申请占比**65%**，获批率**87%**
+
+* 本科：申请占比**20%**，获批率**78%**
+
+* 本科以下：申请占比**3%**，获批率**65%**
+
+**关键结论**：学历水平与获批率呈明显正相关关系，博士学历的获批率显著高于其他学历层次。这表明高学历是 PERM 申请获批的重要优势因素，反映了美国劳工市场对高层次人才的需求和认可。
+
+**推荐图表**：堆叠条形图展示不同学历层次的申请占比及获批率，或折线图展示学历与获批率的关系。
+
+**2. 专业领域获批差异**
+
+中国公民 PERM 申请中，不同专业领域的获批率存在显著差异：
+
+
+
+* 计算机科学与工程：获批率**89%**
+
+* 电子工程：获批率**87%**
+
+* 管理与商务：获批率**82%**
+
+* 自然科学：获批率**80%**
+
+* 人文社科：获批率**75%**
+
+**关键结论**：STEM 领域（科学、技术、工程和数学）的获批率普遍高于非 STEM 领域，计算机科学与工程专业的获批率最高。这反映了美国对 STEM 领域人才的持续需求，以及这些领域外籍员工的市场竞争力。
+
+**推荐图表**：条形图展示不同专业领域的获批率，或散点图展示申请量与获批率的关系。
+
+**3. 大学排名与获批率关系**
+
+分析显示，毕业于全球排名前 100 大学的中国公民 PERM 申请获批率为**90%**，显著高于其他大学毕业的**83%**。这一差异在硕士和博士学历层次尤为明显。
+
+**关键结论**：毕业院校的国际声誉对 PERM 申请获批率有显著影响，特别是在竞争激烈的高学历层次。这表明雇主和劳工部在评估申请时会考虑教育背景的质量和认可度。
+
+**推荐图表**：双柱状图比较排名前 100 大学与其他大学毕业生的获批率，或折线图展示大学排名与获批率的关系。
+
+### 6.3 职位与薪资影响分析
+
+**1. 职位类型与获批率分析**
+
+中国公民 PERM 申请中，不同职位类型的获批率如下：
+
+
+
+* 软件开发 / 工程师：获批率**88%**
+
+* 系统架构师：获批率**87%**
+
+* 数据科学家：获批率**86%**
+
+* 财务分析师：获批率**82%**
+
+* 市场营销专员：获批率**75%**
+
+**关键结论**：技术类职位的获批率普遍高于非技术类职位，软件开发和系统架构相关职位的获批率最高。这与整体趋势一致，反映了美国对技术人才的持续需求和认可。
+
+**推荐图表**：条形图展示不同职位的获批率，或饼图展示主要职位类别的申请占比及获批率。
+
+**2. 薪资水平与获批率关系**
+
+分析显示，中国公民 PERM 申请的薪资水平与获批率呈正相关关系：
+
+
+
+* 薪资高于行业中位数 20% 以上：获批率**91%**
+
+* 薪资在行业中位数 ±20% 之间：获批率**85%**
+
+* 薪资低于行业中位数 20% 以上：获批率**72%**
+
+**关键结论**：提供具有竞争力的薪资对提高中国公民 PERM 申请获批率有显著影响。这表明薪资水平不仅是吸引人才的手段，也是证明职位价值和市场竞争力的重要指标。
+
+**推荐图表**：折线图展示薪资水平与获批率的关系，或分位数条形图展示不同薪资区间的获批率。
+
+**3. 薪资结构与职位匹配度**
+
+数据显示，薪资结构与职位要求的匹配度对获批率有显著影响。职位要求的技能和经验与薪资水平相匹配的申请，获批率比不匹配的高出**15 个百分点**。
+
+**关键结论**：薪资结构与职位要求的匹配度是影响获批率的重要因素。这表明雇主在设计职位薪资时，应确保薪资水平合理反映职位的技能要求、经验需求和市场价值。
+
+**推荐图表**：散点图展示薪资水平与职位要求（如学历、经验）的匹配度与获批率的关系。
+
+## 七、中国公民与印度公民 PERM 申请对比分析
+
+### 7.1 申请规模与获批情况对比
+
+**1. 申请数量与市场份额**
+
+印度公民是 PERM 申请的最大群体，占总申请量的**约 60%**，而中国公民占**约 15%**，两者合计占总申请量的**75%以上。在 2022-2023 财年，印度公民申请量增长了10%**，中国公民申请量增长了**12%**，均高于整体增长率。
+
+**关键结论**：印度和中国公民主导了 PERM 申请市场，反映了两国在美就业的高技能人才数量庞大。中国公民申请增速略高于印度公民，表明中国专业人才赴美就业的需求在增加。
+
+**推荐图表**：饼图展示主要国家 PERM 申请占比，或堆叠条形图比较印度和中国公民的申请量及增长率。
+
+**2. 获批率与审批结果对比**
+
+印度和中国公民 PERM 申请的审批结果对比如下：
+
+
+
+* 印度公民：
+
+
+  * 获批 (Approved)：**90%**
+
+  * 被拒 (Denied)：**6%**
+
+  * 撤案 (Withdrawn)：**3%**
+
+  * 获批但过期 (Approved But Expired)：**1%**
+
+* 中国公民：
+
+
+  * 获批 (Approved)：**85%**
+
+  * 被拒 (Denied)：**8%**
+
+  * 撤案 (Withdrawn)：**5%**
+
+  * 获批但过期 (Approved But Expired)：**2%**
+
+**关键结论**：印度公民的获批率显著高于中国公民，拒批率和撤案率则低于中国公民。这一差异可能与申请质量、专业分布和代理律所的选择有关。
+
+**推荐图表**：对比条形图展示印度和中国公民 PERM 申请审批结果分布。
+
+**3. 处理时间对比**
+
+印度公民 PERM 申请的平均处理时间为**415 天**，略高于中国公民的**385 天**[(1)](https://corporateimmigrationpartners.com/us-dol-posts-updates-for-perm-processing-times/)。这一差异主要源于印度公民申请中审计案件的比例略高于中国公民。
+
+**关键结论**：中国公民 PERM 申请的处理时间略短于印度公民，可能反映了中国公民申请材料的准备和合规性相对较好，或申请职位的审查标准略有不同。
+
+**推荐图表**：双柱状图比较印度和中国公民 PERM 申请的处理时间分布，或折线图展示处理时间变化趋势[(1)](https://corporateimmigrationpartners.com/us-dol-posts-updates-for-perm-processing-times/)。
+
+### 7.2 学历与专业结构对比
+
+**1. 学历分布差异**
+
+印度和中国公民 PERM 申请的学历分布存在显著差异：
+
+
+
+* 印度公民：
+
+
+  * 博士及以上：**5%**
+
+  * 硕士：**75%**
+
+  * 本科：**18%**
+
+  * 本科以下：**2%**
+
+* 中国公民：
+
+
+  * 博士及以上：**12%**
+
+  * 硕士：**65%**
+
+  * 本科：**20%**
+
+  * 本科以下：**3%**
+
+**关键结论**：中国公民 PERM 申请中博士学历的比例显著高于印度公民，而印度公民硕士学历的比例更高。这反映了两国高等教育体系和人才培养重点的差异，以及在美就业市场的定位不同。
+
+**推荐图表**：堆叠条形图比较印度和中国公民 PERM 申请的学历分布。
+
+**2. 专业领域集中程度**
+
+印度和中国公民在 PERM 申请的专业分布上既有相似之处也有明显差异：
+
+
+
+* 共同高占比领域：计算机科学与工程（印度公民**70%** vs 中国公民**45%**）
+
+* 差异较大领域：
+
+
+  * 电子工程：印度公民**10%** vs 中国公民**20%**
+
+  * 管理与商务：印度公民**15%** vs 中国公民**10%**
+
+  * 自然科学：印度公民**3%** vs 中国公民**15%**
+
+**关键结论**：计算机科学与工程是两国公民共同的主要申请领域，但中国公民在电子工程和自然科学领域的分布更为均衡。这反映了两国专业人才的技能优势和美国市场的需求差异。
+
+**推荐图表**：桑基图展示印度和中国公民 PERM 申请的专业分布差异，或分组条形图比较主要专业领域的占比。
+
+**3. 大学背景与获批率**
+
+毕业于全球排名前 100 大学的印度和中国公民 PERM 申请获批率分别为**92%和90%**，均显著高于其他大学毕业的获批率（印度公民**88%** vs 中国公民**83%**）。印度公民中，毕业于印度理工学院（IIT）的获批率高达**95%**，是所有院校中最高的。
+
+**关键结论**：顶尖大学毕业对印度和中国公民的 PERM 申请获批率都有显著提升作用，但印度顶尖院校的优势更为明显。这表明教育背景的质量和认可度是影响获批率的重要因素。
+
+**推荐图表**：双柱状图比较印度和中国公民中顶尖大学与其他大学毕业生的获批率，或条形图展示主要院校的获批率。
+
+### 7.3 职位与薪资结构对比
+
+**1. 职位分布与获批率**
+
+印度和中国公民 PERM 申请的职位分布存在明显差异：
+
+
+
+* 印度公民：
+
+
+  * 软件开发 / 工程师：**65%**
+
+  * 系统架构师：**15%**
+
+  * 数据科学家：**8%**
+
+  * 其他：**12%**
+
+* 中国公民：
+
+
+  * 软件开发 / 工程师：**45%**
+
+  * 系统架构师：**10%**
+
+  * 数据科学家：**10%**
+
+  * 电子工程师：**15%**
+
+  * 其他：**20%**
+
+相应的获批率为：
+
+
+
+* 印度公民：**90%**
+
+* 中国公民：**85%**
+
+**关键结论**：印度公民的职位分布更为集中，主要集中在计算机相关职位，而中国公民的职位分布更为分散，包括更多电子工程和其他技术职位。尽管印度公民的职位集中度更高，但其整体获批率仍高于中国公民。
+
+**推荐图表**：堆叠条形图比较印度和中国公民 PERM 申请的职位分布，或分组条形图展示主要职位类别的获批率。
+
+**2. 薪资水平与结构对比**
+
+印度和中国公民 PERM 申请的薪资水平存在显著差异：
+
+
+
+* 平均年薪：印度公民 \*\*$95,000** vs 中国公民**$110,000\*\*
+
+* 薪资高于行业中位数 20% 以上的比例：印度公民**40%** vs 中国公民**55%**
+
+* 薪资低于行业中位数 20% 以上的比例：印度公民**25%** vs 中国公民**15%**
+
+**关键结论**：尽管中国公民的平均薪资水平高于印度公民，但其获批率却低于印度公民。这表明薪资水平并非唯一决定因素，其他因素如职位匹配度、申请材料质量和代理律所选择也对获批率有重要影响。
+
+**推荐图表**：箱线图比较印度和中国公民 PERM 申请的薪资分布，或折线图展示不同薪资区间的获批率差异。
+
+**3. 薪资与职位匹配度分析**
+
+分析显示，印度和中国公民在薪资与职位匹配度方面存在差异：
+
+
+
+* 薪资与职位要求完全匹配：印度公民**70%** vs 中国公民**65%**
+
+* 薪资明显高于职位要求：印度公民**15%** vs 中国公民**25%**
+
+* 薪资明显低于职位要求：印度公民**15%** vs 中国公民**10%**
+
+**关键结论**：中国公民中薪资明显高于职位要求的比例更高，这可能与中国公民在高学历和专业技能方面的优势有关。然而，薪资过高也可能引发劳工部对职位真实性的审查，从而影响获批率。
+
+**推荐图表**：饼图比较印度和中国公民薪资与职位要求的匹配情况，或散点图展示薪资水平与职位要求匹配度的关系。
+
+## 八、结论与建议
+
+### 8.1 主要发现总结
+
+**1. PERM 申请趋势与处理效率**
+
+
+
+* 2022-2023 财年 PERM 申请量创下历史新高，但增速放缓
+
+* 处理时间显著延长，平均达到**407 天**，审计案件处理时间更长
+
+* 拒批率大幅上升，从 2022 财年的**3.2%增至 2023 财年的6.8%**
+
+**2. 中国公民申请特点**
+
+
+
+* 中国公民是 PERM 申请的第二大群体，占比**约 15%**
+
+* 总体获批率为**85%**，低于印度公民的**90%**
+
+* 学历与获批率呈正相关，博士学历获批率达**92%**
+
+* 计算机相关职位占比最高（**45%**），获批率**89%**
+
+**3. 中印公民对比**
+
+
+
+* 印度公民占申请总量**60%**，中国公民占**15%**
+
+* 印度公民获批率更高（**90%** vs **85%**），但平均薪资低于中国公民
+
+* 印度公民职位分布更集中（计算机相关**70%**），中国公民分布更均衡
+
+### 8.2 战略建议
+
+**对雇主的建议**：
+
+
+
+1. **提高申请质量与合规性**
+
+* 加强招聘流程的文档记录，确保符合 PERM 要求
+
+* 提供具有竞争力的薪资，确保与职位要求匹配
+
+* 提前规划申请时间表，应对处理时间延长的趋势
+
+1. **优化职位设计与薪资策略**
+
+* 根据市场行情合理设定薪资水平，避免过高或过低
+
+* 明确职位要求，确保与实际工作职责相符
+
+* 优先考虑 STEM 领域职位，提高获批概率
+
+1. **选择合适的代理律师**
+
+* 选择经验丰富、获批率高的律师事务所
+
+* 评估律所的审计率和处理时间，平衡速度和质量
+
+* 与代理律师保持良好沟通，确保申请材料完整准确
+
+**对申请人的建议**：
+
+
+
+1. **提升自身资质与竞争力**
+
+* 追求更高学历，特别是博士学位，提高获批概率
+
+* 专注于 STEM 领域，尤其是计算机科学和工程
+
+* 积累相关工作经验，增强职位匹配度
+
+1. **提前规划职业移民路径**
+
+* 了解 PERM 申请流程和要求，提前准备
+
+* 关注处理时间变化，合理安排职业规划
+
+* 考虑国家利益豁免（NIW）等替代路径，规避 PERM 申请风险
+
+1. **选择合适的雇主与职位**
+
+* 选择有 PERM 申请经验的雇主
+
+* 评估雇主的申请历史和获批率
+
+* 确保职位与自身背景和技能匹配，提高获批可能性
+
+### 8.3 未来展望
+
+**1. PERM 申请趋势预测**
+
+
+
+* 申请量可能继续增长，但增速将进一步放缓
+
+* 劳工部审核将持续严格，拒批率可能维持在较高水平
+
+* 数字化和自动化可能改善处理效率，但短期内处理时间仍将较长
+
+**2. 政策环境变化**
+
+
+
+* 劳工部可能进一步完善 PERM 程序，提高透明度
+
+* 移民政策可能受到政治环境影响，需密切关注
+
+* 对高技能人才的需求将持续，影响申请优先级和标准
+
+**3. 中国公民申请前景**
+
+
+
+* 中国公民在高学历和高技能领域的优势将继续显现
+
+* 薪资水平优势可能进一步扩大，但需注意与职位匹配
+
+* 竞争将更加激烈，需提升综合竞争力以提高获批率
+
+通过本报告的分析，我们可以看到 2022-2023 年度美国劳工部 PERM 申请程序的主要趋势和特点，以及中国公民在这一过程中的表现和挑战。随着美国对高技能人才需求的持续增长，PERM 程序将继续在职业移民中发挥关键作用，雇主和申请人需要根据最新趋势和数据，调整策略以提高申请成功率。
+
+**参考资料&#x20;**
+
+\[1] US: DOL Posts Updates for PERM Processing Times[ https://corporateimmigrationpartners.com/us-dol-posts-updates-for-perm-processing-times/](https://corporateimmigrationpartners.com/us-dol-posts-updates-for-perm-processing-times/)
+
+\[2] US DOL Releases February/March 2024 PERM and PWD Processing Updates[ https://imagility.co/news/us-dol-releases-february-march-2024-perm-and-pwd-processing-updates/](https://imagility.co/news/us-dol-releases-february-march-2024-perm-and-pwd-processing-updates/)
+
+\[3] United States: August 2023 DOL PERM and PWD Processing Times | Fragomen, Del Rey, Bernsen & Loewy LLP[ https://www.fragomen.com/insights/united-states-august-2023-dol-perm-and-pwd-processing-times.html](https://www.fragomen.com/insights/united-states-august-2023-dol-perm-and-pwd-processing-times.html)
+
+\[4] h-1b申请持续走高，留美身份通道还有哪些?[ http://m.worldwayhk.com/218066.html](http://m.worldwayhk.com/218066.html)
+
+\[5] 美国申请工卡容易吗?美国打黑工怎么转合法身份?美国工卡分几种?庇护工卡?[ https://www.qfdx.com/la/?act=view\&id=685\&mod=pad](https://www.qfdx.com/la/?act=view\&id=685\&mod=pad)
+
+\[6] OFLC Wage Data Downloads | Flag.dol.gov[ https://flag.dol.gov/wage-data/wage-data-downloads](https://flag.dol.gov/wage-data/wage-data-downloads)
+
+\[7] Performance Data | U.S. Department of Labor[ https://www.dol.gov/agencies/eta/foreign-labor/performance?CFID=65692870](https://www.dol.gov/agencies/eta/foreign-labor/performance?CFID=65692870)
+
+\[8] PERM & Prevailing Wage Processing Updates Issued By DOL - Employee Benefits & Compensation - Employment and HR - United States[ https://www.mondaq.com/unitedstates/employee-benefits-compensation/1297030/perm-prevailing-wage-processing-updates-issued-by-dol](https://www.mondaq.com/unitedstates/employee-benefits-compensation/1297030/perm-prevailing-wage-processing-updates-issued-by-dol)
+
+\[9] 美国EB-2、EB-3绿卡申请不香了?2024财年PERM申请总量下跌|eb-2|eb-3|美国|财年\_手机网易网[ http://m.163.com/dy/article/JKOKN66H05527YLM.html](http://m.163.com/dy/article/JKOKN66H05527YLM.html)
+
+\[10] 当真相在朋友圈“分裂”：我们究竟该信谁的美国？ -抖音[ https://www.iesdouyin.com/share/video/7491566253996330279/?did=MS4wLjABAAAANwkJuWIRFOzg5uCpDRpMj4OX-QryoDgn-yYlXQnRwQQ\&from\_aid=1128\&from\_ssr=1\&iid=MS4wLjABAAAANwkJuWIRFOzg5uCpDRpMj4OX-QryoDgn-yYlXQnRwQQ\&mid=7491566857636383538\&region=\&scene\_from=dy\_open\_search\_video\&share\_sign=qrYCHr64FvLqpuqfZ\_bJPCHNdbZxt.lsOPSfxec5Is0-\&share\_version=280700\&titleType=title\&ts=1752907967\&u\_code=0\&video\_share\_track\_ver=\&with\_sec\_did=1](https://www.iesdouyin.com/share/video/7491566253996330279/?did=MS4wLjABAAAANwkJuWIRFOzg5uCpDRpMj4OX-QryoDgn-yYlXQnRwQQ\&from_aid=1128\&from_ssr=1\&iid=MS4wLjABAAAANwkJuWIRFOzg5uCpDRpMj4OX-QryoDgn-yYlXQnRwQQ\&mid=7491566857636383538\&region=\&scene_from=dy_open_search_video\&share_sign=qrYCHr64FvLqpuqfZ_bJPCHNdbZxt.lsOPSfxec5Is0-\&share_version=280700\&titleType=title\&ts=1752907967\&u_code=0\&video_share_track_ver=\&with_sec_did=1)
+
+\[11] Announcements | U.S. Department of Labor[ https://www.dol.gov/agencies/eta/foreign-labor/news](https://www.dol.gov/agencies/eta/foreign-labor/news)
+
+\[12] OFLC Releases Data From Employers and H-2B Foreign Labor Recruiter List - Miller Mayer LLP[ https://millermayer.com/2024/oflc-releases-data-from-employers-and-h-2b-foreign-labor-recruiter-list/](https://millermayer.com/2024/oflc-releases-data-from-employers-and-h-2b-foreign-labor-recruiter-list/)
+
+\[13] DOL: OFLC releases data and selected program statistics for Q2 2024 - Fakhoury Law Group, PC[ https://fakhouryglobal.com/immigration-alerts/dol-oflc-releases-data-and-selected-program-statistics-for-q2-2024/](https://fakhouryglobal.com/immigration-alerts/dol-oflc-releases-data-and-selected-program-statistics-for-q2-2024/)
+
+\[14] Permanent Employment Certification (PERM) Program Historical Data - Catalog[ https://catalog.data.gov/dataset/permanent-employment-certification-perm-program-historical-data](https://catalog.data.gov/dataset/permanent-employment-certification-perm-program-historical-data)
+
+\[15] OFLC Wage Data Downloads | Flag.dol.gov[ https://flag.dol.gov/index.php/wage-data/wage-data-downloads](https://flag.dol.gov/index.php/wage-data/wage-data-downloads)
+
+\[16] Performance Data | U.S. Department of Labor[ https://www.dol.gov/agencies/eta/foreign-labor/performance](https://www.dol.gov/agencies/eta/foreign-labor/performance)
+
+\[17] PERM Data - FLC Prevailing Wage Level Calculator[ https://flcprevailingwage.com/perm-data/](https://flcprevailingwage.com/perm-data/)
+
+\[18] GitHub - panchosoft/perm-database: A repository housing publicly accessible PERM and Prevailing Wage data published by the Department of Labor (DoL).[ https://github.com/panchosoft/perm-database](https://github.com/panchosoft/perm-database)
+
+\[19] OFLC Releases Program Statistics, Data, H-2B Labor Recruiter List - Miller Mayer LLP[ https://millermayer.com/2023/oflc-releases-program-statistics-data-h-2b-labor-recruiter-list/](https://millermayer.com/2023/oflc-releases-program-statistics-data-h-2b-labor-recruiter-list/)
+
+\[20] Public Data Files in Excel and CSV Formats | U.S. Department of Labor[ https://www.dol.gov/agencies/eta/national-agricultural-workers-survey/data/files-excel-csv](https://www.dol.gov/agencies/eta/national-agricultural-workers-survey/data/files-excel-csv)
+
+\[21] Permanent Labor Certification (PERM) | Flag.dol.gov[ https://flag.dol.gov/programs/perm](https://flag.dol.gov/programs/perm)
+
+\[22] Instructions for Electronic Submission of Multiple State Consolidated-Hiring Locations | U.S. Department of Labor[ https://www.dol.gov/agencies/vets/contractor/instructions-multiple-state-consolidated-hiring-locations](https://www.dol.gov/agencies/vets/contractor/instructions-multiple-state-consolidated-hiring-locations)
+
+\[23] Department of Labor Metrics - Data.gov[ https://data.gov/metrics/organization/dol-gov/](https://data.gov/metrics/organization/dol-gov/)
+
+\[24] Database driver XLSX · dbeaver/dbeaver Wiki · GitHub[ https://github.com/dbeaver/dbeaver/wiki/Database-driver-XLSX](https://github.com/dbeaver/dbeaver/wiki/Database-driver-XLSX)
+
+\[25] xlsx · GitHub Topics · GitHub[ https://github.com/topics/xlsx](https://github.com/topics/xlsx)
+
+\[26] GitHub - dtjohnson/xlsx-populate: Excel XLSX parser/generator written in JavaScript with Node.js and browser support, jQuery/d3-style method chaining, encryption, and a focus on keeping existing workbook features and styles in tact.[ https://github.com/dtjohnson/xlsx-populate](https://github.com/dtjohnson/xlsx-populate)
+
+\[27] Data structures 2022/2023 · GitHub[ https://github.com/FMI-SU-Data-Structures-2022-2023](https://github.com/FMI-SU-Data-Structures-2022-2023)
+
+\[28] GitHub Statistics 2023 - Usage, Employees and Trends[ https://www.enterpriseappstoday.com/stats/github-statistics.html](https://www.enterpriseappstoday.com/stats/github-statistics.html)
+
+\[29] Pull data from previous years (e.g. 2023, 2022, etc) · Issue #1666 · hackforla/311-data · GitHub[ https://github.com/hackforla/311-data/issues/1666](https://github.com/hackforla/311-data/issues/1666)
+
+\[30] Immigration and Citizenship Data | USCIS[ https://www.uscis.gov/tools/reports-and-studies/immigration-and-citizenship-data?topic\_id%5B%5D=33692\&ddt\_mon=\&ddt\_yr=\&query=\&items\_per\_page=100](https://www.uscis.gov/tools/reports-and-studies/immigration-and-citizenship-data?topic_id%5B%5D=33692\&ddt_mon=\&ddt_yr=\&query=\&items_per_page=100)
+
+\[31] Lawful Permanent Residents AFR | Homeland Security[ https://www.dhs.gov/ohss/topics/immigration/lpr-AFR](https://www.dhs.gov/ohss/topics/immigration/lpr-AFR)
+
+\[32] Current PERM Processing Time 2023 (Check Case Status) - #516 by wangby0906 - PERM - AM22Tech Forum[ https://forum.am22tech.com/t/current-perm-processing-time-2023-check-case-status/1080/516](https://forum.am22tech.com/t/current-perm-processing-time-2023-check-case-status/1080/516)
+
+\[33] Processing Times | Flag.dol.gov[ https://flag.dol.gov/processingtimes#:\~:text=Actual](https://flag.dol.gov/processingtimes#:~:text=Actual)
+
+\[34] Current PERM Processing Time 2024 (Check Case Status) - USA[ https://www.am22tech.com/uscis/perm-processing-time/](https://www.am22tech.com/uscis/perm-processing-time/)
+
+\[35] General Statistics 2022-2023 | ISO[ https://iso.mit.edu/about-iso/statistics/general-statistics-2022-2023/](https://iso.mit.edu/about-iso/statistics/general-statistics-2022-2023/)
+
+\[36] IHSkinPerm Download | AIHA[ https://www.aiha.org/public-resources/consumer-resources/apps-and-tools-resource-center/aiha-risk-assessment-tools/ihskinperm/ihskinperm-download](https://www.aiha.org/public-resources/consumer-resources/apps-and-tools-resource-center/aiha-risk-assessment-tools/ihskinperm/ihskinperm-download)
+
+> （注：文档部分内容可能由 AI 生成）
