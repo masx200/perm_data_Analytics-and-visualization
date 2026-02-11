@@ -23,7 +23,7 @@
     "@tailwindcss/postcss": "^4.1.16",
     "@types/node": "^24.9.2",
     "autoprefixer": "^10.4.21",
-    "axios": "^1.12.2",
+    "axios": "^1.13.5",
     "chart.js": "^4.5.1",
     "prettier": "^3.6.2",
     "prismjs": "^1.30.0",
